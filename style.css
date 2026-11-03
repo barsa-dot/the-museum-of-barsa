@@ -44,6 +44,12 @@ img {
   max-width: 100%;
 }
 
+/* The hidden attribute must always hide an element, even one
+   whose class sets display: flex (like .intro and .atrium). */
+[hidden] {
+  display: none !important;
+}
+
 button {
   font: inherit;
   color: inherit;
@@ -669,15 +675,21 @@ a:hover {
   }
 }
 
-/* ---------- 14. Museum map ----------
-   A Map button fixed in the top-right corner opens a floor
-   plan in a <dialog>. The plan is a 3 × 3 grid with the
+/* ---------- 14. Corner controls and museum map ----------
+   Sound and Map buttons sit in the top-right corner. Map opens
+   a floor plan in a <dialog>. The plan is a 3 × 3 grid with the
    atrium in the middle and the rooms around it. */
-.map-button {
+.museum-controls {
   position: fixed;
   top: var(--space-md);
   right: var(--space-md);
   z-index: 20;                    /* above every scene */
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Shared look for the Sound and Map buttons */
+.control-button {
   padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--bronze);
   background-color: rgba(36, 37, 34, 0.85);   /* readable on light and dark scenes */
@@ -688,8 +700,14 @@ a:hover {
   transition: background-color var(--duration-fast) var(--ease-calm);
 }
 
-.map-button:hover {
+.control-button:hover {
   background-color: var(--charcoal);
+}
+
+/* The Sound button while music is playing */
+.control-button[aria-pressed="true"] {
+  border-color: var(--ivory);
+  color: var(--bronze);
 }
 
 .map {

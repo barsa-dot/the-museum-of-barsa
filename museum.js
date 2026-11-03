@@ -129,7 +129,7 @@ function finishEntrance() {
   entranceFinished = true;
 
   skipButton.hidden = true;
-  mapButton.hidden = false;
+  controls.hidden = false;
   revealAtrium();
 
   // The atrium fades in on top of whatever scene was playing.
@@ -156,6 +156,14 @@ function revealAtrium() {
   // the new room and Tab continues from the doors.
   document.getElementById("atrium-title").focus();
 }
+
+// ----- Corner controls (Sound and Map) -----
+// A small group of buttons fixed in the top-right corner of every page.
+const controls = document.createElement("div");
+controls.className = "museum-controls";
+// On index.html they stay hidden until the entrance is over.
+controls.hidden = intro !== null;
+document.body.append(controls);
 
 // ----- Museum map -----
 // One list of rooms. The map is built from it by JavaScript, so every
@@ -205,11 +213,10 @@ function mapRoomHTML(room) {
 // The always-visible Map button
 const mapButton = document.createElement("button");
 mapButton.type = "button";
-mapButton.className = "map-button";
+mapButton.className = "control-button";
 mapButton.textContent = "Map";
 mapButton.setAttribute("aria-haspopup", "dialog");
-// On index.html it stays hidden until the entrance is over.
-mapButton.hidden = intro !== null;
+controls.append(mapButton);
 
 // The map itself is a <dialog>: the browser handles focus,
 // the Escape key and placing it above everything else.
@@ -226,7 +233,7 @@ mapDialog.innerHTML = `
     </nav>
   </div>`;
 
-document.body.append(mapButton, mapDialog);
+document.body.append(mapDialog);
 
 mapButton.addEventListener("click", function () {
   mapDialog.showModal();
@@ -241,6 +248,73 @@ mapDialog.querySelector(".map__close").addEventListener("click", function () {
 mapDialog.addEventListener("click", function (event) {
   if (event.target === mapDialog) mapDialog.close();
 });
+
+// ----- Optional music -----
+// Music never starts on its own: the visitor turns it on with the
+// Sound button. The choice is remembered, so it keeps playing (from
+// roughly the same point) as they move between room pages.
+// To use it, add a track you have the rights to as audio/ambience.mp3.
+const music = new Audio("/audio/ambience.mp3");
+music.loop = true;
+music.volume = 0.4;
+music.preload = "metadata";   // only fetch a tiny part until it plays
+
+const soundButton = document.createElement("button");
+soundButton.type = "button";
+soundButton.className = "control-button";
+controls.prepend(soundButton);  // to the left of Map
+showSoundState(false);
+
+// Update the button text and aria-pressed (tells screen readers
+// whether the toggle is on or off).
+function showSoundState(isOn) {
+  soundButton.textContent = isOn ? "Sound on" : "Sound off";
+  soundButton.setAttribute("aria-pressed", isOn ? "true" : "false");
+}
+
+// localStorage can be blocked (e.g. some private windows),
+// so every read and write is wrapped in try/catch.
+function saveSetting(storage, key, value) {
+  try { storage.setItem(key, value); } catch (error) { /* ignore */ }
+}
+
+function readSetting(storage, key) {
+  try { return storage.getItem(key); } catch (error) { return null; }
+}
+
+function playMusic() {
+  // play() returns a Promise. It is rejected if the browser blocks it.
+  music.play()
+    .then(function () { showSoundState(true); })
+    .catch(function () { showSoundState(false); });
+}
+
+soundButton.addEventListener("click", function () {
+  if (music.paused) {
+    playMusic();
+    saveSetting(localStorage, "museum-sound", "on");
+  } else {
+    music.pause();
+    showSoundState(false);
+    saveSetting(localStorage, "museum-sound", "off");
+  }
+});
+
+// No audio file yet (or it failed to load): hide the button.
+music.addEventListener("error", function () {
+  soundButton.hidden = true;
+});
+
+// Remember where the track was when leaving the page...
+window.addEventListener("pagehide", function () {
+  saveSetting(sessionStorage, "museum-sound-time", String(music.currentTime));
+});
+
+// ...and continue from there if the visitor had turned sound on.
+if (readSetting(localStorage, "museum-sound") === "on") {
+  music.currentTime = Number(readSetting(sessionStorage, "museum-sound-time")) || 0;
+  playMusic();
+}
 
 // Coming back from a room uses the link "index.html#atrium".
 // In that case skip the intro and go straight to the atrium.
