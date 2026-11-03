@@ -115,3 +115,82 @@ a:hover {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------- 5. Buttons ---------- */
+.button {
+  display: inline-block;
+  padding: 0.9rem 2.25rem;
+  border: 1px solid var(--bronze);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--duration-fast) var(--ease-calm),
+    color var(--duration-fast) var(--ease-calm);
+}
+
+.button:hover {
+  background-color: var(--bronze);
+  color: var(--charcoal);
+}
+
+/* ---------- 6. Intro screen ---------- */
+.intro {
+  position: fixed;
+  inset: 0;                 /* cover the whole screen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  /* Soft warm glow in the centre, fading to charcoal at the edges */
+  background: radial-gradient(ellipse at center, #34322c 0%, var(--charcoal) 70%);
+  transition: opacity var(--duration-slow) var(--ease-calm);
+}
+
+/* Added by museum.js when the visitor clicks "Enter" */
+.intro.is-leaving {
+  opacity: 0;
+  pointer-events: none;     /* can't click it while it fades out */
+}
+
+.intro__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  animation: fade-up 1.6s var(--ease-calm) both;
+}
+
+.intro__title {
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.intro__subtitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-style: italic;
+  color: var(--mist);
+}
+
+/* The button appears a moment after the title */
+.intro .button {
+  margin-top: var(--space-md);
+  animation: fade-up 1.6s 0.6s var(--ease-calm) both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
