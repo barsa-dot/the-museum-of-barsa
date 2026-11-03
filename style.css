@@ -1,2 +1,117 @@
-/* The Museum of Barsa — styles
-   Palette, fonts and base styles are added in a later commit. */
+/* =========================================================
+   The Museum of Barsa — styles
+   ========================================================= */
+
+/* ---------- 1. Design tokens ----------
+   Every colour, font and spacing value lives here, so the
+   whole look can be changed from one place. */
+:root {
+  /* Palette */
+  --charcoal: #242522;     /* dark backgrounds */
+  --ivory: #E8DDC9;        /* main surfaces */
+  --bronze: #A88A66;       /* accents */
+  --sage: #829486;         /* natural details */
+  --mist: #B9C6C0;         /* atmosphere */
+
+  /* Fonts */
+  --font-heading: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  /* Motion */
+  --ease-calm: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 200ms;
+  --duration-slow: 800ms;
+}
+
+/* ---------- 2. Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ---------- 3. Base ---------- */
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  background-color: var(--charcoal);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+}
+
+h1 { font-size: clamp(2.25rem, 6vw, 4.5rem); }
+h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); }
+
+p {
+  max-width: 65ch; /* comfortable reading width */
+}
+
+a {
+  color: var(--bronze);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  transition: color var(--duration-fast) var(--ease-calm);
+}
+
+a:hover {
+  color: var(--ivory);
+}
+
+/* Visible focus outline for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 3px;
+}
+
+/* ---------- 4. Reduced motion ----------
+   Visitors who ask their device for less motion get
+   near-instant transitions everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
