@@ -102,6 +102,47 @@ python -m http.server
 
 Then open http://localhost:8000.
 
+Run the server from the project folder itself. Links such as `/rooms/library.html`
+start with `/`, so the site expects to be served from the root of a domain.
+
 ## Deployment
 
-Hosted on Cloudflare Pages (free plan). Deployment notes will be added later.
+Hosted on **Cloudflare Pages** (free plan), connected to this GitHub repository.
+There is no build step: Cloudflare serves the files exactly as they are in the repo.
+
+### First-time setup
+
+1. Push the repository to GitHub.
+2. In the Cloudflare dashboard, go to **Workers & Pages → Create → Pages →
+   Connect to Git**, and choose this repository.
+3. Use these build settings:
+
+   | Setting | Value |
+   |---|---|
+   | Production branch | `main` |
+   | Framework preset | None |
+   | Build command | *(leave empty)* |
+   | Build output directory | `/` |
+
+4. Click **Save and Deploy**. The site goes live at
+   `https://<project-name>.pages.dev`.
+
+### Updating the site
+
+Every push to `main` deploys automatically, usually within a minute.
+Pushes to other branches get their own preview URL, which is useful for
+checking a change before merging it.
+
+To publish a project, edit `projects.json` (see
+[Adding or updating a project](#adding-or-updating-a-project)), commit and push.
+
+### Good to know
+
+- **Pretty URLs:** Cloudflare serves `/rooms/library.html` as `/rooms/library`.
+  Both work, and the museum map handles either form.
+- **Missing pages:** without a `404.html` file, Cloudflare treats the site as a
+  single-page app and shows `index.html` for any unknown address.
+- **Everything in the repo is public:** files such as `README.md` and
+  `CLAUDE.md` can also be opened on the live site.
+- **Custom domain:** can be added for free under the project's
+  **Custom domains** tab.
