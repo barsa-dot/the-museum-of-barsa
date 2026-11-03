@@ -958,3 +958,37 @@ a.map__room:hover {
     /* sage-grey stone */
     linear-gradient(to bottom, #59625b, #3f4640);
 }
+
+/* ---------- 18. The Workshop ----------
+   A pegboard wall above a dark wooden workbench, lit by a
+   warm work lamp. Skills are shown as small brass tags. */
+.room--workshop {
+  background:
+    /* warm overlay so the plaques stand out */
+    linear-gradient(rgba(26, 22, 18, 0.55), rgba(22, 19, 16, 0.85)),
+    /* work lamp glow */
+    radial-gradient(ellipse 45% 35% at 70% 5%, rgba(232, 200, 150, 0.3), transparent 70%),
+    /* dark wooden workbench along the bottom */
+    linear-gradient(to bottom, transparent 78%, #3b2a1e 78%, #2a1e15 100%),
+    /* pegboard holes on a 1.5rem grid */
+    radial-gradient(circle, rgba(0, 0, 0, 0.45) 0 0.15rem, transparent 0.2rem) 0 0 / 1.5rem 1.5rem,
+    /* pegboard colour */
+    #6d5f4c;
+}
+
+/* Skill tags: a row of small brass labels that wraps onto new lines */
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  list-style: none;
+}
+
+.skill-tags li {
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--bronze);
+  border-radius: 999px;           /* pill shape */
+  background: linear-gradient(to bottom, #efe4d0, #e0d1b6);   /* brushed brass look */
+  font-size: 0.9rem;
+}
