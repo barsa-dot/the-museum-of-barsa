@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick view — The Museum of Barsa</title>
+  <!-- Fonts: Cormorant Garamond (headings) and Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="quickview">
+  <!-- A plain, recruiter-friendly page with all content in one place.
+       Keep the text here in step with the room pages. -->
+  <main class="quickview__page">
+    <a class="quickview__back" href="index.html#atrium">&larr; Back to the museum</a>
+
+    <header class="quickview__header">
+      <h1 class="quickview__name">Barsarani Sahoo</h1>
+      <p class="quickview__role"><span class="todo">[TODO: add a one-line description of yourself]</span></p>
+
+      <ul class="quickview__contact">
+        <li><span class="todo">[TODO: add email address]</span></li>
+        <li><a href="https://github.com/barsa-dot" target="_blank" rel="noopener">GitHub</a></li>
+        <li><span class="todo">[TODO: add LinkedIn link]</span></li>
+        <li><a href="resume.pdf" download>Resume (PDF)</a></li>
+      </ul>
+    </header>
+
+    <section class="quickview__section">
+      <h2>About</h2>
+      <p><span class="todo">[TODO: add your introduction]</span></p>
+    </section>
+
+    <section class="quickview__section">
+      <h2>Education</h2>
+      <div class="quickview__entry">
+        <h3>REVA University</h3>
+        <p>B.Tech, Computer Science and Engineering &middot; <span class="todo">[TODO: add years]</span></p>
+      </div>
+      <div class="quickview__entry">
+        <h3>IIM Bangalore</h3>
+        <p>BBA, Digital Business and Entrepreneurship &middot; <span class="todo">[TODO: add years]</span></p>
+      </div>
+      <div class="quickview__entry">
+        <h3>Achievements</h3>
+        <ul>
+          <li><span class="todo">[TODO: add achievement]</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="quickview__section">
+      <h2>Experience</h2>
+      <div class="quickview__entry">
+        <h3>Work</h3>
+        <p><span class="todo">[TODO: add role, organisation and dates]</span></p>
+      </div>
+      <div class="quickview__entry">
+        <h3>Writing</h3>
+        <p><span class="todo">[TODO: add writing]</span></p>
+      </div>
+      <div class="quickview__entry">
+        <h3>Volunteering</h3>
+        <p><span class="todo">[TODO: add volunteering]</span></p>
+      </div>
+      <div class="quickview__entry">
+        <h3>Events</h3>
+        <p><span class="todo">[TODO: add events]</span></p>
+      </div>
+      <div class="quickview__entry">
+        <h3>Leadership</h3>
+        <p><span class="todo">[TODO: add leadership roles]</span></p>
+      </div>
+    </section>
+
+    <section class="quickview__section">
+      <h2>Projects</h2>
+      <!-- Filled in by museum.js from projects.json, the same as the Creation Wing -->
+      <div id="project-exhibits" class="quickview__projects" aria-live="polite">
+        <p class="room__status">Loading projects&hellip;</p>
+      </div>
+    </section>
+
+    <section class="quickview__section">
+      <h2>Skills</h2>
+      <p><strong>Languages:</strong> <span class="todo">[TODO: add languages]</span></p>
+      <p><strong>Technologies:</strong> <span class="todo">[TODO: add technologies]</span></p>
+      <p><strong>Tools:</strong> <span class="todo">[TODO: add tools]</span></p>
+    </section>
+
+    <section class="quickview__section">
+      <h2>Interests</h2>
+      <p><span class="todo">[TODO: add interests]</span></p>
+    </section>
+  </main>
+
+  <script src="museum.js"></script>
+</body>
+</html>

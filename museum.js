@@ -218,6 +218,15 @@ mapButton.textContent = "Map";
 mapButton.setAttribute("aria-haspopup", "dialog");
 controls.append(mapButton);
 
+// Quick view link: all content on one plain page (not shown on that page itself)
+if (currentPage !== pageId("/quick-view.html")) {
+  const quickViewLink = document.createElement("a");
+  quickViewLink.className = "control-button";
+  quickViewLink.href = "/quick-view.html";
+  quickViewLink.textContent = "Quick view";
+  controls.prepend(quickViewLink);   // to the left of Map
+}
+
 // The map itself is a <dialog>: the browser handles focus,
 // the Escape key and placing it above everything else.
 const mapDialog = document.createElement("dialog");
@@ -262,7 +271,7 @@ music.preload = "metadata";   // only fetch a tiny part until it plays
 const soundButton = document.createElement("button");
 soundButton.type = "button";
 soundButton.className = "control-button";
-controls.prepend(soundButton);  // to the left of Map
+controls.prepend(soundButton);  // first in the row
 showSoundState(false);
 
 // Update the button text and aria-pressed (tells screen readers
@@ -391,8 +400,9 @@ async function loadProjects() {
         projectExhibits.append(buildProjectExhibit(project, false));
       } else if (project.status === "unavailable") {
         projectExhibits.append(buildProjectExhibit(project, true));
+      } else if (project.status === "in-development") {
+        projectExhibits.append(buildSealedGallery(project));
       }
-      // "in-development" projects get their sealed doors in the next commit.
     });
   } catch (error) {
     projectExhibits.innerHTML =
@@ -467,6 +477,23 @@ function buildProjectExhibit(project, isClosed) {
   if (links.children.length > 0) exhibit.append(links);
 
   return exhibit;
+}
+
+// A sealed gallery door for a project that is still being built.
+// On purpose it shows only the name and "Opening soon": no
+// description or feature list until the project is published.
+function buildSealedGallery(project) {
+  const gallery = createElement("article", "sealed-gallery");
+
+  // The door itself is decoration, so screen readers skip it.
+  const door = createElement("div", "sealed-gallery__door");
+  door.setAttribute("aria-hidden", "true");
+  door.append(createElement("span", "sealed-gallery__seal"));
+
+  gallery.append(door);
+  gallery.append(createElement("h2", "sealed-gallery__name", project.name));
+  gallery.append(createElement("p", "sealed-gallery__label", "Opening soon"));
+  return gallery;
 }
 
 // A link that opens in a new tab, so the museum stays open.

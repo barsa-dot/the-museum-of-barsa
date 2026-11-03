@@ -690,8 +690,10 @@ a:hover {
   gap: var(--space-sm);
 }
 
-/* Shared look for the Sound and Map buttons */
+/* Shared look for the corner buttons (Sound, Quick view, Map) */
 .control-button {
+  display: inline-block;
+  text-decoration: none;          /* Quick view is a link, not a button */
   padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--bronze);
   background-color: rgba(36, 37, 34, 0.85);   /* readable on light and dark scenes */
@@ -1179,4 +1181,197 @@ a.map__room:hover {
   margin-bottom: var(--space-sm);
   font-weight: 500;
   color: #8a3b2e;
+}
+
+/* ---------- 22. Sealed galleries ("Opening soon") ----------
+   Projects still in development appear as closed wooden doors,
+   tied with a bronze ribbon and a round seal. */
+.sealed-gallery {
+  padding: var(--space-lg);
+  border: 1px dashed rgba(168, 138, 102, 0.5);
+  background-color: rgba(36, 37, 34, 0.55);
+  text-align: center;
+}
+
+/* Two door leaves: dark wood on each side of a thin dark seam */
+.sealed-gallery__door {
+  position: relative;
+  width: 9rem;
+  aspect-ratio: 1 / 1.6;
+  margin: 0 auto var(--space-md);
+  border: 0.4rem solid #b5a68c;           /* limestone frame */
+  border-bottom: none;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, #3b2a1e 0 49%, #1e150f 49% 51%, #3b2a1e 51% 100%);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.4);
+}
+
+/* The bronze ribbon across both doors */
+.sealed-gallery__door::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 55%;
+  height: 0.6rem;
+  background-color: var(--bronze);
+  opacity: 0.85;
+}
+
+/* The round seal holding the ribbon, centred on the seam */
+.sealed-gallery__seal {
+  position: absolute;
+  left: 50%;
+  top: calc(55% + 0.3rem);                /* middle of the ribbon */
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c9ab84, var(--bronze) 55%, #7a6347);
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.5);
+  transform: translate(-50%, -50%);
+}
+
+.sealed-gallery__name {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.sealed-gallery__label {
+  margin: var(--space-xs) auto 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bronze);
+}
+
+/* ---------- 23. Quick view ----------
+   One plain, readable page for recruiters: ivory background,
+   a single column, no scenes or animation. Project exhibits
+   from museum.js are simplified to plain text here. */
+.quickview {
+  background-color: var(--ivory);
+  color: var(--charcoal);
+}
+
+.quickview__page {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 5rem var(--space-md) var(--space-xl);   /* top: clears the corner buttons */
+}
+
+.quickview a {
+  color: #6b5a44;
+}
+
+.quickview a:hover {
+  color: var(--charcoal);
+}
+
+.quickview__back {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.quickview__header {
+  margin: var(--space-lg) 0;
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--bronze);
+}
+
+.quickview__name {
+  font-weight: 500;
+}
+
+.quickview__role {
+  margin-top: var(--space-xs);
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-style: italic;
+}
+
+/* Contact links in one row that wraps on small screens */
+.quickview__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+  margin-top: var(--space-md);
+  list-style: none;
+}
+
+.quickview__section {
+  margin-top: var(--space-xl);
+}
+
+.quickview__section h2 {
+  margin-bottom: var(--space-md);
+  font-size: 1.75rem;
+}
+
+.quickview__section p + p {
+  margin-top: var(--space-xs);
+}
+
+.quickview__section ul {
+  padding-left: 1.2rem;
+}
+
+.quickview__entry + .quickview__entry {
+  margin-top: var(--space-md);
+}
+
+.quickview__entry h3 {
+  font-size: 1.25rem;
+}
+
+.quickview .room__status {
+  color: #5b5548;
+}
+
+/* Projects: remove the plaque styling, keep plain text */
+.quickview__projects {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.quickview .exhibit,
+.quickview .sealed-gallery {
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  box-shadow: none;
+  text-align: left;
+  opacity: 1;
+}
+
+.quickview .exhibit__label {
+  display: none;                  /* "Now showing" is museum language */
+}
+
+.quickview .exhibit__title,
+.quickview .sealed-gallery__name {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.quickview .sealed-gallery__door {
+  display: none;
+}
+
+.quickview .sealed-gallery__label {
+  margin: 0;
+  color: #6b5a44;
+}
+
+/* Printing the quick view gives a clean one-column document */
+@media print {
+  .museum-controls,
+  .quickview__back {
+    display: none !important;
+  }
+
+  .quickview__page {
+    padding-top: 0;
+  }
 }
