@@ -271,3 +271,73 @@ a:hover {
   25%  { opacity: 0.85; }
   100% { opacity: 1; transform: translate(-50%, -50%) scale(2.2); }
 }
+
+/* ---------- 9. Entrance: staircase descent ----------
+   A flight of stone steps drawn as one striped surface,
+   tilted away from the viewer with CSS 3D. Sliding the
+   stripes towards the viewer makes it look like walking
+   down the stairs. */
+.stairs {
+  background: linear-gradient(to bottom, #000 0%, #12110e 45%, #2a251d 100%);
+  perspective: 60vmin;          /* how strong the 3D depth looks */
+  perspective-origin: 50% 20%;  /* we look slightly down the stairs */
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-calm);
+}
+
+.stairs.is-playing {
+  opacity: 1;
+}
+
+/* Wraps everything so the whole view can bob gently with each step */
+.stairs__camera {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.stairs.is-playing .stairs__camera {
+  /* 10 small bobs of 0.5s = 5s, the same length as the descent */
+  animation: step-bob 0.5s ease-in-out 10 alternate;
+}
+
+@keyframes step-bob {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-0.8vmin); }
+}
+
+/* Warm light rising from the bottom of the stairs */
+.stairs__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 40% 25% at 50% 42%, rgba(232, 221, 201, 0.28), transparent 70%);
+}
+
+/* The steps: a long surface laid back with rotateX.
+   Layer 1 fades the far end into darkness.
+   Layer 2 repeats a light tread and a dark riser every 6vmin. */
+.stairs__flight {
+  position: absolute;
+  left: 50%;
+  bottom: -10%;
+  width: 60vmin;
+  height: 200vmin;
+  margin-left: -30vmin;           /* half the width, to centre it */
+  transform-origin: bottom center;
+  transform: rotateX(72deg);
+  background:
+    linear-gradient(to bottom, #000 0%, transparent 60%),
+    repeating-linear-gradient(to bottom, #8a7f6c 0 4vmin, #4a4338 4vmin 6vmin);
+  background-position: 0 0, 0 0;
+}
+
+.stairs.is-playing .stairs__flight {
+  animation: descend 5s var(--ease-calm) forwards;
+}
+
+/* Only the steps layer moves (the fade layer stays put).
+   60vmin = 10 steps of 6vmin. */
+@keyframes descend {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 0 0, 0 60vmin; }
+}

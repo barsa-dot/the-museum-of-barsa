@@ -20,22 +20,46 @@ enterButton.addEventListener("click", function () {
   });
 });
 
+// ----- Shared helper for entrance scenes -----
+function startScene(scene) {
+  scene.hidden = false;
+
+  // Reading offsetWidth makes the browser draw the scene once at
+  // opacity 0 first. Without it, the fade-in transition would be skipped.
+  void scene.offsetWidth;
+
+  // All the movement is CSS animation; this class starts it.
+  scene.classList.add("is-playing");
+}
+
 // ----- Entrance: dark passage -----
 const passage = document.getElementById("passage");
 
 function startPassage() {
-  passage.hidden = false;
-
-  // Reading offsetWidth makes the browser draw the scene once at
-  // opacity 0 first. Without it, the fade-in transition would be skipped.
-  void passage.offsetWidth;
-
-  // All the movement is CSS animation; this class starts it.
-  passage.classList.add("is-playing");
+  startScene(passage);
 
   // The light's animation is the longest, so its end marks the end of the scene.
   const light = passage.querySelector(".passage__light");
-  light.addEventListener("animationend", function () {
-    // Next step of the entrance (staircase) is added in the next commit.
+  light.addEventListener("animationend", startStairs, { once: true });
+}
+
+// ----- Entrance: staircase descent -----
+const stairs = document.getElementById("stairs");
+
+function startStairs() {
+  // The stairs fade in on top of the passage...
+  startScene(stairs);
+
+  // ...and once they fully cover it, the passage can be hidden.
+  stairs.addEventListener("transitionend", function onFadeIn(event) {
+    if (event.target !== stairs) return;
+    passage.hidden = true;
+    stairs.removeEventListener("transitionend", onFadeIn);
+  });
+
+  // The descent ends when the steps stop moving.
+  const flight = stairs.querySelector(".stairs__flight");
+  flight.addEventListener("animationend", function () {
+    // Next step of the entrance (monumental doors) is added in the next commit.
   }, { once: true });
 }
