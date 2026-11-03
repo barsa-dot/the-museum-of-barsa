@@ -114,16 +114,40 @@ document.addEventListener("keydown", function (event) {
 });
 
 // ----- End of the entrance -----
+const atrium = document.getElementById("atrium");
+let entranceFinished = false;
+
 // Called when the doors animation ends, when Skip is used,
 // or straight away for reduced-motion visitors.
 function finishEntrance() {
-  // Hiding a scene (display: none) also stops its running animations,
-  // so none of their "animationend" handlers will fire afterwards.
-  intro.hidden = true;
-  passage.hidden = true;
-  stairs.hidden = true;
-  doors.hidden = true;
-  skipButton.hidden = true;
+  // Skip could be pressed just as the doors finish; only run once.
+  if (entranceFinished) return;
+  entranceFinished = true;
 
-  // The Grand Atrium is revealed here in a later commit.
+  skipButton.hidden = true;
+  revealAtrium();
+
+  // The atrium fades in on top of whatever scene was playing.
+  // Once it fully covers them, hide the entrance scenes. Hiding a
+  // scene (display: none) also stops its running animations.
+  atrium.addEventListener("transitionend", function onShown(event) {
+    if (event.target !== atrium) return;
+    atrium.removeEventListener("transitionend", onShown);
+
+    intro.hidden = true;
+    passage.hidden = true;
+    stairs.hidden = true;
+    doors.hidden = true;
+  });
+}
+
+// ----- Grand Atrium -----
+function revealAtrium() {
+  atrium.hidden = false;
+  void atrium.offsetWidth;   // same trick as startScene: draw once before fading in
+  atrium.classList.add("is-visible");
+
+  // Move keyboard focus to the atrium title so screen readers announce
+  // the new room and Tab continues from the doors.
+  document.getElementById("atrium-title").focus();
 }

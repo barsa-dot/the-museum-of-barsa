@@ -485,3 +485,160 @@ a:hover {
     bottom: var(--space-md);
   }
 }
+
+/* ---------- 12. Grand Atrium ----------
+   A bright limestone hall lit by a skylight, with a band of
+   still water across the floor. The six room doors stand in a
+   row (3 × 2 on phones). Drawn with gradients for now; a real
+   scene image can later be added as the first background layer. */
+.atrium {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xl);
+  padding: var(--space-xl) var(--space-md) var(--space-lg);
+  overflow-y: auto;               /* lets short phone screens scroll */
+  color: var(--charcoal);
+  text-align: center;
+  background:
+    /* skylight glow from above */
+    radial-gradient(ellipse 55% 35% at 50% 0%, rgba(255, 250, 240, 0.9), transparent 70%),
+    /* travertine walls, darker towards the floor */
+    linear-gradient(to bottom, #efe6d6 0%, var(--ivory) 45%, #cdbfa6 72%, #b9aa8f 100%);
+  /* Starts slightly zoomed in and settles, like stepping into the hall */
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 1.2s var(--ease-calm),
+    transform 1.6s var(--ease-calm);
+}
+
+/* Added by museum.js at the end of the entrance */
+.atrium.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Reflective water across the floor: a soft sage-to-mist band */
+.atrium::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 28%;
+  background: linear-gradient(to bottom, rgba(185, 198, 192, 0), rgba(130, 148, 134, 0.3));
+  pointer-events: none;
+}
+
+/* Keep the content above the water layer */
+.atrium__header,
+.atrium__nav {
+  position: relative;
+}
+
+/* Auto margins centre the content vertically. Unlike
+   justify-content: center, they never cut off the top of the
+   content when it is taller than the screen and has to scroll. */
+.atrium__header { margin-top: auto; }
+.atrium__nav    { margin-bottom: auto; }
+
+.atrium__title {
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* Focus is moved here by JS for screen readers; no outline needed */
+.atrium__title:focus {
+  outline: none;
+}
+
+.atrium__subtitle {
+  margin: var(--space-sm) auto 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-style: italic;
+  color: #5b5548;
+}
+
+.atrium__nav {
+  width: 100%;
+  max-width: 1100px;
+}
+
+/* 3 columns on phones, 6 in a row on wide screens */
+.atrium__doors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg) var(--space-md);
+  list-style: none;
+}
+
+@media (min-width: 900px) {
+  .atrium__doors {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* --- One door (the whole thing is one link, so it's an easy tap target) --- */
+.atrium-door {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--charcoal);
+  text-decoration: none;
+}
+
+/* The doorway: dark wood in a limestone frame with a round top */
+.atrium-door__arch {
+  position: relative;
+  width: 100%;
+  max-width: 9rem;
+  aspect-ratio: 1 / 1.7;
+  margin-bottom: var(--space-sm);
+  border: 0.4rem solid #b5a68c;
+  border-bottom: none;
+  border-radius: 999px 999px 0 0;   /* very large radius = half-circle top */
+  background: linear-gradient(to bottom, #3b2a1e, #2a1e15);
+  box-shadow:
+    inset 0 0 0 2px rgba(168, 138, 102, 0.5),   /* thin bronze inner edge */
+    0 1rem 2rem rgba(36, 37, 34, 0.25);          /* shadow on the floor */
+  overflow: hidden;
+  transition: transform var(--duration-fast) var(--ease-calm);
+}
+
+/* Warm light inside the doorway, shown on hover/focus */
+.atrium-door__arch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 70%, #fbf4e6 0%, rgba(168, 138, 102, 0.6) 60%, transparent 100%);
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-calm);
+}
+
+.atrium-door:hover .atrium-door__arch,
+.atrium-door:focus-visible .atrium-door__arch {
+  transform: translateY(-4px);
+}
+
+.atrium-door:hover .atrium-door__arch::after,
+.atrium-door:focus-visible .atrium-door__arch::after {
+  opacity: 1;
+}
+
+.atrium-door__name {
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.atrium-door__theme {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #6b5a44;                 /* darker bronze, readable on ivory */
+}

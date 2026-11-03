@@ -49,7 +49,61 @@
   <!-- Skip button: visible only while the entrance animation plays -->
   <button id="skip-button" class="skip-button" type="button" hidden>Skip</button>
 
-  <!-- Grand Atrium will be built here. -->
+  <!-- ===== Grand Atrium =====
+       The central hub. Each door is a link to a room page in rooms/. -->
+  <main id="atrium" class="scene atrium" hidden>
+    <header class="atrium__header">
+      <h1 id="atrium-title" class="atrium__title" tabindex="-1">The Grand Atrium</h1>
+      <p class="atrium__subtitle">Choose a door to begin.</p>
+    </header>
+
+    <nav class="atrium__nav" aria-label="Museum rooms">
+      <ul class="atrium__doors">
+        <li>
+          <a class="atrium-door" href="rooms/library.html">
+            <span class="atrium-door__arch" aria-hidden="true"></span>
+            <span class="atrium-door__name">The Library</span>
+            <span class="atrium-door__theme">Education</span>
+          </a>
+        </li>
+        <li>
+          <a class="atrium-door" href="rooms/creation-wing.html">
+            <span class="atrium-door__arch" aria-hidden="true"></span>
+            <span class="atrium-door__name">The Creation Wing</span>
+            <span class="atrium-door__theme">Projects</span>
+          </a>
+        </li>
+        <li>
+          <a class="atrium-door" href="rooms/archive.html">
+            <span class="atrium-door__arch" aria-hidden="true"></span>
+            <span class="atrium-door__name">The Archive</span>
+            <span class="atrium-door__theme">Experience</span>
+          </a>
+        </li>
+        <li>
+          <a class="atrium-door" href="rooms/workshop.html">
+            <span class="atrium-door__arch" aria-hidden="true"></span>
+            <span class="atrium-door__name">The Workshop</span>
+            <span class="atrium-door__theme">Skills</span>
+          </a>
+        </li>
+        <li>
+          <a class="atrium-door" href="rooms/portrait-room.html">
+            <span class="atrium-door__arch" aria-hidden="true"></span>
+            <span class="atrium-door__name">The Portrait Room</span>
+            <span class="atrium-door__theme">About</span>
+          </a>
+        </li>
+        <li>
+          <a class="atrium-door" href="rooms/courtyard.html">
+            <span class="atrium-door__arch" aria-hidden="true"></span>
+            <span class="atrium-door__name">The Courtyard</span>
+            <span class="atrium-door__theme">Contact</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </main>
 
   <script src="museum.js"></script>
 </body>
