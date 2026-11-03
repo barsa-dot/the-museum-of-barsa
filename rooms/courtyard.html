@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Courtyard — The Museum of Barsa</title>
+  <!-- Fonts: Cormorant Garamond (headings) and Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <!-- ===== The Courtyard: Contact ===== -->
+  <main class="scene room room--courtyard">
+    <header class="room__header">
+      <a class="room__back" href="../index.html#atrium" data-transition>&larr; Grand Atrium</a>
+      <p class="room__eyebrow">Contact</p>
+      <h1 class="room__title">The Courtyard</h1>
+      <p class="room__intro"><span class="todo">[TODO: add a short invitation to get in touch]</span></p>
+    </header>
+
+    <section class="room__exhibits" aria-label="Contact">
+      <article class="exhibit">
+        <p class="exhibit__label">Write to me</p>
+        <h2 class="exhibit__title">Email</h2>
+        <!-- Replace with: <a class="exhibit__link" href="mailto:you@example.com">you@example.com</a> -->
+        <p><span class="todo">[TODO: add email address]</span></p>
+      </article>
+
+      <article class="exhibit">
+        <p class="exhibit__label">See my code</p>
+        <h2 class="exhibit__title">GitHub</h2>
+        <p><a class="exhibit__link" href="https://github.com/barsa-dot" target="_blank" rel="noopener">github.com/barsa-dot</a></p>
+      </article>
+
+      <article class="exhibit">
+        <p class="exhibit__label">Connect</p>
+        <h2 class="exhibit__title">LinkedIn</h2>
+        <!-- Replace with: <a class="exhibit__link" href="https://www.linkedin.com/in/your-profile" target="_blank" rel="noopener">linkedin.com/in/your-profile</a> -->
+        <p><span class="todo">[TODO: add LinkedIn profile link]</span></p>
+      </article>
+
+      <article class="exhibit">
+        <p class="exhibit__label">Take a copy</p>
+        <h2 class="exhibit__title">Resume</h2>
+        <!-- Put the PDF in the project root as resume.pdf.
+             "download" asks the browser to save the file instead of opening it. -->
+        <p><a class="exhibit__link" href="../resume.pdf" download>Download resume (PDF)</a></p>
+        <p class="exhibit__note"><span class="todo">[TODO: add resume.pdf to the project root]</span></p>
+      </article>
+    </section>
+  </main>
+
+  <script src="../museum.js"></script>
+</body>
+</html>

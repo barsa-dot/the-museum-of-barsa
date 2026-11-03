@@ -1069,3 +1069,46 @@ a.map__room:hover {
   margin-top: var(--space-md);
   color: var(--ivory);
 }
+
+/* ---------- 20. The Courtyard ----------
+   The only open-air room: soft sky above, warm limestone
+   paving and a still reflecting pool in the sunlight. The
+   scene is bright, so its header text is dark. */
+.room--courtyard {
+  color: var(--charcoal);
+  background:
+    /* warm sunlight from the top right */
+    radial-gradient(ellipse 60% 45% at 85% 0%, rgba(255, 244, 222, 0.85), transparent 70%),
+    /* reflecting pool: a band of sage and mist near the bottom */
+    linear-gradient(to bottom, transparent 70%, rgba(185, 198, 192, 0.9) 70%, rgba(130, 148, 134, 0.85) 88%, transparent 88%),
+    /* limestone paving joints */
+    repeating-linear-gradient(90deg, transparent 0 7.9rem, rgba(36, 37, 34, 0.08) 7.9rem 8rem),
+    /* sky fading into warm stone */
+    linear-gradient(to bottom, var(--mist) 0%, #d9d6c8 35%, var(--ivory) 55%, #d6c8ad 100%);
+}
+
+/* Darker colours so the header stays readable on the bright scene */
+.room--courtyard .room__back,
+.room--courtyard .room__eyebrow {
+  color: #6b5a44;
+}
+
+.room--courtyard .room__intro {
+  color: #4a4a43;
+}
+
+/* Links inside exhibit plaques (used here for contact links) */
+.exhibit__link {
+  color: #6b5a44;
+  font-weight: 500;
+  word-break: break-word;         /* long emails/URLs wrap on small phones */
+}
+
+.exhibit__link:hover {
+  color: var(--charcoal);
+}
+
+.exhibit__note {
+  margin-top: var(--space-sm);
+  font-size: 0.85rem;
+}
