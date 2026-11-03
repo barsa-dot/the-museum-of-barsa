@@ -1,10 +1,26 @@
 // The Museum of Barsa — transitions, map, hotspots and projects loader.
 
-// ----- Intro screen -----
+// ----- Page elements used by the entrance -----
 const intro = document.getElementById("intro");
 const enterButton = document.getElementById("enter-button");
+const skipButton = document.getElementById("skip-button");
+const passage = document.getElementById("passage");
+const stairs = document.getElementById("stairs");
+const doors = document.getElementById("doors");
 
+// True if the visitor has asked their device for less motion.
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// ----- Intro screen -----
 enterButton.addEventListener("click", function () {
+  // Visitors who prefer less motion skip the whole entrance animation.
+  if (prefersReducedMotion()) {
+    finishEntrance();
+    return;
+  }
+
   // Fade the intro out (the fade itself is a CSS transition).
   intro.classList.add("is-leaving");
 
@@ -16,6 +32,7 @@ enterButton.addEventListener("click", function () {
 
     intro.hidden = true;
     intro.removeEventListener("transitionend", onFadeEnd);
+    showSkipButton();
     startPassage();
   });
 });
@@ -33,8 +50,6 @@ function startScene(scene) {
 }
 
 // ----- Entrance: dark passage -----
-const passage = document.getElementById("passage");
-
 function startPassage() {
   startScene(passage);
 
@@ -44,8 +59,6 @@ function startPassage() {
 }
 
 // ----- Entrance: staircase descent -----
-const stairs = document.getElementById("stairs");
-
 function startStairs() {
   // The stairs fade in on top of the passage...
   startScene(stairs);
@@ -63,8 +76,6 @@ function startStairs() {
 }
 
 // ----- Entrance: monumental doors -----
-const doors = document.getElementById("doors");
-
 function startDoors() {
   // The doors scene fades in on top of the stairs, then the stairs are hidden.
   startScene(doors);
@@ -82,6 +93,37 @@ function startDoors() {
   frame.addEventListener("animationend", function onWalkThrough(event) {
     if (event.animationName !== "walk-through") return;
     frame.removeEventListener("animationend", onWalkThrough);
-    // The Grand Atrium is revealed here in a later commit.
+    finishEntrance();
   });
+}
+
+// ----- Skip -----
+function showSkipButton() {
+  skipButton.hidden = false;
+  // The Enter button just disappeared, so give keyboard focus to Skip.
+  skipButton.focus();
+}
+
+skipButton.addEventListener("click", finishEntrance);
+
+// The Escape key also skips, but only while the entrance is playing.
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape" && !skipButton.hidden) {
+    finishEntrance();
+  }
+});
+
+// ----- End of the entrance -----
+// Called when the doors animation ends, when Skip is used,
+// or straight away for reduced-motion visitors.
+function finishEntrance() {
+  // Hiding a scene (display: none) also stops its running animations,
+  // so none of their "animationend" handlers will fire afterwards.
+  intro.hidden = true;
+  passage.hidden = true;
+  stairs.hidden = true;
+  doors.hidden = true;
+  skipButton.hidden = true;
+
+  // The Grand Atrium is revealed here in a later commit.
 }

@@ -455,3 +455,33 @@ a:hover {
 @keyframes walk-through {
   to { transform: scale(4); }
 }
+
+/* ---------- 11. Skip button ----------
+   Sits in the bottom-right corner above every entrance scene. */
+.skip-button {
+  position: fixed;
+  right: var(--space-lg);
+  bottom: var(--space-lg);
+  z-index: 10;                    /* always above the scenes */
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid rgba(232, 221, 201, 0.35);
+  color: var(--ivory);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  transition: opacity var(--duration-fast) var(--ease-calm);
+}
+
+.skip-button:hover,
+.skip-button:focus-visible {
+  opacity: 1;
+}
+
+/* Closer to the edge on small screens */
+@media (max-width: 600px) {
+  .skip-button {
+    right: var(--space-md);
+    bottom: var(--space-md);
+  }
+}
