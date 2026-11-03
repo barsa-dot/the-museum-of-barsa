@@ -1,5 +1,9 @@
 // The Museum of Barsa — transitions, map, hotspots and projects loader.
 
+// This file is shared by index.html and every room page.
+// The entrance elements only exist on index.html, so the
+// entrance code checks for them before using them.
+
 // ----- Page elements used by the entrance -----
 const intro = document.getElementById("intro");
 const enterButton = document.getElementById("enter-button");
@@ -14,7 +18,7 @@ function prefersReducedMotion() {
 }
 
 // ----- Intro screen -----
-enterButton.addEventListener("click", function () {
+if (enterButton) enterButton.addEventListener("click", function () {
   // Visitors who prefer less motion skip the whole entrance animation.
   if (prefersReducedMotion()) {
     finishEntrance();
@@ -104,11 +108,11 @@ function showSkipButton() {
   skipButton.focus();
 }
 
-skipButton.addEventListener("click", finishEntrance);
+if (skipButton) skipButton.addEventListener("click", finishEntrance);
 
 // The Escape key also skips, but only while the entrance is playing.
 document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape" && !skipButton.hidden) {
+  if (event.key === "Escape" && skipButton && !skipButton.hidden) {
     finishEntrance();
   }
 });
@@ -151,3 +155,57 @@ function revealAtrium() {
   // the new room and Tab continues from the doors.
   document.getElementById("atrium-title").focus();
 }
+
+// Coming back from a room uses the link "index.html#atrium".
+// In that case skip the intro and go straight to the atrium.
+if (intro && window.location.hash === "#atrium") {
+  intro.hidden = true;
+  finishEntrance();
+}
+
+// ----- Room transitions (zoom and fade) -----
+// Any link with a data-transition attribute walks into the next room:
+// the current scene zooms towards the link and fades out, then the
+// browser opens the new page, which fades in (see .room in style.css).
+const transitionLinks = document.querySelectorAll("a[data-transition]");
+
+transitionLinks.forEach(function (link) {
+  link.addEventListener("click", function (event) {
+    // Let Ctrl/Cmd/Shift-click open a new tab as normal.
+    if (event.ctrlKey || event.metaKey || event.shiftKey) return;
+
+    const scene = link.closest(".scene");
+
+    // No scene to animate, or the visitor prefers less motion:
+    // just follow the link normally.
+    if (!scene || prefersReducedMotion()) return;
+
+    event.preventDefault();
+
+    // Zoom towards the centre of the clicked link.
+    // transform-origin is measured from the scene's top-left corner.
+    const linkBox = link.getBoundingClientRect();
+    const sceneBox = scene.getBoundingClientRect();
+    const x = linkBox.left + linkBox.width / 2 - sceneBox.left;
+    const y = linkBox.top + linkBox.height / 2 - sceneBox.top;
+    scene.style.transformOrigin = x + "px " + y + "px";
+
+    scene.classList.add("is-leaving");
+
+    // When the fade-out ends, go to the new page.
+    scene.addEventListener("transitionend", function onLeave(e) {
+      if (e.target !== scene || e.propertyName !== "opacity") return;
+      scene.removeEventListener("transitionend", onLeave);
+      window.location.href = link.href;
+    });
+  });
+});
+
+// When the visitor presses Back, the browser may restore this page
+// exactly as it was left: zoomed in and invisible. Undo that.
+window.addEventListener("pageshow", function (event) {
+  if (!event.persisted) return;   // true only for a restored page
+  document.querySelectorAll(".scene.is-leaving").forEach(function (scene) {
+    scene.classList.remove("is-leaving");
+  });
+});

@@ -642,3 +642,29 @@ a:hover {
   text-transform: uppercase;
   color: #6b5a44;                 /* darker bronze, readable on ivory */
 }
+
+/* ---------- 13. Room transitions ----------
+   Leaving: the scene zooms towards the clicked door and fades
+   to charcoal (museum.js sets transform-origin to the door).
+   Arriving: a room page fades in while settling from a slight
+   zoom, so moving between rooms feels like walking through. */
+.scene.is-leaving {
+  opacity: 0;
+  transform: scale(1.8);
+  pointer-events: none;           /* no double clicks mid-transition */
+  transition:
+    opacity 0.7s ease-in,
+    transform 0.8s ease-in;
+}
+
+/* Every room page's main scene uses the .room class */
+.room {
+  animation: room-arrive 1s var(--ease-calm) both;
+}
+
+@keyframes room-arrive {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
