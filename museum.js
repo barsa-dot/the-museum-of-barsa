@@ -369,3 +369,111 @@ window.addEventListener("pageshow", function (event) {
     scene.classList.remove("is-leaving");
   });
 });
+
+// ----- Creation Wing: projects loaded from projects.json -----
+// Only the Creation Wing page has this container.
+const projectExhibits = document.getElementById("project-exhibits");
+
+if (projectExhibits) {
+  loadProjects();
+}
+
+async function loadProjects() {
+  try {
+    const response = await fetch("/projects.json");
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const projects = await response.json();
+
+    projectExhibits.innerHTML = "";   // remove the "Opening the gallery…" text
+
+    projects.forEach(function (project) {
+      if (project.status === "published") {
+        projectExhibits.append(buildProjectExhibit(project, false));
+      } else if (project.status === "unavailable") {
+        projectExhibits.append(buildProjectExhibit(project, true));
+      }
+      // "in-development" projects get their sealed doors in the next commit.
+    });
+  } catch (error) {
+    projectExhibits.innerHTML =
+      '<p class="room__status">The exhibits could not be loaded. Please try again later.</p>';
+    console.error("Could not load projects.json:", error);
+  }
+}
+
+// Small helper: creates an element with a class and some text.
+// textContent (not innerHTML) is used for data from the JSON file,
+// so any text in it is always shown as text, never run as HTML.
+function createElement(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text) element.textContent = text;
+  return element;
+}
+
+// Builds one full exhibit. Every part is optional: empty fields in
+// projects.json are simply left out. A closed exhibit (status
+// "unavailable") shows a note and hides its live link.
+function buildProjectExhibit(project, isClosed) {
+  const exhibit = createElement("article", "exhibit exhibit--wide project");
+  if (isClosed) exhibit.classList.add("project--closed");
+
+  exhibit.append(createElement("p", "exhibit__label", isClosed ? "Temporarily closed" : "Now showing"));
+  exhibit.append(createElement("h2", "exhibit__title", project.name));
+
+  if (isClosed) {
+    exhibit.append(createElement("p", "project__closed-note",
+      "This exhibit is temporarily closed. Please check back soon."));
+  }
+
+  if (project.tagline) {
+    exhibit.append(createElement("p", "project__tagline", project.tagline));
+  }
+
+  if (project.description) {
+    exhibit.append(createElement("p", "exhibit__text", project.description));
+  }
+
+  // Screenshots (paths in projects.json are relative to the site root)
+  if (project.screenshots && project.screenshots.length > 0) {
+    const gallery = createElement("div", "project__screenshots");
+    project.screenshots.forEach(function (shot) {
+      const img = createElement("img");
+      img.src = "/" + shot.src;
+      img.alt = shot.alt || "";
+      img.loading = "lazy";        // only download when scrolled into view
+      gallery.append(img);
+    });
+    exhibit.append(gallery);
+  }
+
+  if (project.limitations && project.limitations.length > 0) {
+    exhibit.append(createElement("h3", "project__subheading", "Known limitations"));
+    const list = createElement("ul", "exhibit__list");
+    project.limitations.forEach(function (item) {
+      list.append(createElement("li", "", item));
+    });
+    exhibit.append(list);
+  }
+
+  // Links (the live site is hidden while an exhibit is closed)
+  const links = createElement("p", "project__links");
+  if (project.liveUrl && !isClosed) {
+    links.append(createExternalLink(project.liveUrl, "Visit live site"));
+  }
+  if (project.githubUrl) {
+    links.append(createExternalLink(project.githubUrl, "View code on GitHub"));
+  }
+  if (links.children.length > 0) exhibit.append(links);
+
+  return exhibit;
+}
+
+// A link that opens in a new tab, so the museum stays open.
+function createExternalLink(url, text) {
+  const link = createElement("a", "exhibit__link", text);
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  return link;
+}

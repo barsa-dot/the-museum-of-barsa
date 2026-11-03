@@ -1112,3 +1112,71 @@ a.map__room:hover {
   margin-top: var(--space-sm);
   font-size: 0.85rem;
 }
+
+/* ---------- 21. The Creation Wing ----------
+   A dark modern gallery. Warm spotlights fall from the ceiling
+   onto each project, like artworks on display. The exhibits are
+   built by museum.js from projects.json. */
+.room--creation {
+  background:
+    /* warm overlay */
+    linear-gradient(rgba(24, 25, 23, 0.4), rgba(20, 20, 18, 0.8)),
+    /* three ceiling spotlights */
+    radial-gradient(ellipse 18% 55% at 20% 0%, rgba(232, 221, 201, 0.16), transparent 70%),
+    radial-gradient(ellipse 18% 55% at 50% 0%, rgba(232, 221, 201, 0.2), transparent 70%),
+    radial-gradient(ellipse 18% 55% at 80% 0%, rgba(232, 221, 201, 0.16), transparent 70%),
+    /* thin bronze strip along the ceiling */
+    linear-gradient(to bottom, rgba(168, 138, 102, 0.5) 0 3px, transparent 3px),
+    /* charcoal plaster walls */
+    linear-gradient(to bottom, #34352f, var(--charcoal));
+}
+
+/* Loading and error messages */
+.room__status {
+  color: var(--mist);
+  font-style: italic;
+}
+
+.project__tagline {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-style: italic;
+  color: #5b5548;
+}
+
+.project__subheading {
+  margin: var(--space-lg) 0 var(--space-sm);
+  font-size: 1.15rem;
+}
+
+/* Screenshots: as many 16rem-wide columns as fit, each in a thin frame */
+.project__screenshots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.project__screenshots img {
+  width: 100%;
+  border: 1px solid rgba(168, 138, 102, 0.6);
+  box-shadow: 0 0.75rem 1.5rem rgba(36, 37, 34, 0.2);
+}
+
+.project__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+/* A closed exhibit is dimmed, with a clear note */
+.project--closed {
+  opacity: 0.75;
+}
+
+.project__closed-note {
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+  color: #8a3b2e;
+}
