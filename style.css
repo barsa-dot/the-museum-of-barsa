@@ -664,8 +664,10 @@ a:hover {
 }
 
 /* Every room page's main scene uses the .room class */
+/* No fill-mode on purpose: a held animation would override the
+   .is-leaving styles, and the zoom out would not play. */
 .room {
-  animation: room-arrive 1s var(--ease-calm) both;
+  animation: room-arrive 1s var(--ease-calm);
 }
 
 @keyframes room-arrive {
@@ -819,4 +821,122 @@ a.map__room:hover {
 
 .map__room.is-current .map__room-theme {
   color: var(--bronze);
+}
+
+/* ---------- 15. Room pages (shared) ----------
+   Every room uses the same layout: a scrollable full-screen
+   scene, a header with a way back to the atrium, and a grid of
+   exhibits styled as ivory museum plaques. Each room only sets
+   its own background (see the room sections below). */
+.room {
+  overflow-y: auto;
+  padding: 5rem var(--space-md) var(--space-xl);   /* top: clears the corner buttons */
+}
+
+.room__header {
+  max-width: 1000px;
+  margin: 0 auto var(--space-xl);
+}
+
+.room__back {
+  display: inline-block;
+  margin-bottom: var(--space-lg);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.room__eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bronze);
+}
+
+.room__title {
+  margin: var(--space-xs) 0 var(--space-md);
+  font-weight: 400;
+}
+
+.room__intro {
+  color: var(--mist);
+}
+
+/* 1 column on phones, 2 on wider screens */
+.room__exhibits {
+  display: grid;
+  gap: var(--space-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .room__exhibits {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .exhibit--wide {
+    grid-column: 1 / -1;          /* spans the full row */
+  }
+}
+
+/* One exhibit: an ivory plaque with a thin bronze frame */
+.exhibit {
+  padding: var(--space-lg);
+  border: 1px solid var(--bronze);
+  outline: 1px solid rgba(168, 138, 102, 0.35);
+  outline-offset: 6px;            /* a second, fainter frame around it */
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
+}
+
+.exhibit__label {
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #6b5a44;
+}
+
+.exhibit__title {
+  margin: var(--space-xs) 0 var(--space-sm);
+}
+
+.exhibit__meta {
+  font-weight: 500;
+}
+
+.exhibit__text {
+  margin-top: var(--space-md);
+}
+
+.exhibit__list {
+  padding-left: 1.2rem;
+}
+
+.exhibit__list li + li {
+  margin-top: var(--space-sm);
+}
+
+/* Placeholder text, outlined so it's easy to spot and replace */
+.todo {
+  padding: 0 0.25em;
+  outline: 1px dashed currentColor;
+  opacity: 0.75;
+}
+
+/* ---------- 16. The Library ----------
+   Dark wooden bookshelves under a warm reading lamp. */
+.room--library {
+  background:
+    /* warm overlay so the plaques stand out */
+    linear-gradient(rgba(20, 16, 12, 0.55), rgba(20, 16, 12, 0.8)),
+    /* lamplight from above */
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(232, 221, 201, 0.25), transparent 70%),
+    /* shelf boards every 9rem */
+    repeating-linear-gradient(to bottom, transparent 0 9rem, rgba(0, 0, 0, 0.45) 9rem 9.6rem),
+    /* rows of book spines in dark wood tones */
+    repeating-linear-gradient(90deg, #3a2a1f 0 1.4rem, #33251b 1.4rem 2rem, #2c2017 2rem 3.1rem, #3d2c1c 3.1rem 4rem),
+    #2a1e16;
 }
