@@ -341,3 +341,117 @@ a:hover {
   from { background-position: 0 0, 0 0; }
   to   { background-position: 0 0, 0 60vmin; }
 }
+
+/* ---------- 10. Entrance: monumental doors ----------
+   A tall limestone archway with two dark wooden doors.
+   The doors swing inwards in 3D, warm light pours out,
+   and the view moves forward through the doorway. */
+.doors {
+  background: radial-gradient(ellipse at 50% 60%, #3a342a 0%, #1a1916 50%, #0b0b0a 100%);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-calm);
+}
+
+.doors.is-playing {
+  opacity: 1;
+}
+
+/* The stone archway. overflow: hidden clips the doors to the arch shape. */
+.doors__frame {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 auto;                 /* centres it horizontally */
+  width: 52vmin;
+  height: 84vmin;
+  border: 3vmin solid #b5a68c;    /* limestone */
+  border-bottom: none;
+  border-radius: 26vmin 26vmin 0 0;
+  box-shadow:
+    0 0 0 2vmin #8f826c,                  /* outer stone moulding */
+    0 4vmin 12vmin rgba(0, 0, 0, 0.6);    /* soft shadow around it */
+  overflow: hidden;
+  perspective: 120vmin;           /* gives the doors 3D depth as they swing */
+  transform-origin: 50% 60%;      /* the point we walk towards */
+}
+
+/* Warm light behind the doors: dim at first, bright once they open */
+.doors__light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, #fbf4e6 0%, var(--ivory) 40%, var(--bronze) 100%);
+  opacity: 0.15;
+}
+
+/* One door leaf: dark wood with a bronze-edged panel (::before)
+   and a bronze ring handle (::after) */
+.doors__door {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: repeating-linear-gradient(90deg, #3b2a1e 0 1.2vmin, #33241a 1.2vmin 2.4vmin);
+}
+
+.doors__door--left  { left: 0;  transform-origin: left center; }
+.doors__door--right { right: 0; transform-origin: right center; }
+
+.doors__door::before {
+  content: "";
+  position: absolute;
+  inset: 22% 14% 8%;
+  border: 0.4vmin solid var(--bronze);
+  opacity: 0.6;
+}
+
+.doors__door::after {
+  content: "";
+  position: absolute;
+  top: 55%;
+  width: 3vmin;
+  height: 3vmin;
+  border: 0.5vmin solid var(--bronze);
+  border-radius: 50%;
+}
+
+/* Handles sit near the middle, where the two doors meet */
+.doors__door--left::after  { right: 8%; }
+.doors__door--right::after { left: 8%; }
+
+/* --- Timeline: fade in (1.2s) → doors open (2.5s) → walk through (1.8s) --- */
+.doors.is-playing .doors__door--left {
+  animation: door-open-left 2.5s 1.2s var(--ease-calm) forwards;
+}
+
+.doors.is-playing .doors__door--right {
+  animation: door-open-right 2.5s 1.2s var(--ease-calm) forwards;
+}
+
+.doors.is-playing .doors__light {
+  animation: light-pour 2.5s 1.2s var(--ease-calm) forwards;
+}
+
+.doors.is-playing .doors__frame {
+  animation: walk-through 1.8s 3.4s ease-in forwards;
+}
+
+/* Positive rotateY pushes the left door's free edge away from us,
+   negative does the same for the right door, so both open inwards. */
+@keyframes door-open-left {
+  to { transform: rotateY(78deg); }
+}
+
+@keyframes door-open-right {
+  to { transform: rotateY(-78deg); }
+}
+
+@keyframes light-pour {
+  to { opacity: 1; }
+}
+
+/* Growing the archway until its light fills the screen
+   feels like stepping through the doorway. */
+@keyframes walk-through {
+  to { transform: scale(4); }
+}

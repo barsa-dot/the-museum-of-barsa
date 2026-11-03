@@ -59,7 +59,29 @@ function startStairs() {
 
   // The descent ends when the steps stop moving.
   const flight = stairs.querySelector(".stairs__flight");
-  flight.addEventListener("animationend", function () {
-    // Next step of the entrance (monumental doors) is added in the next commit.
-  }, { once: true });
+  flight.addEventListener("animationend", startDoors, { once: true });
+}
+
+// ----- Entrance: monumental doors -----
+const doors = document.getElementById("doors");
+
+function startDoors() {
+  // The doors scene fades in on top of the stairs, then the stairs are hidden.
+  startScene(doors);
+
+  doors.addEventListener("transitionend", function onFadeIn(event) {
+    if (event.target !== doors) return;
+    stairs.hidden = true;
+    doors.removeEventListener("transitionend", onFadeIn);
+  });
+
+  // The frame has the last animation (walking through the doorway).
+  // Animation events from the doors inside it bubble up too, so we
+  // check the animation name to react only to the right one.
+  const frame = doors.querySelector(".doors__frame");
+  frame.addEventListener("animationend", function onWalkThrough(event) {
+    if (event.animationName !== "walk-through") return;
+    frame.removeEventListener("animationend", onWalkThrough);
+    // The Grand Atrium is revealed here in a later commit.
+  });
 }
