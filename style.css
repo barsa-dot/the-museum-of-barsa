@@ -50,6 +50,14 @@ img {
   display: none !important;
 }
 
+/* Taps: no grey flash on mobile (we show our own feedback),
+   and no wait for a possible double-tap zoom */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 button {
   font: inherit;
   color: inherit;
@@ -626,12 +634,14 @@ a:hover {
 }
 
 .atrium-door:hover .atrium-door__arch,
-.atrium-door:focus-visible .atrium-door__arch {
+.atrium-door:focus-visible .atrium-door__arch,
+.atrium-door:active .atrium-door__arch {
   transform: translateY(-4px);
 }
 
 .atrium-door:hover .atrium-door__arch::after,
-.atrium-door:focus-visible .atrium-door__arch::after {
+.atrium-door:focus-visible .atrium-door__arch::after,
+.atrium-door:active .atrium-door__arch::after {
   opacity: 1;
 }
 
@@ -798,7 +808,8 @@ a:hover {
   transition: background-color var(--duration-fast) var(--ease-calm);
 }
 
-a.map__room:hover {
+a.map__room:hover,
+a.map__room:active {
   background-color: #fbf6ee;
 }
 
@@ -1373,5 +1384,61 @@ a.map__room:hover {
 
   .quickview__page {
     padding-top: 0;
+  }
+}
+
+/* ---------- 24. Mobile and touch ----------
+   Fixes for phones: tap targets of at least 44px, corner
+   buttons that fit narrow screens, and entrance doors sized
+   for a tall portrait screen. */
+
+/* Tap targets: at least 44px tall (Apple and Google guidance) */
+.control-button,
+.skip-button {
+  min-height: 2.75rem;
+}
+
+/* Keeps the text vertically centred in the taller Quick view link
+   (buttons already centre their content; links don't) */
+.control-button {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Back links: extra padding makes the touch area 44px tall,
+   and the negative margin keeps the layout where it was */
+.room__back,
+.quickview__back {
+  padding: 0.75rem 0;
+  margin-top: -0.75rem;
+}
+
+@media (max-width: 480px) {
+  /* Three corner buttons fit on a 320px-wide phone */
+  .museum-controls {
+    right: var(--space-sm);
+    gap: var(--space-xs);
+  }
+
+  .control-button {
+    padding: var(--space-sm) 0.6rem;
+    letter-spacing: 0.12em;
+  }
+
+  /* A little less padding inside plaques on small screens */
+  .exhibit,
+  .sealed-gallery {
+    padding: var(--space-lg) var(--space-md);
+  }
+}
+
+/* On a tall portrait screen, size the entrance doorway by the
+   screen width so it fills more of the view (same 1 : 1.6 shape) */
+@media (orientation: portrait) {
+  .doors__frame {
+    width: 72vw;
+    height: 115vw;
+    border-width: 4vw;
+    border-radius: 36vw 36vw 0 0;
   }
 }
