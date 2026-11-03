@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Local environment files (never commit secrets)
+.env
+.env.*
+
+# Cloudflare Wrangler local cache (if ever used for local preview)
+.wrangler/
+
+# Claude Code local settings
+.claude/settings.local.json
