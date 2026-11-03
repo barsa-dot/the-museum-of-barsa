@@ -992,3 +992,80 @@ a.map__room:hover {
   background: linear-gradient(to bottom, #efe4d0, #e0d1b6);   /* brushed brass look */
   font-size: 0.9rem;
 }
+
+/* ---------- 19. The Portrait Room ----------
+   A classic gallery: deep sage walls above dark wood panelling,
+   with a spotlight on a portrait in a bronze frame. */
+.room--portrait {
+  background:
+    /* spotlight on the portrait */
+    radial-gradient(ellipse 45% 40% at 30% 30%, rgba(232, 221, 201, 0.22), transparent 70%),
+    /* dark wood panelling along the bottom, with a picture rail line above it */
+    linear-gradient(to bottom, transparent 74%, #2e2118 74%, #2e2118 75%, #3b2a1e 75%, #2a1e15 100%),
+    /* deep sage painted wall */
+    linear-gradient(to bottom, #4f5b52, #3c463f);
+}
+
+/* Portrait beside the text on wide screens, stacked on phones */
+.portrait {
+  display: grid;
+  gap: var(--space-lg);
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto var(--space-xl);
+}
+
+@media (min-width: 768px) {
+  .portrait {
+    grid-template-columns: 2fr 3fr;
+    gap: var(--space-xl);
+  }
+}
+
+/* A thick bronze frame with a thin ivory mat inside it */
+.portrait__frame {
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
+  padding: 0.75rem;                       /* ivory mat */
+  border: 1rem solid var(--bronze);       /* frame */
+  background-color: var(--ivory);
+  box-shadow:
+    inset 0 0 0 1px rgba(36, 37, 34, 0.2),
+    0 2rem 3rem rgba(0, 0, 0, 0.45);
+}
+
+.portrait__photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;                    /* classic portrait shape */
+  object-fit: cover;                      /* crops the photo instead of stretching it */
+}
+
+.portrait__photo--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  background: linear-gradient(to bottom, #cfc6b4, #b9ae98);
+  color: var(--charcoal);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.portrait__name {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 400;
+}
+
+.portrait__role {
+  margin-top: var(--space-xs);
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-style: italic;
+  color: var(--bronze);
+}
+
+.portrait__intro {
+  margin-top: var(--space-md);
+  color: var(--ivory);
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Portrait Room — The Museum of Barsa</title>
+  <!-- Fonts: Cormorant Garamond (headings) and Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <!-- ===== The Portrait Room: About ===== -->
+  <main class="scene room room--portrait">
+    <header class="room__header">
+      <a class="room__back" href="../index.html#atrium" data-transition>&larr; Grand Atrium</a>
+      <p class="room__eyebrow">About</p>
+      <h1 class="room__title">The Portrait Room</h1>
+    </header>
+
+    <!-- The portrait, name and introduction are all visible straight away -->
+    <section class="portrait" aria-label="About me">
+      <figure class="portrait__frame">
+        <!-- When the photo is ready, replace the placeholder div with:
+             <img class="portrait__photo" src="../images/portrait.jpg" alt="Portrait of [your name]"> -->
+        <div class="portrait__photo portrait__photo--placeholder">
+          <span class="todo">[TODO: add photo as images/portrait.jpg]</span>
+        </div>
+      </figure>
+
+      <div class="portrait__text">
+        <h2 class="portrait__name">Barsarani Sahoo</h2>
+        <p class="portrait__role"><span class="todo">[TODO: add a one-line description of yourself]</span></p>
+        <p class="portrait__intro"><span class="todo">[TODO: add your introduction]</span></p>
+      </div>
+    </section>
+
+    <section class="room__exhibits" aria-label="Interests">
+      <article class="exhibit exhibit--wide">
+        <p class="exhibit__label">Beyond the work</p>
+        <h2 class="exhibit__title">Interests</h2>
+        <!-- Add one <li> per interest. -->
+        <ul class="skill-tags">
+          <li><span class="todo">[TODO: add interest]</span></li>
+          <li><span class="todo">[TODO: add interest]</span></li>
+          <li><span class="todo">[TODO: add interest]</span></li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <script src="../museum.js"></script>
+</body>
+</html>
