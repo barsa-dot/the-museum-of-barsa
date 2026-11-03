@@ -129,6 +129,7 @@ function finishEntrance() {
   entranceFinished = true;
 
   skipButton.hidden = true;
+  mapButton.hidden = false;
   revealAtrium();
 
   // The atrium fades in on top of whatever scene was playing.
@@ -155,6 +156,91 @@ function revealAtrium() {
   // the new room and Tab continues from the doors.
   document.getElementById("atrium-title").focus();
 }
+
+// ----- Museum map -----
+// One list of rooms. The map is built from it by JavaScript, so every
+// page gets the same map without copying its HTML into each file.
+// Paths start with "/" so they work from index.html and from rooms/.
+const ROOMS = [
+  { name: "The Grand Atrium",  theme: "Central hall", href: "/index.html#atrium",       area: "atrium" },
+  { name: "The Library",       theme: "Education",    href: "/rooms/library.html",       area: "library" },
+  { name: "The Creation Wing", theme: "Projects",     href: "/rooms/creation-wing.html", area: "creation" },
+  { name: "The Archive",       theme: "Experience",   href: "/rooms/archive.html",       area: "archive" },
+  { name: "The Workshop",      theme: "Skills",       href: "/rooms/workshop.html",      area: "workshop" },
+  { name: "The Portrait Room", theme: "About",        href: "/rooms/portrait-room.html", area: "portrait" },
+  { name: "The Courtyard",     theme: "Contact",      href: "/rooms/courtyard.html",     area: "courtyard" },
+];
+
+// Turns a path into a comparable id, so "/", "/index.html",
+// "/rooms/library.html" and "/rooms/library" (Cloudflare drops the
+// .html) can be matched against each other.
+function pageId(path) {
+  return path.replace(/\/index(\.html)?$/, "/").replace(/\.html$/, "");
+}
+
+const currentPage = pageId(window.location.pathname);
+
+// One <li> on the map. The room you're in is shown but not clickable.
+function mapRoomHTML(room) {
+  const roomPath = room.href.split("#")[0];
+  const isCurrent = pageId(roomPath) === currentPage;
+
+  if (isCurrent) {
+    return `<li style="grid-area: ${room.area}">
+      <span class="map__room is-current" aria-current="page">
+        <span class="map__room-name">${room.name}</span>
+        <span class="map__room-theme">You are here</span>
+      </span>
+    </li>`;
+  }
+
+  return `<li style="grid-area: ${room.area}">
+    <a class="map__room" href="${room.href}">
+      <span class="map__room-name">${room.name}</span>
+      <span class="map__room-theme">${room.theme}</span>
+    </a>
+  </li>`;
+}
+
+// The always-visible Map button
+const mapButton = document.createElement("button");
+mapButton.type = "button";
+mapButton.className = "map-button";
+mapButton.textContent = "Map";
+mapButton.setAttribute("aria-haspopup", "dialog");
+// On index.html it stays hidden until the entrance is over.
+mapButton.hidden = intro !== null;
+
+// The map itself is a <dialog>: the browser handles focus,
+// the Escape key and placing it above everything else.
+const mapDialog = document.createElement("dialog");
+mapDialog.className = "map";
+mapDialog.setAttribute("aria-labelledby", "map-title");
+mapDialog.innerHTML = `
+  <div class="map__inner">
+    <button type="button" class="map__close" aria-label="Close map">&times;</button>
+    <h2 id="map-title" class="map__title">Museum Map</h2>
+    <p class="map__hint">Choose a room to go straight there.</p>
+    <nav aria-label="All rooms">
+      <ul class="map__plan">${ROOMS.map(mapRoomHTML).join("")}</ul>
+    </nav>
+  </div>`;
+
+document.body.append(mapButton, mapDialog);
+
+mapButton.addEventListener("click", function () {
+  mapDialog.showModal();
+});
+
+mapDialog.querySelector(".map__close").addEventListener("click", function () {
+  mapDialog.close();
+});
+
+// Clicking the dark area around the map closes it. Those clicks land
+// on the <dialog> itself; clicks on the map land on its children.
+mapDialog.addEventListener("click", function (event) {
+  if (event.target === mapDialog) mapDialog.close();
+});
 
 // Coming back from a room uses the link "index.html#atrium".
 // In that case skip the intro and go straight to the atrium.

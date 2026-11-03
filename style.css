@@ -668,3 +668,137 @@ a:hover {
     transform: scale(1.06);
   }
 }
+
+/* ---------- 14. Museum map ----------
+   A Map button fixed in the top-right corner opens a floor
+   plan in a <dialog>. The plan is a 3 × 3 grid with the
+   atrium in the middle and the rooms around it. */
+.map-button {
+  position: fixed;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 20;                    /* above every scene */
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--bronze);
+  background-color: rgba(36, 37, 34, 0.85);   /* readable on light and dark scenes */
+  color: var(--ivory);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: background-color var(--duration-fast) var(--ease-calm);
+}
+
+.map-button:hover {
+  background-color: var(--charcoal);
+}
+
+.map {
+  width: min(40rem, 100% - 2rem);
+  max-height: calc(100% - 2rem);
+  margin: auto;                   /* centred on screen */
+  padding: 0;
+  border: 1px solid var(--bronze);
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.4);
+}
+
+.map[open] {
+  animation: map-open 0.3s var(--ease-calm);
+}
+
+@keyframes map-open {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* Everything behind the open map */
+.map::backdrop {
+  background-color: rgba(36, 37, 34, 0.7);
+  backdrop-filter: blur(3px);
+}
+
+/* Padding sits on this inner box, so a click on the padding
+   counts as a click on the map, not on the backdrop */
+.map__inner {
+  position: relative;
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+}
+
+.map__close {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.map__title {
+  font-weight: 500;
+}
+
+.map__hint {
+  margin: var(--space-xs) auto var(--space-lg);
+  font-size: 0.9rem;
+  color: #5b5548;
+}
+
+/* The floor plan. Each room's <li> sets its own grid-area. */
+.map__plan {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "library   creation  archive"
+    "portrait  atrium    workshop"
+    ".         courtyard .";
+  gap: var(--space-sm);
+  list-style: none;
+}
+
+.map__room {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  height: 100%;
+  min-height: 5rem;
+  padding: var(--space-sm);
+  border: 1px solid rgba(168, 138, 102, 0.6);
+  background-color: #f3ece0;
+  color: var(--charcoal);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-calm);
+}
+
+a.map__room:hover {
+  background-color: #fbf6ee;
+}
+
+.map__room.is-current {
+  background-color: var(--charcoal);
+  color: var(--ivory);
+}
+
+.map__room-name {
+  font-family: var(--font-heading);
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.map__room-theme {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #6b5a44;
+}
+
+.map__room.is-current .map__room-theme {
+  color: var(--bronze);
+}
