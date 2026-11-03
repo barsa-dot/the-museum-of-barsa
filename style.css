@@ -194,3 +194,80 @@ a:hover {
     transform: translateY(0);
   }
 }
+
+/* ---------- 7. Scenes (shared) ----------
+   Every full-screen scene of the museum uses this class. */
+.scene {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* ---------- 8. Entrance: dark passage ----------
+   A dark corridor. Stone arches drift past the visitor while
+   a warm light at the far end grows closer, so it feels like
+   walking forward. Built only with CSS shapes and gradients. */
+.passage {
+  background: radial-gradient(ellipse at center, #1c1b18 0%, #0f0f0d 55%, #000 100%);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-calm);
+}
+
+/* Added by museum.js to start the scene */
+.passage.is-playing {
+  opacity: 1;
+}
+
+/* Shared shape for elements centred in the corridor */
+.passage__arch,
+.passage__light {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+/* An arch outline: a tall box with a rounded top and no bottom edge */
+.passage__arch {
+  width: 46vmin;
+  height: 70vmin;
+  border: 2px solid rgba(168, 138, 102, 0.22);   /* faint bronze */
+  border-bottom: none;
+  border-radius: 23vmin 23vmin 0 0;
+}
+
+.passage.is-playing .passage__arch {
+  animation: arch-pass 3.6s linear forwards;
+}
+
+/* Each arch starts a little later, so they pass one after another */
+.passage.is-playing .passage__arch:nth-child(2) { animation-delay: 1.2s; }
+.passage.is-playing .passage__arch:nth-child(3) { animation-delay: 2.4s; }
+
+@keyframes arch-pass {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(3); }
+}
+
+/* The warm doorway of light at the end of the corridor */
+.passage__light {
+  width: 9vmin;
+  height: 15vmin;
+  border-radius: 4.5vmin 4.5vmin 0 0;
+  background: linear-gradient(to bottom, #f4e9d4, var(--bronze));
+  box-shadow:
+    0 0 6vmin 2vmin rgba(232, 221, 201, 0.25),
+    0 0 22vmin 8vmin rgba(168, 138, 102, 0.15);
+}
+
+.passage.is-playing .passage__light {
+  animation: light-approach 6s var(--ease-calm) forwards;
+}
+
+@keyframes light-approach {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  25%  { opacity: 0.85; }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(2.2); }
+}
