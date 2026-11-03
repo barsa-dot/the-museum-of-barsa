@@ -940,3 +940,21 @@ a.map__room:hover {
     repeating-linear-gradient(90deg, #3a2a1f 0 1.4rem, #33251b 1.4rem 2rem, #2c2017 2rem 3.1rem, #3d2c1c 3.1rem 4rem),
     #2a1e16;
 }
+
+/* ---------- 17. The Archive ----------
+   A cool stone vault lined with rows of filing drawers,
+   each with a small bronze handle. */
+.room--archive {
+  background:
+    /* warm overlay so the plaques stand out */
+    linear-gradient(rgba(28, 30, 28, 0.6), rgba(24, 25, 23, 0.85)),
+    /* soft light falling from a high window */
+    radial-gradient(ellipse 50% 35% at 30% 0%, rgba(185, 198, 192, 0.3), transparent 70%),
+    /* bronze handle in the middle of each drawer */
+    radial-gradient(circle at 50% 50%, rgba(168, 138, 102, 0.8) 0 0.18rem, transparent 0.22rem) 0 0 / 5rem 3rem,
+    /* drawer edges: vertical and horizontal lines on a 5rem × 3rem grid */
+    repeating-linear-gradient(90deg, transparent 0 4.85rem, rgba(0, 0, 0, 0.4) 4.85rem 5rem),
+    repeating-linear-gradient(to bottom, transparent 0 2.85rem, rgba(0, 0, 0, 0.4) 2.85rem 3rem),
+    /* sage-grey stone */
+    linear-gradient(to bottom, #59625b, #3f4640);
+}
