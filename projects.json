@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "tasknest",
+    "name": "TaskNest",
+    "status": "published",
+    "tagline": "[TODO: add a one-line tagline]",
+    "description": "[TODO: add a description of TaskNest]",
+    "liveUrl": "",
+    "githubUrl": "",
+    "screenshots": [],
+    "limitations": []
+  },
+  {
+    "id": "factcheckai",
+    "name": "FactCheckAI",
+    "status": "in-development",
+    "tagline": "",
+    "description": "",
+    "liveUrl": "",
+    "githubUrl": "",
+    "screenshots": [],
+    "limitations": []
+  },
+  {
+    "id": "humanizer",
+    "name": "Humanizer",
+    "status": "in-development",
+    "tagline": "",
+    "description": "",
+    "liveUrl": "",
+    "githubUrl": "",
+    "screenshots": [],
+    "limitations": []
+  }
+]

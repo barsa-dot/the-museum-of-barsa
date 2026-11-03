@@ -50,6 +50,47 @@ museum.js         transitions, map, hotspots, projects loader
 projects.json     project registry
 ```
 
+## Adding or updating a project
+
+All projects live in `projects.json`. The Creation Wing reads this file when it
+opens, so adding or publishing a project only means editing it. No code changes.
+
+Each project is one object in the list, shown in the same order:
+
+```json
+{
+  "id": "tasknest",
+  "name": "TaskNest",
+  "status": "published",
+  "tagline": "One line shown under the name",
+  "description": "A short paragraph about the project",
+  "liveUrl": "https://...",
+  "githubUrl": "https://github.com/...",
+  "screenshots": [
+    { "src": "images/tasknest-1.png", "alt": "What the screenshot shows" }
+  ],
+  "limitations": ["A known limitation"]
+}
+```
+
+| Field | Notes |
+|---|---|
+| `id` | Short unique name, lowercase, no spaces |
+| `name` | Shown as the exhibit title |
+| `status` | `published`, `in-development` or `unavailable` (see below) |
+| `tagline`, `description` | Text for the exhibit |
+| `liveUrl`, `githubUrl` | Leave as `""` to hide the link |
+| `screenshots` | Images in `images/`. Leave as `[]` for none |
+| `limitations` | Honest notes on what it can't do yet. Leave as `[]` for none |
+
+What each status shows:
+
+- `published`: the full exhibit with tagline, description, links, screenshots and limitations.
+- `in-development`: a sealed gallery door labelled "Opening soon". Only the name is shown.
+- `unavailable`: the exhibit is shown with a "Temporarily closed" note.
+
+To publish a project, fill in its fields and change its `status` to `published`.
+
 ## Running locally
 
 No install needed. `fetch()` doesn't work from `file://`, so serve the folder
