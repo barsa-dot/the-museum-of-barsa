@@ -440,8 +440,33 @@ function buildProjectExhibit(project, isClosed) {
     exhibit.append(createElement("p", "project__tagline", project.tagline));
   }
 
+  // Role and timeline on one line, e.g. "Solo developer · Oct–Nov 2026"
+  const details = [project.role, project.timeline].filter(Boolean);
+  if (details.length > 0) {
+    exhibit.append(createElement("p", "exhibit__meta project__details", details.join(" · ")));
+  }
+
   if (project.description) {
     exhibit.append(createElement("p", "exhibit__text", project.description));
+  }
+
+  if (project.features && project.features.length > 0) {
+    exhibit.append(createElement("h3", "project__subheading", "Key features"));
+    const list = createElement("ul", "exhibit__list");
+    project.features.forEach(function (item) {
+      list.append(createElement("li", "", item));
+    });
+    exhibit.append(list);
+  }
+
+  // Tech stack as small tags (same style as the Workshop skills)
+  if (project.stack && project.stack.length > 0) {
+    exhibit.append(createElement("h3", "project__subheading", "Built with"));
+    const tags = createElement("ul", "skill-tags");
+    project.stack.forEach(function (item) {
+      tags.append(createElement("li", "", item));
+    });
+    exhibit.append(tags);
   }
 
   // Screenshots (paths in projects.json are relative to the site root)

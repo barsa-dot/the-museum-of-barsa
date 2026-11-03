@@ -79,6 +79,9 @@ Each project is one object in the list, shown in the same order:
 | `name` | Shown as the exhibit title |
 | `status` | `published`, `in-development` or `unavailable` (see below) |
 | `tagline`, `description` | Text for the exhibit |
+| `role`, `timeline` | Optional. Shown on one line under the tagline |
+| `features` | Optional list, shown as "Key features" |
+| `stack` | Optional list of technologies, shown as tags |
 | `liveUrl`, `githubUrl` | Leave as `""` to hide the link |
 | `screenshots` | Images in `images/`. Leave as `[]` for none |
 | `limitations` | Honest notes on what it can't do yet. Leave as `[]` for none |

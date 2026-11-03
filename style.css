@@ -1442,3 +1442,11 @@ a.map__room:active {
     border-radius: 36vw 36vw 0 0;
   }
 }
+
+/* ---------- 25. Project details ----------
+   Role and timeline line on a published exhibit. */
+.project__details {
+  margin-top: var(--space-sm);
+  font-size: 0.9rem;
+  color: #5b5548;
+}
