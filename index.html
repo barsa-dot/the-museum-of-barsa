@@ -11,48 +11,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- ===== Intro screen ===== -->
-  <section id="intro" class="intro" aria-labelledby="intro-title">
-    <div class="intro__content">
-      <h1 id="intro-title" class="intro__title">The Museum of Barsa</h1>
-      <p class="intro__subtitle">A collection of things I've learned, created and discovered.</p>
-      <button id="enter-button" class="button" type="button">Enter the Museum</button>
-    </div>
-  </section>
-
-  <!-- ===== Entrance: dark passage =====
-       Purely decorative, so it is hidden from screen readers. -->
-  <section id="passage" class="scene passage" hidden aria-hidden="true">
-    <div class="passage__arch"></div>
-    <div class="passage__arch"></div>
-    <div class="passage__arch"></div>
-    <div class="passage__light"></div>
-  </section>
-
-  <!-- ===== Entrance: staircase descent ===== -->
-  <section id="stairs" class="scene stairs" hidden aria-hidden="true">
-    <div class="stairs__camera">
-      <div class="stairs__glow"></div>
-      <div class="stairs__flight"></div>
-    </div>
-  </section>
-
-  <!-- ===== Entrance: monumental doors ===== -->
-  <section id="doors" class="scene doors" hidden aria-hidden="true">
-    <div class="doors__frame">
-      <div class="doors__light"></div>
-      <div class="doors__door doors__door--left"></div>
-      <div class="doors__door doors__door--right"></div>
-    </div>
-  </section>
-
-  <!-- Skip button: visible only while the entrance animation plays -->
-  <button id="skip-button" class="skip-button" type="button" hidden>Skip</button>
-
   <!-- ===== Grand Atrium =====
        The central hub. Each door is a link to a room page in rooms/. -->
-  <main id="atrium" class="scene atrium" hidden>
+  <main id="atrium" class="scene atrium">
     <header class="atrium__header">
+      <p class="atrium__eyebrow">The Museum of Barsa</p>
       <h1 id="atrium-title" class="atrium__title" tabindex="-1">The Grand Atrium</h1>
       <p class="atrium__subtitle">Choose a door to begin.</p>
     </header>

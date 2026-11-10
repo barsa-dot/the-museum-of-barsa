@@ -7,9 +7,8 @@ Instead of scrolling through sections, visitors walk through rooms.
 
 ## The idea
 
-Visitors arrive at an intro screen, pass through a dark passage, descend a staircase
-and step through a pair of monumental doors into the **Grand Atrium**. From there,
-each door leads to a different room of the collection.
+Visitors arrive in the **Grand Atrium**. From there, each door leads to a
+different room of the collection.
 
 | Room | What it holds |
 |---|---|
@@ -42,7 +41,7 @@ warm sunlight and soft shadows. Calm and elegant.
 ## Project structure
 
 ```
-index.html        intro + entrance + atrium
+index.html        Grand Atrium
 rooms/            one HTML file per room
 images/           scene backgrounds, photo, screenshots
 style.css         palette, fonts and styles
@@ -145,7 +144,7 @@ To publish a project, edit `projects.json` (see
   Both work, and the museum map handles either form.
 - **Missing pages:** without a `404.html` file, Cloudflare treats the site as a
   single-page app and shows `index.html` for any unknown address.
-- **Everything in the repo is public:** files such as `README.md` and
-  `CLAUDE.md` can also be opened on the live site.
+- **Everything in the repo is public:** files such as `README.md` can also
+  be opened on the live site.
 - **Custom domain:** can be added for free under the project's
   **Custom domains** tab.

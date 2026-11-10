@@ -45,7 +45,7 @@ img {
 }
 
 /* The hidden attribute must always hide an element, even one
-   whose class sets display: flex (like .intro and .atrium). */
+   whose class sets display: flex (like .atrium). */
 [hidden] {
   display: none !important;
 }
@@ -130,84 +130,8 @@ a:hover {
   }
 }
 
-/* ---------- 5. Buttons ---------- */
-.button {
-  display: inline-block;
-  padding: 0.9rem 2.25rem;
-  border: 1px solid var(--bronze);
-  color: var(--ivory);
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  transition:
-    background-color var(--duration-fast) var(--ease-calm),
-    color var(--duration-fast) var(--ease-calm);
-}
-
-.button:hover {
-  background-color: var(--bronze);
-  color: var(--charcoal);
-}
-
-/* ---------- 6. Intro screen ---------- */
-.intro {
-  position: fixed;
-  inset: 0;                 /* cover the whole screen */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-lg) var(--space-md);
-  text-align: center;
-  /* Soft warm glow in the centre, fading to charcoal at the edges */
-  background: radial-gradient(ellipse at center, #34322c 0%, var(--charcoal) 70%);
-  transition: opacity var(--duration-slow) var(--ease-calm);
-}
-
-/* Added by museum.js when the visitor clicks "Enter" */
-.intro.is-leaving {
-  opacity: 0;
-  pointer-events: none;     /* can't click it while it fades out */
-}
-
-.intro__content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-lg);
-  animation: fade-up 1.6s var(--ease-calm) both;
-}
-
-.intro__title {
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-}
-
-.intro__subtitle {
-  font-family: var(--font-heading);
-  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-  font-style: italic;
-  color: var(--mist);
-}
-
-/* The button appears a moment after the title */
-.intro .button {
-  margin-top: var(--space-md);
-  animation: fade-up 1.6s 0.6s var(--ease-calm) both;
-}
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* (Sections 5, 6 and 8-11 were removed with the old title intro and
+   the passage/stairs/doors entrance animation; see git history.) */
 
 /* ---------- 7. Scenes (shared) ----------
    Every full-screen scene of the museum uses this class. */
@@ -215,289 +139,6 @@ a:hover {
   position: fixed;
   inset: 0;
   overflow: hidden;
-}
-
-/* ---------- 8. Entrance: dark passage ----------
-   A dark corridor. Stone arches drift past the visitor while
-   a warm light at the far end grows closer, so it feels like
-   walking forward. Built only with CSS shapes and gradients. */
-.passage {
-  background: radial-gradient(ellipse at center, #1c1b18 0%, #0f0f0d 55%, #000 100%);
-  opacity: 0;
-  transition: opacity 1.2s var(--ease-calm);
-}
-
-/* Added by museum.js to start the scene */
-.passage.is-playing {
-  opacity: 1;
-}
-
-/* Shared shape for elements centred in the corridor */
-.passage__arch,
-.passage__light {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-
-/* An arch outline: a tall box with a rounded top and no bottom edge */
-.passage__arch {
-  width: 46vmin;
-  height: 70vmin;
-  border: 2px solid rgba(168, 138, 102, 0.22);   /* faint bronze */
-  border-bottom: none;
-  border-radius: 23vmin 23vmin 0 0;
-}
-
-.passage.is-playing .passage__arch {
-  animation: arch-pass 3.6s linear forwards;
-}
-
-/* Each arch starts a little later, so they pass one after another */
-.passage.is-playing .passage__arch:nth-child(2) { animation-delay: 1.2s; }
-.passage.is-playing .passage__arch:nth-child(3) { animation-delay: 2.4s; }
-
-@keyframes arch-pass {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
-  30%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(3); }
-}
-
-/* The warm doorway of light at the end of the corridor */
-.passage__light {
-  width: 9vmin;
-  height: 15vmin;
-  border-radius: 4.5vmin 4.5vmin 0 0;
-  background: linear-gradient(to bottom, #f4e9d4, var(--bronze));
-  box-shadow:
-    0 0 6vmin 2vmin rgba(232, 221, 201, 0.25),
-    0 0 22vmin 8vmin rgba(168, 138, 102, 0.15);
-}
-
-.passage.is-playing .passage__light {
-  animation: light-approach 6s var(--ease-calm) forwards;
-}
-
-@keyframes light-approach {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
-  25%  { opacity: 0.85; }
-  100% { opacity: 1; transform: translate(-50%, -50%) scale(2.2); }
-}
-
-/* ---------- 9. Entrance: staircase descent ----------
-   A flight of stone steps drawn as one striped surface,
-   tilted away from the viewer with CSS 3D. Sliding the
-   stripes towards the viewer makes it look like walking
-   down the stairs. */
-.stairs {
-  background: linear-gradient(to bottom, #000 0%, #12110e 45%, #2a251d 100%);
-  perspective: 60vmin;          /* how strong the 3D depth looks */
-  perspective-origin: 50% 20%;  /* we look slightly down the stairs */
-  opacity: 0;
-  transition: opacity 1.2s var(--ease-calm);
-}
-
-.stairs.is-playing {
-  opacity: 1;
-}
-
-/* Wraps everything so the whole view can bob gently with each step */
-.stairs__camera {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-}
-
-.stairs.is-playing .stairs__camera {
-  /* 10 small bobs of 0.5s = 5s, the same length as the descent */
-  animation: step-bob 0.5s ease-in-out 10 alternate;
-}
-
-@keyframes step-bob {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-0.8vmin); }
-}
-
-/* Warm light rising from the bottom of the stairs */
-.stairs__glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 40% 25% at 50% 42%, rgba(232, 221, 201, 0.28), transparent 70%);
-}
-
-/* The steps: a long surface laid back with rotateX.
-   Layer 1 fades the far end into darkness.
-   Layer 2 repeats a light tread and a dark riser every 6vmin. */
-.stairs__flight {
-  position: absolute;
-  left: 50%;
-  bottom: -10%;
-  width: 60vmin;
-  height: 200vmin;
-  margin-left: -30vmin;           /* half the width, to centre it */
-  transform-origin: bottom center;
-  transform: rotateX(72deg);
-  background:
-    linear-gradient(to bottom, #000 0%, transparent 60%),
-    repeating-linear-gradient(to bottom, #8a7f6c 0 4vmin, #4a4338 4vmin 6vmin);
-  background-position: 0 0, 0 0;
-}
-
-.stairs.is-playing .stairs__flight {
-  animation: descend 5s var(--ease-calm) forwards;
-}
-
-/* Only the steps layer moves (the fade layer stays put).
-   60vmin = 10 steps of 6vmin. */
-@keyframes descend {
-  from { background-position: 0 0, 0 0; }
-  to   { background-position: 0 0, 0 60vmin; }
-}
-
-/* ---------- 10. Entrance: monumental doors ----------
-   A tall limestone archway with two dark wooden doors.
-   The doors swing inwards in 3D, warm light pours out,
-   and the view moves forward through the doorway. */
-.doors {
-  background: radial-gradient(ellipse at 50% 60%, #3a342a 0%, #1a1916 50%, #0b0b0a 100%);
-  opacity: 0;
-  transition: opacity 1.2s var(--ease-calm);
-}
-
-.doors.is-playing {
-  opacity: 1;
-}
-
-/* The stone archway. overflow: hidden clips the doors to the arch shape. */
-.doors__frame {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0 auto;                 /* centres it horizontally */
-  width: 52vmin;
-  height: 84vmin;
-  border: 3vmin solid #b5a68c;    /* limestone */
-  border-bottom: none;
-  border-radius: 26vmin 26vmin 0 0;
-  box-shadow:
-    0 0 0 2vmin #8f826c,                  /* outer stone moulding */
-    0 4vmin 12vmin rgba(0, 0, 0, 0.6);    /* soft shadow around it */
-  overflow: hidden;
-  perspective: 120vmin;           /* gives the doors 3D depth as they swing */
-  transform-origin: 50% 60%;      /* the point we walk towards */
-}
-
-/* Warm light behind the doors: dim at first, bright once they open */
-.doors__light {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 60%, #fbf4e6 0%, var(--ivory) 40%, var(--bronze) 100%);
-  opacity: 0.15;
-}
-
-/* One door leaf: dark wood with a bronze-edged panel (::before)
-   and a bronze ring handle (::after) */
-.doors__door {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background: repeating-linear-gradient(90deg, #3b2a1e 0 1.2vmin, #33241a 1.2vmin 2.4vmin);
-}
-
-.doors__door--left  { left: 0;  transform-origin: left center; }
-.doors__door--right { right: 0; transform-origin: right center; }
-
-.doors__door::before {
-  content: "";
-  position: absolute;
-  inset: 22% 14% 8%;
-  border: 0.4vmin solid var(--bronze);
-  opacity: 0.6;
-}
-
-.doors__door::after {
-  content: "";
-  position: absolute;
-  top: 55%;
-  width: 3vmin;
-  height: 3vmin;
-  border: 0.5vmin solid var(--bronze);
-  border-radius: 50%;
-}
-
-/* Handles sit near the middle, where the two doors meet */
-.doors__door--left::after  { right: 8%; }
-.doors__door--right::after { left: 8%; }
-
-/* --- Timeline: fade in (1.2s) → doors open (2.5s) → walk through (1.8s) --- */
-.doors.is-playing .doors__door--left {
-  animation: door-open-left 2.5s 1.2s var(--ease-calm) forwards;
-}
-
-.doors.is-playing .doors__door--right {
-  animation: door-open-right 2.5s 1.2s var(--ease-calm) forwards;
-}
-
-.doors.is-playing .doors__light {
-  animation: light-pour 2.5s 1.2s var(--ease-calm) forwards;
-}
-
-.doors.is-playing .doors__frame {
-  animation: walk-through 1.8s 3.4s ease-in forwards;
-}
-
-/* Positive rotateY pushes the left door's free edge away from us,
-   negative does the same for the right door, so both open inwards. */
-@keyframes door-open-left {
-  to { transform: rotateY(78deg); }
-}
-
-@keyframes door-open-right {
-  to { transform: rotateY(-78deg); }
-}
-
-@keyframes light-pour {
-  to { opacity: 1; }
-}
-
-/* Growing the archway until its light fills the screen
-   feels like stepping through the doorway. */
-@keyframes walk-through {
-  to { transform: scale(4); }
-}
-
-/* ---------- 11. Skip button ----------
-   Sits in the bottom-right corner above every entrance scene. */
-.skip-button {
-  position: fixed;
-  right: var(--space-lg);
-  bottom: var(--space-lg);
-  z-index: 10;                    /* always above the scenes */
-  padding: var(--space-sm) var(--space-md);
-  border: 1px solid rgba(232, 221, 201, 0.35);
-  color: var(--ivory);
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  transition: opacity var(--duration-fast) var(--ease-calm);
-}
-
-.skip-button:hover,
-.skip-button:focus-visible {
-  opacity: 1;
-}
-
-/* Closer to the edge on small screens */
-@media (max-width: 600px) {
-  .skip-button {
-    right: var(--space-md);
-    bottom: var(--space-md);
-  }
 }
 
 /* ---------- 12. Grand Atrium ----------
@@ -519,18 +160,6 @@ a:hover {
     radial-gradient(ellipse 55% 35% at 50% 0%, rgba(255, 250, 240, 0.9), transparent 70%),
     /* travertine walls, darker towards the floor */
     linear-gradient(to bottom, #efe6d6 0%, var(--ivory) 45%, #cdbfa6 72%, #b9aa8f 100%);
-  /* Starts slightly zoomed in and settles, like stepping into the hall */
-  opacity: 0;
-  transform: scale(1.04);
-  transition:
-    opacity 1.2s var(--ease-calm),
-    transform 1.6s var(--ease-calm);
-}
-
-/* Added by museum.js at the end of the entrance */
-.atrium.is-visible {
-  opacity: 1;
-  transform: none;
 }
 
 /* Reflective water across the floor: a soft sage-to-mist band */
@@ -556,6 +185,16 @@ a:hover {
    content when it is taller than the screen and has to scroll. */
 .atrium__header { margin-top: auto; }
 .atrium__nav    { margin-bottom: auto; }
+
+/* Keeps the museum's name visible now that the title intro is gone.
+   #6b5a44 (not bronze) for readable contrast on the pale stone. */
+.atrium__eyebrow {
+  margin: 0 auto var(--space-sm);   /* auto: p has a max-width */
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #6b5a44;
+}
 
 .atrium__title {
   font-weight: 400;
@@ -1389,12 +1028,10 @@ a.map__room:active {
 
 /* ---------- 24. Mobile and touch ----------
    Fixes for phones: tap targets of at least 44px, corner
-   buttons that fit narrow screens, and entrance doors sized
-   for a tall portrait screen. */
+   buttons that fit narrow screens. */
 
 /* Tap targets: at least 44px tall (Apple and Google guidance) */
-.control-button,
-.skip-button {
+.control-button {
   min-height: 2.75rem;
 }
 
@@ -1429,17 +1066,6 @@ a.map__room:active {
   .exhibit,
   .sealed-gallery {
     padding: var(--space-lg) var(--space-md);
-  }
-}
-
-/* On a tall portrait screen, size the entrance doorway by the
-   screen width so it fills more of the view (same 1 : 1.6 shape) */
-@media (orientation: portrait) {
-  .doors__frame {
-    width: 72vw;
-    height: 115vw;
-    border-width: 4vw;
-    border-radius: 36vw 36vw 0 0;
   }
 }
 
