@@ -1,0 +1,358 @@
+/* =========================================================
+   Business Mode: identity card.
+   A printed editorial card after the cream/film-frame and
+   ID-card references. Tokens only.
+   ========================================================= */
+
+.biz-identity {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-7) var(--space-8);
+}
+
+.id-card {
+  position: relative;
+  width: 100%;
+  max-width: 44rem;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  background: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: var(--shadow-raised);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Paper grain, strength from the mode's effect token. */
+.id-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Lanyard slot punched through the top edge. */
+.id-card__slot {
+  position: absolute;
+  top: var(--space-3);
+  left: 50%;
+  width: 3.5rem;
+  height: 0.6rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--color-bg);
+  box-shadow: inset 0 1px 2px rgba(30, 28, 25, 0.25);
+}
+
+.id-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border-strong);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.id-card__body {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@media (min-width: 640px) {
+  .id-card {
+    padding: var(--space-7) var(--space-6) var(--space-6);
+  }
+
+  .id-card__body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  /* The photograph is a main part of the card, not a thumbnail. */
+  .id-card__photo {
+    max-width: none;
+  }
+}
+
+/* ---------- Photograph in a film frame ---------- */
+
+.id-card__photo {
+  position: relative;
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-frame);
+  border-radius: var(--radius-md);
+  /* Keep the photo a sensible size when stacked on phones. */
+  max-width: 18rem;
+  width: 100%;
+  justify-self: center;
+}
+
+/* Sprocket holes down both sides of the frame. */
+.id-card__photo::before,
+.id-card__photo::after {
+  content: "";
+  position: absolute;
+  top: var(--space-2);
+  bottom: var(--space-2);
+  width: 6px;
+  background: repeating-linear-gradient(to bottom, var(--color-surface) 0 6px, transparent 6px 14px);
+  opacity: 0.85;
+}
+
+.id-card__photo::before { left: 7px; }
+.id-card__photo::after { right: 7px; }
+
+.id-card__image,
+.id-card__placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+.id-card__image {
+  height: auto;
+  object-fit: cover;
+  /* Quiet editorial treatment: slightly warm, gently lifted contrast. */
+  filter: sepia(0.12) contrast(1.04) saturate(0.92);
+}
+
+/* Temporary, clearly labelled placeholder: plain paper, no face. */
+.id-card__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  text-align: center;
+  background: var(--color-bg);
+  border: var(--border-width) dashed var(--color-text-muted);
+}
+
+.id-card__placeholder-label {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--color-heading);
+}
+
+.id-card__placeholder-note {
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Name and details ---------- */
+
+.id-card__details {
+  min-width: 0;
+}
+
+.id-card__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.id-card__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+}
+
+/* Burgundy full stop, as in the editorial reference. */
+.id-card__name::after {
+  content: ".";
+  color: var(--color-accent);
+}
+
+.id-card__name:focus {
+  outline: none;
+}
+
+.id-card__headline {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-style: italic;
+}
+
+.id-card__facts {
+  margin: var(--space-5) 0 0;
+  padding: 0;
+}
+
+.id-card__fact {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.id-card__fact:last-child {
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.id-card__fact dt {
+  padding-top: 0.25em;
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.id-card__fact dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.4;
+}
+
+.id-card__institution {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* =========================================================
+   Identity card entrance (drop, settle, reveal).
+   ≈1.5 s total. No bounce or spin: the card lands and sways
+   about 1° around the lanyard's far end, like a hung badge.
+   ========================================================= */
+
+/* No clipping: the card and its ribbon slide down from behind the solid,
+   sticky header, so the ribbon reads as hanging from the top. */
+.biz-identity {
+  position: relative;
+}
+
+.id-card-drop {
+  position: relative;
+  width: 100%;
+  max-width: 44rem;
+  /* Pivot far above the card: rotation reads as a hanging sway. */
+  transform-origin: 50% -50vh;
+}
+
+/* Lanyard ribbon, threaded through the card's slot. */
+.id-card-drop__strap {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: calc(100% - 1.4rem);
+  width: 1.5rem;
+  height: 100vh;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(90deg,
+      transparent 0 3px,
+      rgba(255, 249, 241, 0.25) 3px 4px,
+      transparent 4px calc(100% - 4px),
+      rgba(255, 249, 241, 0.25) calc(100% - 4px) calc(100% - 3px),
+      transparent calc(100% - 3px)),
+    var(--color-accent);
+  pointer-events: none;
+}
+
+.biz-identity__skip {
+  position: absolute;
+  z-index: 2;
+  top: var(--space-3);
+  right: 0;
+  padding: var(--space-2) var(--space-3);
+  min-height: 2.25rem;
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+/* Drop and sway, plus a silent timer animation whose end (at 1.5 s)
+   tells the component the whole entrance has finished. */
+.biz-identity[data-phase="dropping"] .id-card-drop {
+  animation:
+    id-card-drop 1000ms both,
+    id-card-reveal-last 1ms 1500ms both;
+}
+
+@keyframes id-card-drop {
+  0% {
+    transform: translateY(-120vh) rotate(-3deg);
+    animation-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
+  }
+  62% {
+    transform: translateY(0) rotate(1.2deg);
+    animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  }
+  82% {
+    transform: translateY(0) rotate(-0.4deg);
+    animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes id-card-reveal-last {
+  from { opacity: 1; }
+  to { opacity: 1; }
+}
+
+/* Details appear once the card has landed. */
+.biz-identity[data-phase="dropping"] :is(.id-card__photo, .id-card__eyebrow, .id-card__name, .id-card__headline, .id-card__facts) {
+  animation: id-card-reveal 420ms var(--ease-standard) both;
+}
+
+.biz-identity[data-phase="dropping"] .id-card__photo { animation-delay: 650ms; }
+.biz-identity[data-phase="dropping"] .id-card__eyebrow { animation-delay: 700ms; }
+.biz-identity[data-phase="dropping"] .id-card__name { animation-delay: 760ms; }
+.biz-identity[data-phase="dropping"] .id-card__headline { animation-delay: 820ms; }
+.biz-identity[data-phase="dropping"] .id-card__facts { animation-delay: 880ms; }
+
+@keyframes id-card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Safety net: the component already skips the entrance for these
+   visitors, but if it ever runs, it finishes at once. */
+@media (prefers-reduced-motion: reduce) {
+  .biz-identity[data-phase="dropping"] *,
+  .biz-identity[data-phase="dropping"] .id-card-drop {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+  }
+}

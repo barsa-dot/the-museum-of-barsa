@@ -19,5 +19,12 @@ desktop.ini
 # Cloudflare Wrangler local cache (if ever used for local preview)
 .wrangler/
 
-# Claude Code local settings
-.claude/settings.local.json
+# Dependencies and build output
+node_modules/
+dist/
+
+# Private reference images and source photos (never published)
+docs/*.png
+docs/*.jpg
+docs/*.jpeg
+docs/*.webp

@@ -1,0 +1,272 @@
+/* =========================================================
+   Business Mode: portfolio pages in the editorial style of the
+   cream reference: numbered serif section headers with a burgundy
+   full stop, hairline rules, large light numerals, film-frame
+   project posters, small-caps labels and paper grain.
+   Scoped to Business Mode; content is unchanged. Decorative
+   generated text uses `/ ""` so screen readers skip it.
+   ========================================================= */
+
+/* Paper grain over the pages (not over the 3D museum). */
+:root[data-mode="business"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+:root[data-mode="business"] body:has(.museum)::after {
+  display: none;
+}
+
+/* ---------- Tabs: numbered small caps ---------- */
+
+[data-mode="business"] .section-nav__list {
+  counter-reset: tab;
+}
+
+[data-mode="business"] .section-nav__link {
+  counter-increment: tab;
+  border-bottom: 1px solid transparent;
+}
+
+[data-mode="business"] .section-nav__link::before {
+  content: counter(tab, decimal-leading-zero) "\2002" / "";
+  color: var(--color-accent);
+}
+
+[data-mode="business"] .section-nav__link:hover,
+[data-mode="business"] .section-nav__link:focus-visible {
+  color: var(--color-heading);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ---------- Section headers: (1) PROJECTS. ---------- */
+
+[data-mode="business"] .content-page {
+  counter-reset: section;
+}
+
+[data-mode="business"] .content-section {
+  counter-increment: section;
+  counter-reset: card;
+}
+
+[data-mode="business"] .content-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  border-bottom: var(--border-width) solid var(--color-border-strong);
+  /* A short burgundy segment at the start of the rule. */
+  background: linear-gradient(var(--color-accent), var(--color-accent)) left bottom / 5rem 2px no-repeat;
+}
+
+[data-mode="business"] .content-section__title::before {
+  content: counter(section) / "";
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+[data-mode="business"] .content-section__title::after {
+  content: "." / "";
+  margin-left: calc(-1 * var(--space-4));
+  color: var(--color-accent);
+}
+
+/* ---------- Entries: hairline rules and large light numerals ---------- */
+
+[data-mode="business"] .content-card {
+  counter-increment: card;
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  column-gap: var(--space-4);
+  align-content: start;
+  margin: 0;
+  padding: var(--space-5) 0;
+  background: transparent;
+  border: 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 640px) {
+  [data-mode="business"] .content-card {
+    grid-template-columns: 5rem minmax(0, 1fr);
+  }
+}
+
+[data-mode="business"] .content-card > * {
+  grid-column: 2;
+}
+
+[data-mode="business"] .content-card::before {
+  content: counter(card, decimal-leading-zero) / "";
+  grid-column: 1;
+  grid-row: 1 / span 30;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-2xl);
+  line-height: 1;
+  color: var(--color-text-muted);
+}
+
+[data-mode="business"] .content-card[data-featured="true"]::before {
+  color: var(--color-accent);
+}
+
+[data-mode="business"] .content-card[data-featured="true"] .content-card__title {
+  font-size: var(--text-2xl);
+}
+
+/* ---------- Projects: a film-frame poster beside the details ---------- */
+
+[data-mode="business"] .content-card[data-title] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+[data-mode="business"] .content-card[data-title] > * {
+  grid-column: 1;
+}
+
+[data-mode="business"] .content-card[data-title]::before {
+  content: attr(data-title) / "";
+  grid-column: 1;
+  grid-row: auto;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  font-weight: 700;
+  font-size: var(--text-3xl);
+  color: var(--color-heading);
+  background: var(--color-surface-raised);
+  /* Dark film frame; the dashed outline reads as sprocket holes. */
+  border: 22px solid var(--color-frame);
+  outline: 4px dashed var(--color-surface);
+  outline-offset: -13px;
+}
+
+@media (min-width: 860px) {
+  [data-mode="business"] .content-card[data-title] {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    column-gap: var(--space-6);
+  }
+
+  [data-mode="business"] .content-card[data-title] > * {
+    grid-column: 2;
+  }
+
+  [data-mode="business"] .content-card[data-title]::before {
+    grid-row: 1 / span 30;
+    align-self: start;
+    margin-bottom: 0;
+  }
+}
+
+[data-mode="business"] .content-card--sealed {
+  border-bottom-style: dashed;
+}
+
+[data-mode="business"] .content-card--sealed .content-card__title {
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ---------- Details ---------- */
+
+[data-mode="business"] .content-list {
+  list-style: none;
+  padding-left: var(--space-5);
+}
+
+[data-mode="business"] .content-list > li::before {
+  content: "\2014" / "";
+  display: inline-block;
+  width: var(--space-5);
+  margin-left: calc(-1 * var(--space-5));
+  color: var(--color-accent);
+}
+
+[data-mode="business"] .content-tags > li {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  border-color: var(--color-border-strong);
+  border-radius: 0;
+}
+
+[data-mode="business"] .content-page a:not(.museum-cta__link) {
+  text-decoration-thickness: 1px;
+}
+
+[data-mode="business"] .content-page a:not(.museum-cta__link):hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Museum invitation as an exhibition notice ---------- */
+
+[data-mode="business"] .museum-cta {
+  background: transparent;
+  border: 0;
+  border-top: 2px solid var(--color-border-strong);
+  border-bottom: var(--border-width) solid var(--color-border-strong);
+  border-radius: 0;
+  padding-inline: 0;
+}
+
+[data-mode="business"] .museum-cta__text::before {
+  content: "The exhibition" / "";
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+[data-mode="business"] .museum-cta__title {
+  font-size: var(--text-xl);
+}
+
+/* ---------- Colophon ---------- */
+
+[data-mode="business"] .shell-footer__status {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+[data-mode="business"] .shell-footer__status > span + span::before {
+  content: "\00B7\2002" / "";
+}
+
+/* Skills families: broader capabilities lead; technical skills follow,
+   set the same way. Italic serif titles, like a magazine subhead. */
+[data-mode="business"] .content-family__title {
+  font-style: italic;
+  font-weight: 400;
+}

@@ -1,0 +1,125 @@
+/* =========================================================
+   Design tokens for both visual modes.
+   Mirrors src/design/tokens.ts (kept in sync by tokens.test.ts).
+   Apply a mode with data-mode="developer" or "business" on <html>, or on
+   any element to show that mode inside it (e.g. the mode chooser).
+   Components use only these variables, never raw colours.
+   ========================================================= */
+
+/* ---------- Shared: spacing, type scale, motion ---------- */
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: clamp(1.125rem, 1.05rem + 0.33vw, 1.25rem);
+  --text-xl: clamp(1.375rem, 1.2rem + 0.75vw, 1.75rem);
+  --text-2xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  --text-3xl: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
+  --text-display: clamp(2.75rem, 1.6rem + 5vw, 6rem);
+
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 700ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ---------- Developer Mode ----------
+   Reference: dark terminal / pixel portfolio. */
+[data-mode="developer"] {
+  color-scheme: dark;
+
+  --color-bg: #070A08;
+  --color-surface: #0B120E;
+  --color-surface-raised: #111B15;
+  --color-border: #1C2B24;
+  --color-border-strong: #477C5C;
+  --color-text: #CDEBD8;
+  --color-text-muted: #8AAE98;
+  --color-heading: #C4F3D5;
+  --color-accent: #3DD39E;
+  --color-on-accent: #04140C;
+  --color-accent-muted: #3F7A5C;
+  --color-focus: #8FE6B4;
+  --color-frame: #030504;
+
+  --font-display: "Silkscreen", ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-heading: "JetBrains Mono", ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-body: "JetBrains Mono", ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-label: "JetBrains Mono", ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --border-width: 1px;
+  --shadow-card: 0 0 0 1px #1C2B24;
+  --shadow-raised: 0 0 24px rgba(61, 211, 158, 0.12);
+
+  --tracking-label: 0.04em;
+  --tracking-display: 0.02em;
+  --leading-tight: 1.15;
+  --leading-body: 1.65;
+
+  --scanline-opacity: 0.04;
+  --grain-opacity: 0;
+}
+
+/* ---------- Business Mode ----------
+   Reference: cream editorial / film-frame portfolio. */
+[data-mode="business"] {
+  color-scheme: light;
+
+  --color-bg: #F4EAD8;
+  --color-surface: #FBF2E6;
+  --color-surface-raised: #FFF9F1;
+  --color-border: #E2D7C5;
+  --color-border-strong: #1E1C19;
+  --color-text: #1E1C19;
+  --color-text-muted: #5C5347;
+  --color-heading: #16140F;
+  --color-accent: #873F40;
+  --color-on-accent: #FBF2E6;
+  --color-accent-muted: #C9A9A0;
+  --color-focus: #873F40;
+  --color-frame: #1F1A14;
+
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-label: "Inter", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --radius-sm: 0px;
+  --radius-md: 2px;
+  --border-width: 1px;
+  --shadow-card: 0 1px 2px rgba(30, 28, 25, 0.06), 0 4px 16px rgba(30, 28, 25, 0.06);
+  --shadow-raised: 0 2px 4px rgba(30, 28, 25, 0.08), 0 18px 40px rgba(30, 28, 25, 0.16);
+
+  --tracking-label: 0.14em;
+  --tracking-display: -0.01em;
+  --leading-tight: 1.05;
+  --leading-body: 1.6;
+
+  --scanline-opacity: 0;
+  --grain-opacity: 0.05;
+}
+
+/* ---------- Reduced motion ----------
+   Durations collapse so transitions still complete (and fire their
+   end events) without visible movement. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 1ms;
+    --duration-base: 1ms;
+    --duration-slow: 1ms;
+  }
+}

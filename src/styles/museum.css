@@ -1,0 +1,660 @@
+/* =========================================================
+   The walkable museum: full-screen stage, top bar, help panel.
+   Tokens only; data-mode on .museum selects the mode.
+   ========================================================= */
+
+.museum {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.museum__bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.museum__exit,
+.museum__start {
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-label);
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.museum__exit {
+  background: transparent;
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-border-strong);
+}
+
+.museum__start {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: var(--border-width) solid var(--color-accent);
+}
+
+.museum__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: 400;
+  color: var(--color-heading);
+}
+
+.museum__title:focus {
+  outline: none;
+}
+
+.museum__location {
+  margin: 0 0 0 auto;
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 560px) {
+  .museum__title {
+    display: none;
+  }
+}
+
+.museum__stage {
+  position: relative;
+  min-height: 0;
+  touch-action: none; /* the stage handles its own touch gestures */
+}
+
+.museum__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Help panel: sits over the scene but never covers the whole view. */
+.museum__help {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: var(--space-5);
+  width: min(26rem, calc(100% - 2 * var(--space-4)));
+  transform: translateX(-50%);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+}
+
+.museum__help-title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+}
+
+.museum__keys {
+  margin: 0 0 var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.museum__keys > div {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.museum__keys dt {
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.museum__keys dd {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 0.35em;
+  font-family: var(--font-label);
+  font-size: 0.85em;
+  text-align: center;
+  border: var(--border-width) solid var(--color-border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+}
+
+.museum__note {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.museum__hint {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+}
+
+.museum__fallback {
+  align-self: center;
+  justify-self: center;
+  max-width: 30rem;
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+}
+
+.museum-loading {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-family: var(--font-label);
+}
+
+/* Invitation into the museum from the portfolio pages. */
+.museum-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block: 0 var(--space-7);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+
+.museum-cta__text {
+  margin: 0;
+  max-width: 34rem;
+}
+
+.museum-cta__title {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+}
+
+.museum-cta__link {
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-label);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  text-decoration: none;
+}
+
+/* ---------- Touch controls ---------- */
+
+/* Touch help sits at the top so it never covers the joystick. */
+.museum__help--touch {
+  top: calc(var(--space-4) + 3.5rem);
+  bottom: auto;
+}
+
+.museum-joystick {
+  position: absolute;
+  z-index: 3;
+  left: max(var(--space-5), env(safe-area-inset-left));
+  bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  width: 9rem;
+  height: 9rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  border: 2px solid var(--color-border-strong);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.museum-joystick__knob {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: var(--shadow-raised);
+  pointer-events: none;
+}
+
+/* ---------- Proximity prompt ---------- */
+
+/* Just below the centre of the view: where the eye already is, and clear of
+   the help panel (bottom) and the joystick (bottom-left). */
+.museum-prompt {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 60%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.museum-prompt__button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-4);
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-raised);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.museum-prompt__button strong {
+  color: var(--color-heading);
+}
+
+/* ---------- Exhibit panel ---------- */
+
+.exhibit-panel {
+  width: min(44rem, calc(100% - 2 * var(--space-4)));
+  max-height: min(85vh, 50rem);
+  padding: 0;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+  font-family: var(--font-body);
+}
+
+.exhibit-panel::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.exhibit-panel__head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-bg);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.exhibit-panel__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.exhibit-panel__close {
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.exhibit-panel__body {
+  padding: var(--space-5);
+}
+
+.exhibit-panel__empty {
+  color: var(--color-text-muted);
+}
+
+.museum__controls {
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.museum__controls[aria-expanded="true"] {
+  background: var(--color-surface-raised);
+}
+
+/* Identity exhibit (Portrait Room). */
+.exhibit-identity {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (min-width: 560px) {
+  .exhibit-identity {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+}
+
+.exhibit-identity__image {
+  width: 100%;
+  height: auto;
+  border: var(--border-width) solid var(--color-border-strong);
+}
+
+.exhibit-identity__image--developer {
+  image-rendering: pixelated;
+}
+
+.exhibit-identity__name {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.exhibit-identity__headline {
+  margin: 0 0 var(--space-3);
+  font-style: italic;
+}
+
+/* ---------- Map ---------- */
+
+.museum-map {
+  width: min(60rem, calc(100% - 2 * var(--space-4)));
+  max-height: min(90vh, 52rem);
+  padding: 0;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+  font-family: var(--font-body);
+}
+
+.museum-map::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.museum-map__body {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-5);
+}
+
+@media (min-width: 720px) {
+  .museum-map__body {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+}
+
+.museum-map__plan {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.museum-map__room {
+  fill: var(--color-surface-raised);
+  stroke: var(--color-border-strong);
+  stroke-width: 0.35;
+}
+
+.museum-map__room--open {
+  stroke-dasharray: 1 0.8;
+}
+
+.museum-map__corridor {
+  fill: var(--color-surface-raised);
+  stroke: var(--color-border);
+  stroke-width: 0.25;
+}
+
+.museum-map__pool {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 0.35;
+}
+
+.museum-map__column {
+  fill: var(--color-border-strong);
+}
+
+.museum-map__label {
+  font-family: var(--font-label);
+  font-size: 2.1px;
+  fill: var(--color-text-muted);
+}
+
+.museum-map__you circle {
+  fill: var(--color-accent);
+  stroke: var(--color-bg);
+  stroke-width: 0.4;
+}
+
+.museum-map__you line {
+  stroke: var(--color-accent);
+  stroke-width: 0.6;
+  stroke-linecap: round;
+}
+
+.museum-map__here {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+}
+
+.museum-map__heading {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.museum-map__list {
+  list-style: none;
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.museum-map__go {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-3);
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  text-align: left;
+  text-decoration: none;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.museum-map__go[aria-current="location"] {
+  border-color: var(--color-accent);
+}
+
+.museum-map__theme {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.museum-map__unavailable {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+/* Narrow screens: the location gets its own row so the bar never overflows. */
+@media (max-width: 520px) {
+  .museum__bar {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+  }
+
+  .museum__location {
+    order: 5;
+    width: 100%;
+    margin: 0;
+  }
+}
+
+/* ---------- Museum guide (no 3D) ---------- */
+
+.museum-guide {
+  align-self: start;
+  justify-self: center;
+  width: min(44rem, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+.museum-guide__title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.museum-guide__reason {
+  color: var(--color-text-muted);
+}
+
+.museum-guide__rooms {
+  list-style: none;
+  margin: var(--space-5) 0 var(--space-6);
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.museum-guide__room {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1) var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.museum-guide__name {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+}
+
+.museum-guide__theme {
+  grid-column: 1;
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.museum-guide__link,
+.museum-guide__pending {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+}
+
+.museum-guide__pending {
+  color: var(--color-text-muted);
+}
+
+/* Help never taller than the space under the bar (e.g. phones in landscape);
+   it scrolls instead. */
+.museum__help {
+  max-height: calc(100% - 3.5rem - 2 * var(--space-4));
+  overflow-y: auto;
+}
+
+.museum__help--touch {
+  max-height: calc(100% - 3.5rem - 2 * var(--space-4) - var(--space-4));
+}
+
+@media (max-height: 480px) {
+  .museum__help {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .museum__keys {
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+  }
+}

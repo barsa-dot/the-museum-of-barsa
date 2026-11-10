@@ -1,0 +1,424 @@
+/* =========================================================
+   App shell: mode chooser, header, mode switch, footer.
+   Uses design tokens only. Each chooser panel carries its own
+   data-mode, so it is drawn in that mode's tokens.
+   ========================================================= */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Mode chooser ---------- */
+
+.chooser {
+  /* Neutral frame between the two modes. */
+  --chooser-ink: #F4EAD8;
+  --chooser-ground: #141412;
+
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--chooser-ground);
+  color: var(--chooser-ink);
+  font-family: "Inter", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.chooser__header {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4) var(--space-5);
+  text-align: center;
+}
+
+.chooser__intro {
+  max-width: 40rem;
+}
+
+.chooser__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #B9AE9C;
+}
+
+.chooser__name {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 400;
+  font-size: var(--text-2xl);
+  line-height: 1.1;
+}
+
+.chooser__name:focus {
+  outline: none;
+}
+
+.chooser__lede {
+  margin: var(--space-3) auto 0;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: #CFC6B6;
+}
+
+.chooser__options {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .chooser__options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.chooser__option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 42svh;
+  padding: var(--space-7) clamp(var(--space-5), 6vw, var(--space-9));
+  margin: 0;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-family: var(--font-body);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+@media (min-width: 768px) {
+  .chooser__option {
+    min-height: 0;
+  }
+}
+
+/* Texture layer: scanlines (Developer) or paper grain (Business),
+   strength taken from the mode's effect tokens. */
+.chooser__option::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.chooser__option--developer::before {
+  opacity: var(--scanline-opacity);
+  background: repeating-linear-gradient(to bottom, var(--color-heading) 0 1px, transparent 1px 3px);
+}
+
+.chooser__option--business::before {
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Inner frame: terminal window outline / printed page rule. */
+.chooser__option::after {
+  content: "";
+  position: absolute;
+  inset: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  pointer-events: none;
+  transition: border-color var(--duration-base) var(--ease-standard);
+}
+
+.chooser__option:hover::after,
+.chooser__option:focus-visible::after {
+  border-color: var(--color-border-strong);
+}
+
+.chooser__option:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: -8px;
+}
+
+.chooser__kicker {
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-label);
+  color: var(--color-text-muted);
+}
+
+.chooser__option--business .chooser__kicker {
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+}
+
+.chooser__title {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-heading);
+}
+
+/* The pixel face is very wide (≈6.4× its size for "DEVELOPER"), so size it
+   to the panel width instead of the shared display size. */
+.chooser__option--developer .chooser__title {
+  font-size: min(var(--text-display), 12vw);
+}
+
+@media (min-width: 768px) {
+  .chooser__option--developer .chooser__title {
+    font-size: min(var(--text-display), 5.6vw);
+  }
+}
+
+.chooser__option--business .chooser__title {
+  font-weight: 700;
+}
+
+/* Burgundy full stop, as in the editorial reference. */
+.chooser__option--business .chooser__title::after {
+  content: ".";
+  color: var(--color-accent);
+}
+
+.chooser__desc {
+  max-width: 28rem;
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+.chooser__emphasis {
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-label);
+  color: var(--color-text-muted);
+}
+
+.chooser__option--business .chooser__emphasis {
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+}
+
+.chooser__cta {
+  margin-top: var(--space-4);
+  align-self: flex-start;
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-label);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard);
+}
+
+.chooser__option--business .chooser__cta {
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+}
+
+.chooser__option:hover .chooser__cta,
+.chooser__option:focus-visible .chooser__cta {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.chooser__arrow {
+  display: inline-block;
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+
+.chooser__option:hover .chooser__arrow,
+.chooser__option:focus-visible .chooser__arrow {
+  transform: translateX(4px);
+}
+
+.chooser__note {
+  margin: 0;
+  padding: var(--space-4);
+  text-align: center;
+  font-size: var(--text-xs);
+  color: #B9AE9C;
+}
+
+/* ---------- Shell (inside a mode) ---------- */
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  z-index: 10;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-family: var(--font-label);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+.shell-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--color-bg);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.shell-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+}
+
+.shell-header__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+/* Contact and resume shortcuts, always in the header. */
+.quick-links__list {
+  display: flex;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quick-links__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem; /* comfortable touch target */
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.shell-header__name {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  color: var(--color-heading);
+  text-decoration: none;
+}
+
+.shell-header__name:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.mode-switch {
+  display: inline-flex;
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.mode-switch__option {
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-3);
+  min-height: 2.25rem; /* comfortable touch target */
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 0;
+  cursor: pointer;
+}
+
+.mode-switch__option[aria-pressed="true"] {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  cursor: default;
+}
+
+.mode-switch__option:not([aria-pressed="true"]):hover {
+  color: var(--color-text);
+}
+
+.shell-footer {
+  padding: var(--space-6) var(--space-4) var(--space-7);
+  text-align: center;
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.shell-footer__link {
+  font: inherit;
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+/* Sections land below the sticky header when scrolled to. */
+.content-section {
+  scroll-margin-top: 4.5rem;
+}
+
+/* ---------- Section tabs (styled per mode) ---------- */
+
+.section-nav {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.section-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.section-nav__list {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-2);
+  list-style: none;
+}
+
+.section-nav__link {
+  display: block;
+  padding: var(--space-1) var(--space-2);
+  white-space: nowrap;
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-text-muted);
+}
+
+.section-nav__link:hover {
+  color: var(--color-heading);
+}
+
+/* Status line: shown only in Developer Mode. */
+.shell-footer__status {
+  display: none;
+}
+
+/* The sticky header is taller with the tabs. */
+.content-section {
+  scroll-margin-top: 6.5rem;
+}
