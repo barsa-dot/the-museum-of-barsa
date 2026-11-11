@@ -1,24 +1,155 @@
 /* =========================================================
    Business Mode: identity card.
-   A printed editorial card after the cream/film-frame and
-   ID-card references. Tokens only.
+   After the owner's ID-card screenshot: a portrait badge in a
+   clear plastic sleeve, hung at an angle from a cream lanyard
+   with a metal clip, beside large condensed "This is my
+   PORTFOLIO" type. Photograph in black and white.
    ========================================================= */
 
 .biz-identity {
-  display: flex;
-  justify-content: center;
-  padding-block: var(--space-7) var(--space-8);
+  /* Resting angle of the hung badge. The drop sways around it. */
+  --card-tilt: 7deg;
+  --font-poster: "Archivo Narrow", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --paper-card: #FFFDF9;
+  --lanyard: #E4D9C6;
+  position: relative;
+  padding-block: var(--space-5) var(--space-8);
 }
+
+.biz-identity__stage {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-7);
+}
+
+@media (min-width: 860px) {
+  .biz-identity__stage {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: center;
+    justify-items: start;
+    gap: var(--space-6);
+  }
+
+  .id-card-drop {
+    justify-self: center;
+  }
+}
+
+/* ---------- The hanging badge ---------- */
+
+.id-card-drop {
+  position: relative;
+  width: min(100%, 21rem);
+  margin-top: var(--space-5);
+  /* Hangs from the clip at the top centre. */
+  transform-origin: 50% 0;
+  transform: rotate(var(--card-tilt));
+}
+
+/* Cream fabric lanyard rising from the clip, with stitched edges. */
+.id-card-drop__strap {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  bottom: calc(100% + 1.1rem);
+  width: 1.6rem;
+  height: 75vh;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(90deg,
+      rgba(30, 28, 25, 0.12) 0 1px,
+      transparent 1px 3px,
+      rgba(255, 255, 255, 0.5) 3px 4px,
+      transparent 4px calc(100% - 4px),
+      rgba(255, 255, 255, 0.5) calc(100% - 4px) calc(100% - 3px),
+      transparent calc(100% - 3px) calc(100% - 1px),
+      rgba(30, 28, 25, 0.12) calc(100% - 1px)),
+    var(--lanyard);
+  box-shadow: 2px 0 6px rgba(30, 28, 25, 0.08);
+  pointer-events: none;
+}
+
+/* Metal swivel clip: a short bar and a ring through the sleeve's slot. */
+.id-card-drop__clip {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: -1.4rem;
+  width: 0.7rem;
+  height: 2.2rem;
+  transform: translateX(-50%);
+  border-radius: 0.35rem;
+  background: linear-gradient(90deg, #8B8A86, #E9E8E4 45%, #A8A7A2 70%, #6F6E6A);
+  box-shadow: 0 1px 2px rgba(30, 28, 25, 0.35);
+  pointer-events: none;
+}
+
+.id-card-drop__clip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.45rem;
+  width: 1.2rem;
+  height: 0.8rem;
+  transform: translateX(-50%);
+  border: 2px solid #9C9B96;
+  border-top-color: #E9E8E4;
+  border-radius: 50%;
+}
+
+/* Clear plastic sleeve around the card. */
+.id-card-sleeve {
+  position: relative;
+  z-index: 1;
+  padding: 2.1rem 0.6rem 0.6rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(40, 37, 31, 0.2);
+  background:
+    linear-gradient(125deg,
+      rgba(255, 255, 255, 0.75) 0%,
+      rgba(255, 255, 255, 0.2) 32%,
+      rgba(255, 255, 255, 0.05) 55%,
+      rgba(255, 255, 255, 0.4) 100%),
+    rgba(241, 233, 220, 0.35);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    inset 0 0 18px rgba(255, 255, 255, 0.45),
+    0 2px 4px rgba(30, 28, 25, 0.08),
+    0 22px 44px rgba(30, 28, 25, 0.18);
+}
+
+/* Glare streak across the plastic. */
+.id-card-sleeve::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 58%, rgba(255, 255, 255, 0.35) 64%, transparent 72%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.id-card-sleeve__slot {
+  position: absolute;
+  top: 0.7rem;
+  left: 50%;
+  width: 3.4rem;
+  height: 0.55rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(241, 233, 220, 0.9);
+  box-shadow: inset 0 1px 2px rgba(30, 28, 25, 0.3);
+}
+
+/* ---------- The card inside ---------- */
 
 .id-card {
   position: relative;
-  width: 100%;
-  max-width: 44rem;
-  padding: var(--space-6) var(--space-5) var(--space-5);
-  background: var(--color-surface-raised);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: 6px;
-  box-shadow: var(--shadow-raised);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  background: var(--paper-card);
+  border-radius: 0.55rem;
+  box-shadow: 0 1px 3px rgba(30, 28, 25, 0.12);
+  color: #1C1A17;
   isolation: isolate;
   overflow: hidden;
 }
@@ -34,96 +165,51 @@
   pointer-events: none;
 }
 
-/* Lanyard slot punched through the top edge. */
-.id-card__slot {
-  position: absolute;
-  top: var(--space-3);
-  left: 50%;
-  width: 3.5rem;
-  height: 0.6rem;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: var(--color-bg);
-  box-shadow: inset 0 1px 2px rgba(30, 28, 25, 0.25);
-}
-
 .id-card__top {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-  padding-bottom: var(--space-3);
-  border-bottom: var(--border-width) solid var(--color-border-strong);
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
   font-family: var(--font-label);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--color-text-muted);
 }
 
+@media (max-width: 359px) {
+  .id-card__top {
+    letter-spacing: 0.06em;
+  }
+}
+
+/* Photograph on the left, the name running down the right edge. */
 .id-card__body {
   display: grid;
-  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: stretch;
 }
-
-@media (min-width: 640px) {
-  .id-card {
-    padding: var(--space-7) var(--space-6) var(--space-6);
-  }
-
-  .id-card__body {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-    gap: var(--space-6);
-    align-items: start;
-  }
-
-  /* The photograph is a main part of the card, not a thumbnail. */
-  .id-card__photo {
-    max-width: none;
-  }
-}
-
-/* ---------- Photograph in a film frame ---------- */
 
 .id-card__photo {
-  position: relative;
   margin: 0;
-  padding: var(--space-4) var(--space-5);
-  background: var(--color-frame);
-  border-radius: var(--radius-md);
-  /* Keep the photo a sensible size when stacked on phones. */
-  max-width: 18rem;
-  width: 100%;
-  justify-self: center;
+  min-width: 0;
 }
-
-/* Sprocket holes down both sides of the frame. */
-.id-card__photo::before,
-.id-card__photo::after {
-  content: "";
-  position: absolute;
-  top: var(--space-2);
-  bottom: var(--space-2);
-  width: 6px;
-  background: repeating-linear-gradient(to bottom, var(--color-surface) 0 6px, transparent 6px 14px);
-  opacity: 0.85;
-}
-
-.id-card__photo::before { left: 7px; }
-.id-card__photo::after { right: 7px; }
 
 .id-card__image,
 .id-card__placeholder {
   display: block;
   width: 100%;
   aspect-ratio: 4 / 5;
+  border-radius: 2px;
 }
 
 .id-card__image {
   height: auto;
   object-fit: cover;
-  /* Quiet editorial treatment: slightly warm, gently lifted contrast. */
-  filter: sepia(0.12) contrast(1.04) saturate(0.92);
+  /* Black and white, as in the reference badge. */
+  filter: grayscale(1) contrast(1.06) brightness(1.03);
 }
 
 /* Temporary, clearly labelled placeholder: plain paper, no face. */
@@ -133,7 +219,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-4);
+  padding: var(--space-3);
   text-align: center;
   background: var(--color-bg);
   border: var(--border-width) dashed var(--color-text-muted);
@@ -153,35 +239,18 @@
   color: var(--color-text-muted);
 }
 
-/* ---------- Name and details ---------- */
-
-.id-card__details {
-  min-width: 0;
-}
-
-.id-card__eyebrow {
-  margin: 0 0 var(--space-2);
-  font-family: var(--font-label);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
-
+/* Name set vertically, reading top to bottom: "Barsarani" on the
+   outer edge, "Sahoo" inside it, like the reference's wordmark. */
 .id-card__name {
   margin: 0;
-  font-family: var(--font-display);
+  writing-mode: vertical-rl;
+  max-block-size: 100%;
+  font-family: var(--font-poster);
   font-weight: 700;
-  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-display);
-  color: var(--color-heading);
-}
-
-/* Burgundy full stop, as in the editorial reference. */
-.id-card__name::after {
-  content: ".";
-  color: var(--color-accent);
+  font-size: clamp(2.4rem, 1.9rem + 1.6vw, 2.9rem);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: #111;
 }
 
 .id-card__name:focus {
@@ -191,29 +260,25 @@
 .id-card__headline {
   margin: var(--space-3) 0 0;
   font-family: var(--font-body);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-style: italic;
 }
 
 .id-card__facts {
-  margin: var(--space-5) 0 0;
+  margin: var(--space-3) 0 0;
   padding: 0;
 }
 
 .id-card__fact {
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr);
-  gap: var(--space-3);
-  padding: var(--space-3) 0;
+  grid-template-columns: 3.6rem minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
   border-top: var(--border-width) solid var(--color-border);
 }
 
-.id-card__fact:last-child {
-  border-bottom: var(--border-width) solid var(--color-border);
-}
-
 .id-card__fact dt {
-  padding-top: 0.25em;
+  padding-top: 0.2em;
   font-family: var(--font-label);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-label);
@@ -224,60 +289,68 @@
 .id-card__fact dd {
   margin: 0;
   font-family: var(--font-body);
-  font-size: var(--text-base);
-  line-height: 1.4;
+  font-size: var(--text-sm);
+  line-height: 1.35;
 }
 
 .id-card__institution {
   display: block;
-  margin-top: var(--space-1);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
+}
+
+/* ---------- "This is my PORTFOLIO" ---------- */
+
+.biz-identity__poster {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(1.5rem, 4vw, 4.5rem);
+  margin: 0;
+  font-family: var(--font-poster);
+  font-weight: 700;
+  text-transform: none;
+  color: #111;
+}
+
+.biz-identity__lead {
+  margin-bottom: 0.2em;
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.6rem);
+  line-height: 0.95;
+  text-align: right;
+}
+
+.biz-identity__word {
+  font-size: clamp(4.5rem, 2rem + 8vw, 9.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 859px) {
+  .biz-identity {
+    --card-tilt: 3deg;
+  }
+
+  .id-card-drop {
+    width: min(100% - 3rem, 19.5rem);
+  }
+
+  .biz-identity__poster {
+    justify-content: center;
+  }
 }
 
 /* =========================================================
    Identity card entrance (drop, settle, reveal).
-   ≈1.5 s total. No bounce or spin: the card lands and sways
-   about 1° around the lanyard's far end, like a hung badge.
+   ≈1.5 s total. No bounce or spin: the badge lands and sways
+   about 1° either side of its resting tilt, like a hung badge.
    ========================================================= */
-
-/* No clipping: the card and its ribbon slide down from behind the solid,
-   sticky header, so the ribbon reads as hanging from the top. */
-.biz-identity {
-  position: relative;
-}
-
-.id-card-drop {
-  position: relative;
-  width: 100%;
-  max-width: 44rem;
-  /* Pivot far above the card: rotation reads as a hanging sway. */
-  transform-origin: 50% -50vh;
-}
-
-/* Lanyard ribbon, threaded through the card's slot. */
-.id-card-drop__strap {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  bottom: calc(100% - 1.4rem);
-  width: 1.5rem;
-  height: 100vh;
-  transform: translateX(-50%);
-  background:
-    linear-gradient(90deg,
-      transparent 0 3px,
-      rgba(255, 249, 241, 0.25) 3px 4px,
-      transparent 4px calc(100% - 4px),
-      rgba(255, 249, 241, 0.25) calc(100% - 4px) calc(100% - 3px),
-      transparent calc(100% - 3px)),
-    var(--color-accent);
-  pointer-events: none;
-}
 
 .biz-identity__skip {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   top: var(--space-3);
   right: 0;
   padding: var(--space-2) var(--space-3);
@@ -304,19 +377,19 @@
 
 @keyframes id-card-drop {
   0% {
-    transform: translateY(-120vh) rotate(-3deg);
+    transform: translateY(-120vh) rotate(calc(var(--card-tilt) - 3deg));
     animation-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
   }
   62% {
-    transform: translateY(0) rotate(1.2deg);
+    transform: translateY(0) rotate(calc(var(--card-tilt) + 1.2deg));
     animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
   }
   82% {
-    transform: translateY(0) rotate(-0.4deg);
+    transform: translateY(0) rotate(calc(var(--card-tilt) - 0.4deg));
     animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
   }
   100% {
-    transform: none;
+    transform: rotate(var(--card-tilt));
   }
 }
 
@@ -325,15 +398,15 @@
   to { opacity: 1; }
 }
 
-/* Details appear once the card has landed. */
-.biz-identity[data-phase="dropping"] :is(.id-card__photo, .id-card__eyebrow, .id-card__name, .id-card__headline, .id-card__facts) {
+/* Details appear once the badge has landed. */
+.biz-identity[data-phase="dropping"] :is(.id-card__photo, .id-card__name, .id-card__headline, .id-card__facts, .biz-identity__poster) {
   animation: id-card-reveal 420ms var(--ease-standard) both;
 }
 
 .biz-identity[data-phase="dropping"] .id-card__photo { animation-delay: 650ms; }
-.biz-identity[data-phase="dropping"] .id-card__eyebrow { animation-delay: 700ms; }
-.biz-identity[data-phase="dropping"] .id-card__name { animation-delay: 760ms; }
-.biz-identity[data-phase="dropping"] .id-card__headline { animation-delay: 820ms; }
+.biz-identity[data-phase="dropping"] .id-card__name { animation-delay: 720ms; }
+.biz-identity[data-phase="dropping"] .id-card__headline { animation-delay: 800ms; }
+.biz-identity[data-phase="dropping"] .biz-identity__poster { animation-delay: 840ms; }
 .biz-identity[data-phase="dropping"] .id-card__facts { animation-delay: 880ms; }
 
 @keyframes id-card-reveal {

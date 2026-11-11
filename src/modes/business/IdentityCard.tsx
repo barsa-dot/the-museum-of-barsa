@@ -1,5 +1,7 @@
-// Business Mode identity card: a printed, editorial identity card with the
-// owner's photograph, name and a few verified details.
+// Business Mode identity card, after the owner's reference screenshot: a
+// portrait badge in a clear plastic sleeve, hung at an angle from a cream
+// lanyard with a metal clip, beside large "This is my PORTFOLIO" type.
+// The card holds the owner's photograph, name and a few verified details.
 //
 // Entrance: the card drops in on its lanyard, settles with a small sway (no
 // bounce or spin) and then reveals its details. Total ≈1.5 s. It never blocks
@@ -68,43 +70,45 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
           Skip animation
         </button>
       )}
-      <div className="id-card-drop" onAnimationEnd={onAnimationEnd}>
-        <span className="id-card-drop__strap" aria-hidden="true" />
-        <article className="id-card">
-          <span className="id-card__slot" aria-hidden="true" />
+      <div className="biz-identity__stage">
+        <div className="id-card-drop" onAnimationEnd={onAnimationEnd}>
+          <span className="id-card-drop__strap" aria-hidden="true" />
+          <span className="id-card-drop__clip" aria-hidden="true" />
+          <div className="id-card-sleeve">
+            <span className="id-card-sleeve__slot" aria-hidden="true" />
+            <article className="id-card">
+              <header className="id-card__top">
+                <span>Portfolio</span>
+                <span>Business edition</span>
+              </header>
 
-          <header className="id-card__top">
-            <span>Portfolio</span>
-            <span>Business edition</span>
-          </header>
+              <div className="id-card__body">
+                <figure className="id-card__photo">
+                  {photo ? (
+                    <img
+                      className="id-card__image"
+                      src={`/${photo.src}`}
+                      alt={photo.alt}
+                      width={photo.width}
+                      height={photo.height}
+                    />
+                  ) : (
+                    <div
+                      className="id-card__placeholder"
+                      role="img"
+                      aria-label="Photograph placeholder. The photo has not been added yet."
+                    >
+                      <span className="id-card__placeholder-label">Photograph pending</span>
+                      <span className="id-card__placeholder-note">A real photograph will appear here.</span>
+                    </div>
+                  )}
+                </figure>
 
-          <div className="id-card__body">
-            <figure className="id-card__photo">
-              {photo ? (
-                <img
-                  className="id-card__image"
-                  src={`/${photo.src}`}
-                  alt={photo.alt}
-                  width={photo.width}
-                  height={photo.height}
-                />
-              ) : (
-                <div
-                  className="id-card__placeholder"
-                  role="img"
-                  aria-label="Photograph placeholder. The photo has not been added yet."
-                >
-                  <span className="id-card__placeholder-label">Photograph pending</span>
-                  <span className="id-card__placeholder-note">A real photograph will appear here.</span>
-                </div>
-              )}
-            </figure>
+                <h1 id="biz-identity-name" className="id-card__name" tabIndex={-1} ref={nameRef}>
+                  {person?.name}
+                </h1>
+              </div>
 
-            <div className="id-card__details">
-              <p className="id-card__eyebrow">Identity</p>
-              <h1 id="biz-identity-name" className="id-card__name" tabIndex={-1} ref={nameRef}>
-                {person?.name}
-              </h1>
               {hasText(person?.headline) && <p className="id-card__headline">{person.headline}</p>}
 
               {(education.length > 0 || contact?.github) && (
@@ -128,9 +132,18 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
                   )}
                 </dl>
               )}
-            </div>
+            </article>
           </div>
-        </article>
+        </div>
+
+        <p className="biz-identity__poster" aria-label="This is my portfolio">
+          <span className="biz-identity__lead" aria-hidden="true">
+            This<br />is<br />my
+          </span>
+          <span className="biz-identity__word" aria-hidden="true">
+            Port<br />fo<br />lio
+          </span>
+        </p>
       </div>
     </section>
   );

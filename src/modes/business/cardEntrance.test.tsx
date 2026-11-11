@@ -79,10 +79,15 @@ describe("entrance styles", () => {
     expect(lastReveal).toBeLessThanOrEqual(ms(/id-card-reveal-last 1ms (\d+)ms/));
   });
 
-  it("sways by about a degree at most, with no spin", () => {
-    const angles = [...css.matchAll(/rotate\((-?[\d.]+)deg\)/g)].map((m) => Math.abs(Number(m[1])));
-    expect(Math.max(...angles)).toBeLessThanOrEqual(3);
-    expect(css).not.toMatch(/rotate\(\s*(-?)(\d{2,}|[4-9])\d*(\.\d+)?deg/);
+  it("hangs at a gentle tilt and sways a few degrees around it, with no spin", () => {
+    const tilts = [...css.matchAll(/--card-tilt: (-?[\d.]+)deg/g)].map((m) => Math.abs(Number(m[1])));
+    expect(tilts.length).toBeGreaterThan(0);
+    expect(Math.max(...tilts)).toBeLessThanOrEqual(10);
+    const sway = [...css.matchAll(/var\(--card-tilt\) [+-] ([\d.]+)deg/g)].map((m) => Number(m[1]));
+    expect(sway.length).toBeGreaterThan(0);
+    expect(Math.max(...sway)).toBeLessThanOrEqual(3);
+    // Every other rotation goes through the tilt variable.
+    expect(css.replace(/rotate\((calc\()?var\(--card-tilt\)[^;]*/g, "")).not.toMatch(/rotate\(/);
   });
 
   it("has a reduced-motion safety net", () => {

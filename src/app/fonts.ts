@@ -15,3 +15,5 @@ import "@fontsource/source-serif-4/latin-400-italic.css";
 import "@fontsource/source-serif-4/latin-600.css";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
+// Condensed poster type for the identity card and "This is my portfolio".
+import "@fontsource/archivo-narrow/latin-700.css";

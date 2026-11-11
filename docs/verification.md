@@ -397,3 +397,18 @@ state) were deleted from the old root site. The new app never used it.
 | No script errors | Pass |
 
 `node --check museum.js` OK. App unit tests 375 pass; typecheck clean.
+
+## Identity card restyled after the owner's ID-card screenshot (2026-11-10)
+
+Portrait badge in a clear plastic sleeve, hung at a slight tilt (7°, 3° on
+phones) from a cream lanyard with a metal clip; black-and-white photograph;
+name set vertically down the right edge; large condensed "This is my
+PORTFOLIO" type beside it (below on phones). Font: Archivo Narrow 700,
+self-hosted. Same verified details as before.
+
+| Check | Result |
+|---|---|
+| Drop, sway (within 3° of the tilt) and settle in about 1.5 s; skip button and Escape still work; focus moves to the name | Pass |
+| Reduced motion: card shown settled | Pass |
+| No sideways scrolling at 320, 390 and 768 px wide | Pass |
+| Unit tests (375), typecheck and production build | Pass |
