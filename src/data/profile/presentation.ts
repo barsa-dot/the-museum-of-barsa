@@ -9,6 +9,7 @@
 // reorders and annotates, but every publishable record comes out in both modes.
 
 import type { AchievementKind, ExperienceKind, SkillCategory } from "./types";
+import type { ProjectPart } from "./project";
 
 export const MODES = ["developer", "business"] as const;
 export type Mode = (typeof MODES)[number];
@@ -126,3 +127,13 @@ export function orderForMode<T extends Presentable>(records: readonly T[], mode:
 export function summaryFor(record: Presentable & { description: string | null }, mode: Mode): string | null {
   return presentationFor(record, mode).summary ?? record.description;
 }
+
+/**
+ * Order of a project exhibit's parts per mode. Each list holds every part
+ * exactly once (checked by tests): Developer leads with how it is built,
+ * Business with what it does and the proof. Limitations are never dropped.
+ */
+export const PROJECT_PART_ORDER = {
+  developer: ["problem", "approach", "implementation", "stack", "features", "evidence", "screenshots", "limitations"],
+  business: ["problem", "approach", "features", "evidence", "screenshots", "implementation", "stack", "limitations"],
+} as const satisfies Record<Mode, readonly ProjectPart[]>;

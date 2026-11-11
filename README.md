@@ -79,11 +79,25 @@ Each project is one object in the list, shown in the same order:
 | `status` | `published`, `in-development` or `unavailable` (see below) |
 | `tagline`, `description` | Text for the exhibit |
 | `role`, `timeline` | Optional. Shown on one line under the tagline |
+| `problem` | Optional. What the project is for, and for whom |
+| `approach` | Optional. How it tackles that problem |
 | `features` | Optional list, shown as "Key features" |
+| `implementation` | Optional list. How it is built: architecture and notable engineering |
 | `stack` | Optional list of technologies, shown as tags |
+| `evidence` | Optional list of checkable proof: `{ "kind": "tests", "label": "216 unit tests pass", "url": "https://...", "checked": "2026-11-11" }`. `kind` is `tests`, `documentation`, `demo`, `repository`, `audit` or `other`; `url` and `checked` are optional |
 | `liveUrl`, `githubUrl` | Leave as `""` to hide the link |
-| `screenshots` | Images in `images/`. Leave as `[]` for none |
+| `screenshots` | Images in `images/`, each `{ "src", "alt", "caption"? }`. Leave as `[]` for none |
 | `limitations` | Honest notes on what it can't do yet. Leave as `[]` for none |
+| `presentation` | Optional per-mode order and wording (`developer` / `business`: `summary`, `tags`, `priority`, `featured`) |
+| `release` | Optional latest release: `{ "version": "1.2.0", "date": "2026-11-02", "notesUrl": "https://..." }` (`notesUrl` optional) |
+
+Both modes show every part a project has; they only change the order
+(Developer leads with implementation and stack, Business with features and
+evidence). How the registry, project manifests (`museum-manifest.json`) and
+publication approval fit together is in `docs/project-registry.md`.
+
+The new app validates the file as it loads it, and its tests read the
+real file, so a typo fails the tests instead of breaking the exhibit.
 
 What each status shows:
 

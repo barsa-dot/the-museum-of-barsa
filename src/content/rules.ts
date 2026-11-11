@@ -17,6 +17,13 @@ export function formatPartialDate(date: PartialDate): string {
   return name ? `${name} ${year}` : `${year}`;
 }
 
+/** "2026-11-11" → "11 Nov 2026"; null if it is not a full date. */
+export function formatFullDate(date: string): string | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  const month = m ? MONTHS[Number(m[2]) - 1] : undefined;
+  return m && month ? `${Number(m[3])} ${month} ${m[1]}` : null;
+}
+
 /** Formats a range, or returns null when nothing is known yet. */
 export function formatDateRange({ start, end }: DateRange): string | null {
   const from = start ? formatPartialDate(start) : null;

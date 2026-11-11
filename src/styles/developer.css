@@ -387,3 +387,30 @@
 [data-mode="developer"] .content-family[data-family="broader"] .content-tags > li {
   color: var(--color-text-muted);
 }
+
+/* ---------- Project exhibits: engineering first ---------- */
+
+/* How it is built: a code-listing panel. */
+[data-mode="developer"] .project-part[data-part="implementation"] .project-part__notes {
+  font-family: var(--font-label);
+  font-size: var(--text-sm);
+  padding: var(--space-3) var(--space-3) var(--space-3) calc(var(--space-3) + var(--space-5));
+  background: var(--color-surface-raised);
+  border-left: 2px solid var(--color-accent);
+}
+
+/* Evidence tagged by kind, like a log line: [tests], [documentation]. */
+[data-mode="developer"] .project-evidence__item::before {
+  content: "[" attr(data-kind) "] " / "";
+  color: var(--color-accent);
+  font-family: var(--font-label);
+}
+
+[data-mode="developer"] .project-evidence__checked {
+  font-family: var(--font-label);
+}
+
+[data-mode="developer"] .project-shot figcaption::before {
+  content: "// " / "";
+  color: var(--color-accent-muted);
+}

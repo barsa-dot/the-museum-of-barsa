@@ -270,3 +270,42 @@
   font-style: italic;
   font-weight: 400;
 }
+
+/* ---------- Project exhibits: the story and the proof first ---------- */
+
+/* The problem reads as a pull quote. */
+[data-mode="business"] .project-part[data-part="problem"] .content-card__text {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-accent);
+}
+
+/* Evidence as numbered references, like footnotes in a feature article. */
+[data-mode="business"] .project-evidence {
+  counter-reset: evidence;
+}
+
+[data-mode="business"] .project-evidence__item {
+  counter-increment: evidence;
+  padding-top: var(--space-2);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+[data-mode="business"] .project-evidence__item::before {
+  content: counter(evidence, decimal-leading-zero) / "";
+  margin-right: var(--space-2);
+  font-family: var(--font-heading);
+  color: var(--color-accent);
+}
+
+[data-mode="business"] .project-shot img {
+  border: 10px solid var(--color-frame);
+}
+
+[data-mode="business"] .project-shot figcaption {
+  font-family: var(--font-heading);
+  font-style: italic;
+}

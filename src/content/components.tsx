@@ -7,15 +7,16 @@
 
 import { createContext, useContext, type ReactNode } from "react";
 import type { ModeView } from "../data/profile/selectors";
-import type { Project } from "../data/profile/project";
+import { hasPart, type Project, type ProjectPart } from "../data/profile/project";
 import type { Achievement, Education, Experience, ExperienceKind, Skill, SkillCategory } from "../data/profile/types";
-import { presentationFor, skillFamily, skillFamilyOrder, summaryFor, type Presentable, type SectionId } from "../data/profile/presentation";
+import { PROJECT_PART_ORDER, presentationFor, skillFamily, skillFamilyOrder, summaryFor, type Presentable, type SectionId } from "../data/profile/presentation";
 import {
   EXPERIENCE_LABELS,
   SECTION_TITLES,
   SKILL_FAMILY_LABELS,
   SKILL_LABELS,
   formatDateRange,
+  formatFullDate,
   formatPartialDate,
   hasText,
   isSafeHref,
@@ -175,10 +176,70 @@ export function ExperienceCard({ record }: { record: Experience }) {
   );
 }
 
+/** Headings for project exhibit parts. Same words in both modes; only styling differs. */
+export const PROJECT_PART_TITLES: Record<ProjectPart, string> = {
+  problem: "The problem",
+  approach: "Approach",
+  features: "Key features",
+  implementation: "How it is built",
+  stack: "Built with",
+  evidence: "Evidence",
+  screenshots: "Screenshots",
+  limitations: "Known limitations",
+};
+
+function ProjectPartBody({ project, part }: { project: Project; part: ProjectPart }) {
+  switch (part) {
+    case "problem":
+      return <p className="content-card__text">{project.problem}</p>;
+    case "approach":
+      return <p className="content-card__text">{project.approach}</p>;
+    case "features":
+      return <List items={project.features} />;
+    case "implementation":
+      return <List items={project.implementation} className="content-list project-part__notes" />;
+    case "stack":
+      return <List items={project.stack} className="content-tags" />;
+    case "evidence":
+      return (
+        <ul className="project-evidence">
+          {(project.evidence ?? []).map((e) => (
+            <li key={`${e.kind}-${e.label}`} className="project-evidence__item" data-kind={e.kind}>
+              {e.url && isSafeHref(e.url) ? <SafeLink href={e.url}>{e.label}</SafeLink> : <span>{e.label}</span>}
+              {e.checked && formatFullDate(e.checked) && (
+                <span className="project-evidence__checked"> · checked {formatFullDate(e.checked)}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      );
+    case "screenshots":
+      return (
+        <div className="content-card__media">
+          {project.screenshots.map((shot) => (
+            <figure key={shot.src} className="project-shot">
+              <img src={`/${shot.src}`} alt={shot.alt} loading="lazy" />
+              {hasText(shot.caption) && <figcaption>{shot.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      );
+    case "limitations":
+      return <List items={project.limitations} />;
+  }
+}
+
+/**
+ * A published (or temporarily closed) project. Every part the record has is
+ * shown in both modes; the mode only sets the order (PROJECT_PART_ORDER):
+ * Developer leads with how it is built, Business with what it does and the
+ * evidence. Limitations are always included.
+ */
 export function ProjectExhibit({ project }: { project: Project }) {
   const { mode } = useModeView();
   const closed = project.status === "unavailable";
   const text = presentationFor(project, mode).summary ?? project.description;
+  const parts = PROJECT_PART_ORDER[mode].filter((part) => hasPart(project, part));
   return (
     <article {...cardProps(project, mode, `projects/${project.id}/README.md`)} data-status={project.status} data-title={project.name}>
       <p className="content-label">{closed ? "Temporarily closed" : "Now showing"}</p>
@@ -186,31 +247,12 @@ export function ProjectExhibit({ project }: { project: Project }) {
       {hasText(project.tagline) && <p className="content-card__tagline">{project.tagline}</p>}
       <Meta items={[project.role, project.timeline]} />
       {hasText(text) && <p className="content-card__text">{text}</p>}
-      {project.features && project.features.length > 0 && (
-        <>
-          <h4 className="content-card__subheading">Key features</h4>
-          <List items={project.features} />
-        </>
-      )}
-      {project.stack && project.stack.length > 0 && (
-        <>
-          <h4 className="content-card__subheading">Built with</h4>
-          <List items={project.stack} className="content-tags" />
-        </>
-      )}
-      {project.screenshots.length > 0 && (
-        <div className="content-card__media">
-          {project.screenshots.map((shot) => (
-            <img key={shot.src} src={`/${shot.src}`} alt={shot.alt} loading="lazy" />
-          ))}
-        </div>
-      )}
-      {project.limitations.length > 0 && (
-        <>
-          <h4 className="content-card__subheading">Known limitations</h4>
-          <List items={project.limitations} />
-        </>
-      )}
+      {parts.map((part) => (
+        <section key={part} className="project-part" data-part={part} aria-label={PROJECT_PART_TITLES[part]}>
+          <h4 className="content-card__subheading">{PROJECT_PART_TITLES[part]}</h4>
+          <ProjectPartBody project={project} part={part} />
+        </section>
+      ))}
       {(hasText(project.liveUrl) && !closed) || hasText(project.githubUrl) ? (
         <p className="content-card__links">
           {hasText(project.liveUrl) && !closed && <SafeLink href={project.liveUrl}>Visit live site</SafeLink>}

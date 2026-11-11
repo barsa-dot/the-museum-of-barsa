@@ -412,3 +412,92 @@ self-hosted. Same verified details as before.
 | Reduced motion: card shown settled | Pass |
 | No sideways scrolling at 320, 390 and 768 px wide | Pass |
 | Unit tests (375), typecheck and production build | Pass |
+
+## 4.8 Content parity across both modes (2026-11-11)
+
+`src/content/parity.test.tsx` swaps in a fully verified TEST-ONLY profile
+(every experience, achievement and skill type; more experience and
+achievements than the museum walls hold; published, closed, sealed and
+under-review projects; full contact and resume) and checks every surface
+in both modes. The samples are not facts about the owner.
+
+| Check | Result |
+|---|---|
+| Portfolio pages: every approved record and the resume link appear in both modes; same record elements | Pass |
+| A project waiting for review never appears | Pass |
+| Museum: exhibits, "N more" boards and map shortcuts reach exactly the same records in both modes, and every approved record | Pass |
+| Museum: same rooms with the same number and kinds of exhibits (which record gets its own board when a wall is full follows the mode's order; the rest are on the "N more" board) | Pass |
+| Every exhibit panel and shortcut panel has the same words in both modes | Pass |
+| No-3D guide links the same sections in both modes | Pass |
+| Real profile, production build in headless Chrome (`?mode=developer` vs `?mode=business`): same 12 record/section ids and the same 257 content words; the only link that differs is the museum link, which keeps the visitor's mode | Pass |
+| Unit tests (391), typecheck and production build | Pass |
+
+Unverified records (e.g. ACHIVIA, the candidate skills) are hidden in both
+modes alike. When 4.5–4.7 records are confirmed, this test covers them
+with no changes.
+
+## 5.4–5.5 Project exhibit data and layouts (2026-11-11)
+
+Project records gain optional `problem`, `approach`, `implementation`,
+`evidence` (kind, label, optional https link and check date) and screenshot
+captions, validated in `parseProjects`. Exhibits render each part the record
+has, in the mode's order (`PROJECT_PART_ORDER`): Developer leads with how it
+is built and the stack, Business with features and evidence. Headings and
+text are identical in both modes; only order and styling differ.
+
+| Check | Result |
+|---|---|
+| Parser reads every new part and refuses bad input (9 cases) | Pass |
+| Each mode's order holds every part exactly once | Pass |
+| A full sample record shows every part, in each mode's order, with the same words in both modes | Pass |
+| Partial records show no empty headings; closed projects hide the live link; sealed projects show the name only | Pass |
+| `publicationGaps()` reports TaskNest's missing limitations and evidence (from the 5.3 audit) | Pass |
+| Decorative markers (`[tests]`, `01`) are silent to screen readers | Pass |
+| Production build in headless Chrome: TaskNest parts are stack→features in Developer and features→stack in Business | Pass |
+| Full TEST-ONLY sample rendered with the built CSS: Developer code-listing panel and `[kind]` evidence tags; Business pull-quote problem and numbered evidence; no sideways scrolling at 360 px (iframe) | Pass |
+| Unit tests (426), typecheck and production build | Pass |
+
+TaskNest's exhibit is unchanged in content: it has no problem, approach,
+implementation, evidence or limitations entries yet (task 5.6, owner input).
+
+## 5.6 Approved projects only (2026-11-11)
+
+No content added (owner will supply it). `projects.json`: TaskNest
+`published` (owner's commit `8447075`, 2026-11-03); FactCheckAI and Humanizer
+`in-development` with every content field empty, shown as sealed doors
+(name only). `profile.test.ts` pins the exhibited list to `["tasknest"]`, so
+publishing another project fails the tests until that is changed on purpose.
+
+## 5.7 Project links and status labels (2026-11-11) — blocked
+
+`npm run check:links` (new, `scripts/check-links.mjs`) requests every link
+the site shows, as a logged-out visitor.
+
+| Link | Result |
+|---|---|
+| TaskNest live site `https://mytasknest.pages.dev/` | 200 |
+| TaskNest code `https://github.com/barsa-dot/Task_er` | **404: the repository is private** |
+| Profile GitHub `https://github.com/barsa-dot` | 200 |
+
+Status labels are accurate: TaskNest "Now showing" (live, verified in 5.3);
+FactCheckAI and Humanizer "Opening soon" (not finished, 5.1/5.2).
+
+**Owner decision needed:** make `Task_er` public, or set TaskNest's
+`githubUrl` to `""` to hide the link. Then re-run `npm run check:links`.
+
+## 6.1–6.2 Project registry design and manifest format (2026-11-11)
+
+Design in `docs/project-registry.md`: `projects.json` is the single source of
+truth (read by the old site at runtime and by the new app at build time);
+approved content and status are owner-written; automation may only write dated
+signals to a separate generated file and can never publish or reword
+anything. Manifest format: `museum-manifest.json` in each project repository,
+parsed by `src/data/profile/manifest.ts`.
+
+| Check | Result |
+|---|---|
+| Registry accepts an optional `release` (version, YYYY-MM-DD date, optional https notes link) | Pass |
+| Manifest: minimal and full manifests parse; fields map to registry names (`repositoryUrl`→`githubUrl`, `demoUrl`→`liveUrl`) | Pass |
+| Manifest refuses `published`/`unavailable` status, `presentation`, unknown or missing fields, bad URLs, ids, dates and alt text (14 cases), naming the manifest field in each error | Pass |
+| `manifestToProject`: published/closed projects keep their status; a sealed project can't be published; presentation stays from the registry; result passes the registry validator | Pass |
+| Unit tests (449), typecheck and production build | Pass |
