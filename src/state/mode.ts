@@ -7,7 +7,7 @@
 //   links) but is NOT saved: the visitor didn't choose it themselves.
 // - Switching keeps the current path and #section, so the visitor stays in
 //   the equivalent place; only the `mode` query parameter is updated if present.
-// - `forget()` clears the saved preference and returns to the selection screen.
+// - `forget()` clears the saved preference and restores the fallback presentation.
 // - Storage may be unavailable (private windows); everything still works in
 //   memory, the choice just isn't remembered.
 //
@@ -42,6 +42,7 @@ export interface ModeEnvironment {
   storage?: StorageLike | null;
   /** Usually `document.documentElement`; receives `data-mode`. */
   root?: RootLike | null;
+  fallbackMode?: Mode;
   /** Current page URL. */
   getUrl?: () => string;
   /** Replace the URL without navigation (`history.replaceState`). */
@@ -102,7 +103,8 @@ export function createModeStore(env: ModeEnvironment = {}) {
   const listeners = new Set<ModeListener>();
 
   function apply(): void {
-    if (state.mode) env.root?.setAttribute("data-mode", state.mode);
+    const mode = state.mode ?? env.fallbackMode;
+    if (mode) env.root?.setAttribute("data-mode", mode);
     else env.root?.removeAttribute("data-mode");
   }
 
@@ -165,6 +167,7 @@ export function createBrowserModeStore(): ModeStore {
   return createModeStore({
     storage,
     root: document.documentElement,
+    fallbackMode: "business",
     getUrl: () => window.location.href,
     replaceUrl: (url) => window.history.replaceState(window.history.state, "", url),
   });

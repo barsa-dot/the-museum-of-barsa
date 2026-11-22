@@ -2,8 +2,6 @@ import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { App } from "./App";
-import { MODE_OPTIONS } from "./ModeChooser";
-import { currentSectionId } from "./ModeSwitch";
 import { STORAGE_KEY, createModeStore, resolveInitialMode, type StorageLike } from "../state/mode";
 import { MODES } from "../data/profile/presentation";
 
@@ -15,56 +13,28 @@ function storage(initial: Record<string, string> = {}): StorageLike {
 const render = (stored?: string) =>
   renderToStaticMarkup(<App store={createModeStore({ storage: storage(stored ? { [STORAGE_KEY]: stored } : {}) })} />);
 
-describe("first visit", () => {
-  const html = render();
-
-  it("shows the mode choice, not the old title intro", () => {
-    expect(html).toContain('class="chooser"');
-    expect(html).not.toMatch(/Enter the Museum/i);
-    expect(html).not.toContain('id="content"');
-  });
-
-  it("offers both modes as buttons drawn in their own mode", () => {
-    for (const mode of MODES) {
-      expect(html).toMatch(new RegExp(`<button[^>]*data-mode="${mode}"`));
-    }
-    expect(html.match(/<button[^>]*data-mode=/g)).toHaveLength(2);
-  });
-
-  it("says both modes hold the same work", () => {
-    expect(html).toContain("Both modes hold the same projects, education and experience.");
-    expect(html).toContain("remembered on this device");
-  });
-
-  it("names the owner as the page heading", () => {
-    expect(html).toMatch(/<h1[^>]*>Barsarani Sahoo<\/h1>/);
-  });
-
-  it("describes each mode by emphasis only, with no claims", () => {
-    for (const option of MODE_OPTIONS) {
-      expect(option.description).toMatch(/^Leads with /);
-      expect(option.description).not.toMatch(/\d/);
-    }
+describe("portfolio entrance", () => {
+  it("opens directly in Business and places a single switch below the name", () => {
+    const html = render();
+    expect(html).toContain('id="content"');
+    expect(html).toContain('class="id-card"');
+    expect(html).toMatch(/<h1[^>]*>Barsarani Sahoo<\/h1><button[^>]*role="switch"[^>]*aria-checked="false"/);
+    expect(html.match(/role="switch"/g)).toHaveLength(1);
+    expect(html).not.toContain('class="chooser"');
   });
 });
 
 describe.each(MODES)("returning visitor in %s mode", (mode) => {
   const html = render(mode);
 
-  it("goes straight to the content", () => {
-    expect(html).not.toContain('class="chooser"');
-    expect(html).toContain('id="content"');
+  it("opens the portfolio with the saved switch state", () => {
     expect(html).toContain('id="education"');
+    expect(html).toContain('aria-label="Tech view"');
+    expect(html).toContain(`aria-checked="${mode === "developer"}"`);
   });
 
-  it("shows the mode switch with the current mode pressed", () => {
-    expect(html).toContain('aria-label="Visual mode"');
-    const pressed = [...html.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)].map((m) => m[1]);
-    expect(pressed).toEqual([mode === "developer" ? "Tech" : "Business"]);
-  });
-
-  it("offers a way back to the mode choice and a skip link", () => {
-    expect(html).toContain("Show the mode choice again");
+  it("offers a shortcut to the switch and a skip link", () => {
+    expect(html).toContain('href="#portfolio-view"');
     expect(html).toContain('href="#content"');
   });
 });
@@ -109,28 +79,12 @@ describe("pre-paint script in app/index.html", () => {
     ["https://x.test/?mode=hacker", "developer"],
     ["https://x.test/#projects", "developer"],
   ])("agrees with resolveInitialMode for %s with stored %s", (url, stored) => {
-    const expected = resolveInitialMode({ getUrl: () => url, storage: storage(stored ? { [STORAGE_KEY]: stored } : {}) }).mode;
+    const expected = resolveInitialMode({ getUrl: () => url, storage: storage(stored ? { [STORAGE_KEY]: stored } : {}) }).mode ?? "business";
     expect(runScript(url, stored)).toBe(expected);
   });
 
   it("survives blocked storage", () => {
-    expect(runScript("https://x.test/", null, true)).toBeNull();
+    expect(runScript("https://x.test/", null, true)).toBe("business");
     expect(runScript("https://x.test/?mode=business", null, true)).toBe("business");
-  });
-});
-
-describe("currentSectionId", () => {
-  const fakeDoc = (tops: Record<string, number>) =>
-    ({
-      querySelectorAll: () =>
-        Object.entries(tops).map(([id, top]) => ({ id, getBoundingClientRect: () => ({ top }) })),
-    }) as unknown as Document;
-
-  it("returns the section being read", () => {
-    expect(currentSectionId(fakeDoc({ about: -900, education: -100, projects: 600 }), 900)).toBe("education");
-  });
-
-  it("returns null at the top of the page above all sections", () => {
-    expect(currentSectionId(fakeDoc({ about: 400, education: 1200 }), 900)).toBeNull();
   });
 });

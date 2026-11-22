@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type AnimationEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type AnimationEvent, type PointerEvent, type ReactNode } from "react";
 import { useModeView } from "../../content/components";
 import { hasText } from "../../content/rules";
 import { browserEntranceEnvironment, chooseCardEntrance, markCardEntrancePlayed, type CardEntrance } from "./cardEntrance";
@@ -8,7 +8,7 @@ type Phase = "dropping" | "settled";
 /** Name of the last reveal animation; when it ends the entrance is over. */
 const LAST_ANIMATION = "id-card-reveal-last";
 
-export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
+export function IdentityCard({ entrance, modeControl }: { entrance?: CardEntrance; modeControl?: ReactNode }) {
   const { mode, person, portrait } = useModeView();
   const photo = portrait.photo;
   const hanger = useRef<HTMLDivElement>(null);
@@ -147,6 +147,7 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
         <h1 id="biz-identity-name" className="biz-identity__name" tabIndex={-1} ref={nameRef}>
           {person?.name}
         </h1>
+        {modeControl}
       </div>
     </section>
   );

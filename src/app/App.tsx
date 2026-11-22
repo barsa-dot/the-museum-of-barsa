@@ -1,12 +1,11 @@
-// App shell: the mode chooser on first visit, otherwise the chosen mode.
+// The portfolio opens in Business unless a visitor has selected a view.
 
-import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { Suspense, lazy, useLayoutEffect, useSyncExternalStore } from "react";
 import { profile, projects, viewFor } from "../data/profile";
 import type { Mode } from "../data/profile/presentation";
 import type { ModeStore } from "../state/mode";
 import { ContentProvider, ProfileContent } from "../content/components";
-import { ModeChooser } from "./ModeChooser";
-import { ModeSwitch, currentSectionId } from "./ModeSwitch";
+import { ModeSwitch } from "./ModeSwitch";
 import { IdentityCard } from "../modes/business/IdentityCard";
 import { SectionNav } from "./SectionNav";
 import { QuickLinks } from "./QuickLinks";
@@ -17,48 +16,18 @@ const MuseumView = lazy(() => import("../museum/MuseumView"));
 
 export function App({ store }: { store: ModeStore }) {
   const state = useSyncExternalStore(store.subscribe, store.get, store.get);
+  const mode = state.mode ?? "business";
   const view = useView();
-  // Only move focus after the visitor acts, never on the initial page load.
-  const [acted, setActed] = useState(false);
 
-  if (state.mode && view === "museum") {
+  if (view === "museum") {
     return (
       <Suspense fallback={<p className="museum-loading">Loading the museum…</p>}>
-        <MuseumView mode={state.mode} onExit={exitMuseum} />
+        <MuseumView mode={mode} onExit={exitMuseum} />
       </Suspense>
     );
   }
 
-  if (!state.mode) {
-    return (
-      <ModeChooser
-        identity={
-          <ContentProvider view={viewFor(profile, projects, "business")}>
-            <IdentityCard />
-          </ContentProvider>
-        }
-        focusOnMount={acted}
-        onChoose={(mode) => {
-          setActed(true);
-          store.choose(mode);
-          window.scrollTo(0, 0);
-        }}
-      />
-    );
-  }
-
-  return (
-    <ModeView
-      mode={state.mode}
-      focusOnMount={acted}
-      onSwitch={(mode) => store.choose(mode)}
-      onReturnToChooser={() => {
-        setActed(true);
-        store.forget();
-        window.scrollTo(0, 0);
-      }}
-    />
-  );
+  return <ModeView mode={mode} onSwitch={(next) => store.choose(next)} />;
 }
 
 /** Invitation from the portfolio pages into the walkable museum. */
@@ -87,25 +56,7 @@ function MuseumInvitation() {
   );
 }
 
-function ModeView({
-  mode,
-  focusOnMount,
-  onSwitch,
-  onReturnToChooser,
-}: {
-  mode: Mode;
-  focusOnMount: boolean;
-  onSwitch: (mode: Mode) => void;
-  onReturnToChooser: () => void;
-}) {
-  const mainRef = useRef<HTMLElement>(null);
-  const keepSection = useRef<{ id: string; top: number } | null>(null);
-
-  // Each mode's identity component provides the page's <h1>.
-  useEffect(() => {
-    if (focusOnMount) mainRef.current?.querySelector<HTMLElement>("h1")?.focus({ preventScroll: true });
-  }, [focusOnMount]);
-
+function ModeView({ mode, onSwitch }: { mode: Mode; onSwitch: (mode: Mode) => void }) {
   // Links to a section (…#projects) must land on it. The browser tries to jump
   // to the hash before the app has rendered the section, so do it here once
   // the content exists.
@@ -113,15 +64,6 @@ function ModeView({
     const id = decodeURIComponent(window.location.hash.slice(1));
     if (id) document.getElementById(id)?.scrollIntoView({ block: "start" });
   }, []);
-
-  // After a switch, return to the section the visitor was reading.
-  useLayoutEffect(() => {
-    const section = keepSection.current;
-    keepSection.current = null;
-    if (!section) return;
-    const top = document.getElementById(section.id)?.getBoundingClientRect().top;
-    if (top !== undefined) window.scrollBy(0, top - section.top);
-  }, [mode]);
 
   return (
     <ContentProvider view={viewFor(profile, projects, mode)}>
@@ -135,21 +77,13 @@ function ModeView({
           </a>
           <div className="shell-header__actions">
             <QuickLinks />
-            <ModeSwitch
-              mode={mode}
-              onSwitch={(next) => {
-                const id = currentSectionId();
-                const top = id ? document.getElementById(id)?.getBoundingClientRect().top : undefined;
-                keepSection.current = id && top !== undefined ? { id, top } : null;
-                onSwitch(next);
-              }}
-            />
+            <a className="quick-links__link" href="#portfolio-view">Change view</a>
           </div>
         </div>
         <SectionNav />
       </header>
-      <main id="content" className="content-page" ref={mainRef}>
-        <IdentityCard />
+      <main id="content" className="content-page">
+        <IdentityCard modeControl={<ModeSwitch mode={mode} onSwitch={onSwitch} />} />
         <MuseumInvitation />
         <ProfileContent />
       </main>
@@ -168,9 +102,6 @@ function ModeView({
             </>
           )}
         </p>
-        <button type="button" className="shell-footer__link" onClick={onReturnToChooser}>
-          Show the mode choice again
-        </button>
       </footer>
     </ContentProvider>
   );

@@ -1,38 +1,20 @@
-// Visible but unobtrusive control for switching modes after entering.
-
-import { type Mode } from "../data/profile/presentation";
-
-const LABELS: Record<Mode, string> = { developer: "Tech", business: "Business" };
+import type { Mode } from "../data/profile/presentation";
 
 export function ModeSwitch({ mode, onSwitch }: { mode: Mode; onSwitch: (mode: Mode) => void }) {
+  const tech = mode === "developer";
   return (
-    <div className="mode-switch" data-active={mode} role="group" aria-label="Visual mode">
-      {(["business", "developer"] as const).map((m) => (
-        <button
-          key={m}
-          type="button"
-          className="mode-switch__option"
-          aria-pressed={m === mode}
-          onClick={() => {
-            if (m !== mode) onSwitch(m);
-          }}
-        >
-          {LABELS[m]}
-        </button>
-      ))}
-    </div>
+    <button
+      id="portfolio-view"
+      className="mode-switch"
+      type="button"
+      role="switch"
+      aria-label="Tech view"
+      aria-checked={tech}
+      onClick={() => onSwitch(tech ? "business" : "developer")}
+    >
+      <span className="mode-switch__label mode-switch__label--business" aria-hidden="true">Business</span>
+      <span className="mode-switch__track" aria-hidden="true" />
+      <span className="mode-switch__label mode-switch__label--tech" aria-hidden="true">Tech</span>
+    </button>
   );
-}
-
-/**
- * The section currently being read: the last section whose top has passed
- * the upper third of the viewport. Used to keep the visitor's place when
- * switching modes (both modes use the same section ids).
- */
-export function currentSectionId(doc: Document = document, viewportHeight = window.innerHeight): string | null {
-  let current: string | null = null;
-  for (const section of doc.querySelectorAll<HTMLElement>("main section[id]")) {
-    if (section.getBoundingClientRect().top <= viewportHeight / 3) current = section.id;
-  }
-  return current;
 }
