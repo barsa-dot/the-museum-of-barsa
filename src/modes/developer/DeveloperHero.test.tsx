@@ -78,7 +78,7 @@ describe("page headings", () => {
   });
 
   it("puts the hero only in Developer Mode", () => {
-    expect(page("developer")).toContain('class="dev-hero"');
+    expect(page("developer")).toContain('class="id-card"');
     expect(page("business")).not.toContain('class="dev-hero"');
   });
 });

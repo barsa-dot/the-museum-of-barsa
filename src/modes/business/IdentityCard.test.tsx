@@ -73,7 +73,7 @@ describe("mode identity", () => {
 
   it("puts the identity card only in Business Mode", () => {
     expect(page("business")).toContain('class="id-card"');
-    expect(page("developer")).not.toContain('class="id-card"');
+    expect(page("developer")).toContain('class="id-card"');
   });
 
   it("no longer needs a hidden fallback heading", () => {

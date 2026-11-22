@@ -7,7 +7,6 @@ import type { ModeStore } from "../state/mode";
 import { ContentProvider, ProfileContent } from "../content/components";
 import { ModeChooser } from "./ModeChooser";
 import { ModeSwitch, currentSectionId } from "./ModeSwitch";
-import { DeveloperHero } from "../modes/developer/DeveloperHero";
 import { IdentityCard } from "../modes/business/IdentityCard";
 import { SectionNav } from "./SectionNav";
 import { QuickLinks } from "./QuickLinks";
@@ -33,7 +32,11 @@ export function App({ store }: { store: ModeStore }) {
   if (!state.mode) {
     return (
       <ModeChooser
-        name={profile.person.name}
+        identity={
+          <ContentProvider view={viewFor(profile, projects, "business")}>
+            <IdentityCard />
+          </ContentProvider>
+        }
         focusOnMount={acted}
         onChoose={(mode) => {
           setActed(true);
@@ -142,7 +145,7 @@ function ModeView({
         <SectionNav />
       </header>
       <main id="content" className="content-page" ref={mainRef}>
-        {mode === "developer" ? <DeveloperHero /> : <IdentityCard />}
+        <IdentityCard />
         <MuseumInvitation />
         <ProfileContent />
       </main>

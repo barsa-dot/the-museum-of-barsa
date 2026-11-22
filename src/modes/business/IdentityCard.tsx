@@ -1,17 +1,4 @@
-// Business Mode identity card, after the owner's reference screenshot: a
-// portrait badge in a clear plastic sleeve, hung at an angle from a cream
-// lanyard with a metal clip, beside large "This is my PORTFOLIO" type.
-// The card holds the owner's photograph, name and a few verified details.
-//
-// Entrance: the card drops in on its lanyard, settles with a small sway (no
-// bounce or spin) and then reveals its details. Total ≈1.5 s. It never blocks
-// navigation, can be skipped (button or Escape), is replaced by the settled
-// card for reduced-motion visitors, and plays once per session.
-//
-// Uses only verified profile facts. Until the owner's photograph exists, a
-// clearly labelled placeholder is shown — never another face.
-
-import { useCallback, useEffect, useRef, useState, type AnimationEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type AnimationEvent, type PointerEvent } from "react";
 import { useModeView, SafeLink } from "../../content/components";
 import { formatDateRange, hasText } from "../../content/rules";
 import { browserEntranceEnvironment, chooseCardEntrance, markCardEntrancePlayed, type CardEntrance } from "./cardEntrance";
@@ -22,8 +9,43 @@ type Phase = "dropping" | "settled";
 const LAST_ANIMATION = "id-card-reveal-last";
 
 export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
-  const { person, portrait, education, contact } = useModeView();
+  const { mode, person, portrait, education, contact } = useModeView();
   const photo = portrait.photo;
+  const hanger = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const swinging = useRef<Animation | null>(null);
+
+  function startDrag(event: PointerEvent<HTMLButtonElement>) {
+    if (event.button !== 0 || drag.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    swinging.current?.cancel();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  }
+
+  function moveDrag(event: PointerEvent<HTMLButtonElement>) {
+    const start = drag.current;
+    if (!start || start.id !== event.pointerId || !hanger.current) return;
+    const tilt = Math.max(-24, Math.min(24, (event.clientX - start.x) / 5));
+    const pull = Math.max(-12, Math.min(30, event.clientY - start.y));
+    hanger.current.style.transform = `translateY(${pull}px) rotate(${tilt}deg)`;
+  }
+
+  function releaseDrag(event: PointerEvent<HTMLButtonElement>) {
+    if (drag.current?.id !== event.pointerId || !hanger.current) return;
+    drag.current = null;
+    const from = hanger.current.style.transform;
+    hanger.current.style.removeProperty("transform");
+    if (from) sway(from);
+  }
+
+  function sway(from = "rotate(10deg)") {
+    if (!hanger.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    swinging.current?.cancel();
+    swinging.current = hanger.current.animate(
+      [{ transform: from }, { transform: "rotate(-5deg)", offset: 0.46 }, { transform: "none" }],
+      { duration: 570, easing: "ease-out" },
+    );
+  }
 
   const [phase, setPhase] = useState<Phase>(() =>
     (entrance ?? chooseCardEntrance(browserEntranceEnvironment())) === "drop" ? "dropping" : "settled",
@@ -71,79 +93,80 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
         </button>
       )}
       <div className="biz-identity__stage">
-        <div className="id-card-drop" onAnimationEnd={onAnimationEnd}>
-          <span className="id-card-drop__strap" aria-hidden="true" />
-          <span className="id-card-drop__clip" aria-hidden="true" />
-          <div className="id-card-sleeve">
-            <span className="id-card-sleeve__slot" aria-hidden="true" />
-            <article className="id-card">
-              <header className="id-card__top">
-                <span>Portfolio</span>
-                <span>Business edition</span>
-              </header>
+        <div className="id-card-hanger" ref={hanger}>
+          <div className="id-card-drop" onAnimationEnd={onAnimationEnd}>
+            <span className="id-card-drop__strap" aria-hidden="true" />
+            <span className="id-card-drop__clip" aria-hidden="true" />
+            <div className="id-card-sleeve">
+              <span className="id-card-sleeve__slot" aria-hidden="true" />
+              <article className="id-card">
+                <header className="id-card__top">
+                  <span>Museum Pass</span>
+                  <span>{mode === "business" ? "Business" : "Tech"}</span>
+                </header>
 
-              <div className="id-card__body">
-                <figure className="id-card__photo">
-                  {photo ? (
-                    <img
-                      className="id-card__image"
-                      src={`/${photo.src}`}
-                      alt={photo.alt}
-                      width={photo.width}
-                      height={photo.height}
-                    />
-                  ) : (
-                    <div
-                      className="id-card__placeholder"
-                      role="img"
-                      aria-label="Photograph placeholder. The photo has not been added yet."
-                    >
-                      <span className="id-card__placeholder-label">Photograph pending</span>
-                      <span className="id-card__placeholder-note">A real photograph will appear here.</span>
-                    </div>
-                  )}
-                </figure>
+                <div className="id-card__body">
+                  <button
+                    className="id-card__photo"
+                    type="button"
+                    aria-label="Swing the museum pass"
+                    onPointerDown={startDrag}
+                    onPointerMove={moveDrag}
+                    onLostPointerCapture={releaseDrag}
+                    onClick={(event) => { if (event.detail === 0) sway(); }}
+                  >
+                    {photo ? (
+                      <img
+                        className="id-card__image"
+                        draggable={false}
+                        src={`/${photo.src}`}
+                        alt={photo.alt}
+                        width={photo.width}
+                        height={photo.height}
+                      />
+                    ) : (
+                      <span
+                        className="id-card__placeholder"
+                        role="img"
+                        aria-label="Photograph placeholder. The photo has not been added yet."
+                      >
+                        <span className="id-card__placeholder-label">Photograph pending</span>
+                        <span className="id-card__placeholder-note">A real photograph will appear here.</span>
+                      </span>
+                    )}
+                  </button>
+                </div>
 
-                <h1 id="biz-identity-name" className="id-card__name" tabIndex={-1} ref={nameRef}>
-                  {person?.name}
-                </h1>
-              </div>
+                {hasText(person?.headline) && <p className="id-card__headline">{person.headline}</p>}
 
-              {hasText(person?.headline) && <p className="id-card__headline">{person.headline}</p>}
-
-              {(education.length > 0 || contact?.github) && (
-                <dl className="id-card__facts">
-                  {education.map((e) => (
-                    <div key={e.id} className="id-card__fact">
-                      <dt>{e.qualification}</dt>
-                      <dd>
-                        {e.field}
-                        <span className="id-card__institution">{[e.institution, formatDateRange(e.dates)].filter(Boolean).join(", ")}</span>
-                      </dd>
-                    </div>
-                  ))}
-                  {contact?.github && (
-                    <div className="id-card__fact">
-                      <dt>GitHub</dt>
-                      <dd>
-                        <SafeLink href={contact.github.url}>{contact.github.label}</SafeLink>
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-              )}
-            </article>
+                {(education.length > 0 || contact?.github) && (
+                  <dl className="id-card__facts">
+                    {education.map((e) => (
+                      <div key={e.id} className="id-card__fact">
+                        <dt>{e.qualification}</dt>
+                        <dd>
+                          {e.field}
+                          <span className="id-card__institution">{[e.institution, formatDateRange(e.dates)].filter(Boolean).join(", ")}</span>
+                        </dd>
+                      </div>
+                    ))}
+                    {contact?.github && (
+                      <div className="id-card__fact">
+                        <dt>GitHub</dt>
+                        <dd>
+                          <SafeLink href={contact.github.url}>{contact.github.label}</SafeLink>
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                )}
+              </article>
+            </div>
           </div>
         </div>
-
-        <p className="biz-identity__poster" aria-label="This is my portfolio">
-          <span className="biz-identity__lead" aria-hidden="true">
-            This<br />is<br />my
-          </span>
-          <span className="biz-identity__word" aria-hidden="true">
-            Port<br />fo<br />lio
-          </span>
-        </p>
+        <h1 id="biz-identity-name" className="biz-identity__name" tabIndex={-1} ref={nameRef}>
+          {person?.name}
+        </h1>
       </div>
     </section>
   );

@@ -28,7 +28,7 @@ describe("first visit", () => {
     for (const mode of MODES) {
       expect(html).toMatch(new RegExp(`<button[^>]*data-mode="${mode}"`));
     }
-    expect(html.match(/<button/g)).toHaveLength(2);
+    expect(html.match(/<button[^>]*data-mode=/g)).toHaveLength(2);
   });
 
   it("says both modes hold the same work", () => {

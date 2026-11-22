@@ -1,17 +1,9 @@
-/* =========================================================
-   Business Mode: identity card.
-   After the owner's ID-card screenshot: a portrait badge in a
-   clear plastic sleeve, hung at an angle from a cream lanyard
-   with a metal clip, beside large condensed "This is my
-   PORTFOLIO" type. Photograph in black and white.
-   ========================================================= */
-
+/* Shared museum pass */
 .biz-identity {
   /* Resting angle of the hung badge. The drop sways around it. */
   --card-tilt: 7deg;
-  --font-poster: "Archivo Narrow", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
-  --paper-card: #FFFDF9;
-  --lanyard: #E4D9C6;
+  --paper-card: #FFF2F5;
+  --lanyard: #75213E;
   position: relative;
   padding-block: var(--space-5) var(--space-8);
 }
@@ -20,19 +12,6 @@
   display: grid;
   justify-items: center;
   gap: var(--space-7);
-}
-
-@media (min-width: 860px) {
-  .biz-identity__stage {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    align-items: center;
-    justify-items: start;
-    gap: var(--space-6);
-  }
-
-  .id-card-drop {
-    justify-self: center;
-  }
 }
 
 /* ---------- The hanging badge ---------- */
@@ -53,7 +32,7 @@
   left: 50%;
   bottom: calc(100% + 1.1rem);
   width: 1.6rem;
-  height: 75vh;
+  height: 4rem;
   transform: translateX(-50%);
   background:
     linear-gradient(90deg,
@@ -175,7 +154,7 @@
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--color-text-muted);
+  color: #694353;
 }
 
 @media (max-width: 359px) {
@@ -184,10 +163,10 @@
   }
 }
 
-/* Photograph on the left, the name running down the right edge. */
+
 .id-card__body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   align-items: stretch;
 }
@@ -201,13 +180,14 @@
 .id-card__placeholder {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
   border-radius: 2px;
 }
 
 .id-card__image {
   height: auto;
   object-fit: cover;
+  object-position: center 35%;
   /* Black and white, as in the reference badge. */
   filter: grayscale(1) contrast(1.06) brightness(1.03);
 }
@@ -236,25 +216,7 @@
   font-family: var(--font-label);
   font-size: var(--text-xs);
   letter-spacing: 0.04em;
-  color: var(--color-text-muted);
-}
-
-/* Name set vertically, reading top to bottom: "Barsarani" on the
-   outer edge, "Sahoo" inside it, like the reference's wordmark. */
-.id-card__name {
-  margin: 0;
-  writing-mode: vertical-rl;
-  max-block-size: 100%;
-  font-family: var(--font-poster);
-  font-weight: 700;
-  font-size: clamp(2.4rem, 1.9rem + 1.6vw, 2.9rem);
-  line-height: 0.92;
-  letter-spacing: -0.01em;
-  color: #111;
-}
-
-.id-card__name:focus {
-  outline: none;
+  color: #694353;
 }
 
 .id-card__headline {
@@ -283,7 +245,7 @@
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: #694353;
 }
 
 .id-card__fact dd {
@@ -296,58 +258,43 @@
 .id-card__institution {
   display: block;
   font-size: var(--text-xs);
-  color: var(--color-text-muted);
+  color: #694353;
 }
 
 /* ---------- "This is my PORTFOLIO" ---------- */
 
-.biz-identity__poster {
-  display: flex;
-  align-items: flex-end;
-  gap: clamp(1.5rem, 4vw, 4.5rem);
+.id-card-hanger {
+  width: min(90%, 16rem);
+  transform-origin: center top;
+}
+
+.biz-identity {
+  overflow: clip;
+  padding-top: var(--space-8);
+  background: radial-gradient(ellipse at 50% 28%, var(--color-surface-raised), transparent 65%);
+}
+
+.biz-identity__name {
   margin: 0;
-  font-family: var(--font-poster);
-  font-weight: 700;
-  text-transform: none;
-  color: #111;
+  text-align: center;
+  color: var(--color-heading);
+  font: 700 var(--text-display) / 1.05 var(--font-display);
+  letter-spacing: var(--tracking-display);
 }
 
-.biz-identity__lead {
-  margin-bottom: 0.2em;
-  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.6rem);
-  line-height: 0.95;
-  text-align: right;
+button.id-card__photo {
+  padding: 0;
+  border: 0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
-.biz-identity__word {
-  font-size: clamp(4.5rem, 2rem + 8vw, 9.5rem);
-  line-height: 0.86;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+button.id-card__photo:active { cursor: grabbing; }
+
+@media (prefers-reduced-motion: reduce) {
+  button.id-card__photo { cursor: default; touch-action: auto; }
 }
-
-/* ---------- Phones ---------- */
-
-@media (max-width: 859px) {
-  .biz-identity {
-    --card-tilt: 3deg;
-  }
-
-  .id-card-drop {
-    width: min(100% - 3rem, 19.5rem);
-  }
-
-  .biz-identity__poster {
-    justify-content: center;
-  }
-}
-
-/* =========================================================
-   Identity card entrance (drop, settle, reveal).
-   ≈1.5 s total. No bounce or spin: the badge lands and sways
-   about 1° either side of its resting tilt, like a hung badge.
-   ========================================================= */
-
 .biz-identity__skip {
   position: absolute;
   z-index: 3;
@@ -399,14 +346,14 @@
 }
 
 /* Details appear once the badge has landed. */
-.biz-identity[data-phase="dropping"] :is(.id-card__photo, .id-card__name, .id-card__headline, .id-card__facts, .biz-identity__poster) {
+.biz-identity[data-phase="dropping"] :is(.id-card__photo, .id-card__headline, .id-card__facts) {
   animation: id-card-reveal 420ms var(--ease-standard) both;
 }
 
 .biz-identity[data-phase="dropping"] .id-card__photo { animation-delay: 650ms; }
-.biz-identity[data-phase="dropping"] .id-card__name { animation-delay: 720ms; }
+
 .biz-identity[data-phase="dropping"] .id-card__headline { animation-delay: 800ms; }
-.biz-identity[data-phase="dropping"] .biz-identity__poster { animation-delay: 840ms; }
+
 .biz-identity[data-phase="dropping"] .id-card__facts { animation-delay: 880ms; }
 
 @keyframes id-card-reveal {

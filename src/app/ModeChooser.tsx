@@ -4,7 +4,7 @@
 // panel), so the visitor previews each look before choosing. The copy makes
 // clear that both modes contain the same person and the same work.
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { Mode } from "../data/profile/presentation";
 
 interface Option {
@@ -33,28 +33,26 @@ export const MODE_OPTIONS: readonly Option[] = [
 ];
 
 export function ModeChooser({
-  name,
+  identity,
   onChoose,
   focusOnMount = false,
 }: {
-  name: string;
+  identity: ReactNode;
   onChoose: (mode: Mode) => void;
   /** Move focus to the heading (used when returning here from a mode). */
   focusOnMount?: boolean;
 }) {
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const headingRef = useRef<HTMLElement>(null);
   useEffect(() => {
-    if (focusOnMount) headingRef.current?.focus();
+    if (focusOnMount) headingRef.current?.querySelector("h1")?.focus();
   }, [focusOnMount]);
 
   return (
     <main className="chooser">
-      <header className="chooser__header">
+      <header className="chooser__header" data-mode="business" ref={headingRef}>
         <div className="chooser__intro">
           <p className="chooser__eyebrow">The Museum of Barsa</p>
-          <h1 className="chooser__name" ref={headingRef} tabIndex={-1}>
-            {name}
-          </h1>
+          {identity}
           <p className="chooser__lede" id="chooser-lede">
             One portfolio, two ways to read it. Both modes hold the same projects, education and experience.
           </p>
