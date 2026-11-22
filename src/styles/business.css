@@ -226,43 +226,6 @@
   font-style: italic;
 }
 
-.id-card__facts {
-  margin: var(--space-3) 0 0;
-  padding: 0;
-}
-
-.id-card__fact {
-  display: grid;
-  grid-template-columns: 3.6rem minmax(0, 1fr);
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
-  border-top: var(--border-width) solid var(--color-border);
-}
-
-.id-card__fact dt {
-  padding-top: 0.2em;
-  font-family: var(--font-label);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: #694353;
-}
-
-.id-card__fact dd {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  line-height: 1.35;
-}
-
-.id-card__institution {
-  display: block;
-  font-size: var(--text-xs);
-  color: #694353;
-}
-
-/* ---------- "This is my PORTFOLIO" ---------- */
-
 .id-card-hanger {
   width: min(90%, 16rem);
   transform-origin: center top;
@@ -278,7 +241,7 @@
   margin: 0;
   text-align: center;
   color: var(--color-heading);
-  font: 700 var(--text-display) / 1.05 var(--font-display);
+  font: 700 clamp(2.1rem, 6.5vw, 6rem) / 1.05 var(--font-display);
   letter-spacing: var(--tracking-display);
 }
 
@@ -346,7 +309,7 @@ button.id-card__photo:active { cursor: grabbing; }
 }
 
 /* Details appear once the badge has landed. */
-.biz-identity[data-phase="dropping"] :is(.id-card__photo, .id-card__headline, .id-card__facts) {
+.biz-identity[data-phase="dropping"] :is(.id-card__photo, .id-card__headline) {
   animation: id-card-reveal 420ms var(--ease-standard) both;
 }
 
@@ -354,7 +317,7 @@ button.id-card__photo:active { cursor: grabbing; }
 
 .biz-identity[data-phase="dropping"] .id-card__headline { animation-delay: 800ms; }
 
-.biz-identity[data-phase="dropping"] .id-card__facts { animation-delay: 880ms; }
+
 
 @keyframes id-card-reveal {
   from {

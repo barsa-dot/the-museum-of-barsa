@@ -45,15 +45,6 @@ describe("IdentityCard", () => {
     expect(html).not.toContain("Photograph pending");
   });
 
-  it("lists verified details with the BBA first in Business Mode", () => {
-    const html = render(profile);
-    expect(html.indexOf("Indian Institute of Management Bangalore")).toBeLessThan(html.indexOf("REVA University"));
-    expect(html).toContain("Digital Business and Entrepreneurship");
-    expect(html).toContain("Computer Science and Engineering");
-    expect(html).toContain('href="https://github.com/barsa-dot"');
-    expect(html).not.toContain("ACHIVIA");
-  });
-
   it("shows the headline only once the owner supplies one", () => {
     expect(render(profile)).not.toContain("id-card__headline");
     const html = render({ ...profile, person: { ...profile.person, headline: "Writes and builds." } });
@@ -71,7 +62,7 @@ describe("mode identity", () => {
       <App store={createModeStore({ storage: { getItem: (k) => (k === STORAGE_KEY ? mode : null), setItem() {}, removeItem() {} } })} />,
     );
 
-  it("puts the identity card only in Business Mode", () => {
+  it("puts the identity card in both modes", () => {
     expect(page("business")).toContain('class="id-card"');
     expect(page("developer")).toContain('class="id-card"');
   });

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type AnimationEvent, type PointerEvent } from "react";
-import { useModeView, SafeLink } from "../../content/components";
-import { formatDateRange, hasText } from "../../content/rules";
+import { useModeView } from "../../content/components";
+import { hasText } from "../../content/rules";
 import { browserEntranceEnvironment, chooseCardEntrance, markCardEntrancePlayed, type CardEntrance } from "./cardEntrance";
 
 type Phase = "dropping" | "settled";
@@ -9,7 +9,7 @@ type Phase = "dropping" | "settled";
 const LAST_ANIMATION = "id-card-reveal-last";
 
 export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
-  const { mode, person, portrait, education, contact } = useModeView();
+  const { mode, person, portrait } = useModeView();
   const photo = portrait.photo;
   const hanger = useRef<HTMLDivElement>(null);
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
@@ -112,6 +112,8 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
                     aria-label="Swing the museum pass"
                     onPointerDown={startDrag}
                     onPointerMove={moveDrag}
+                    onPointerUp={releaseDrag}
+                    onPointerCancel={releaseDrag}
                     onLostPointerCapture={releaseDrag}
                     onClick={(event) => { if (event.detail === 0) sway(); }}
                   >
@@ -138,28 +140,6 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
                 </div>
 
                 {hasText(person?.headline) && <p className="id-card__headline">{person.headline}</p>}
-
-                {(education.length > 0 || contact?.github) && (
-                  <dl className="id-card__facts">
-                    {education.map((e) => (
-                      <div key={e.id} className="id-card__fact">
-                        <dt>{e.qualification}</dt>
-                        <dd>
-                          {e.field}
-                          <span className="id-card__institution">{[e.institution, formatDateRange(e.dates)].filter(Boolean).join(", ")}</span>
-                        </dd>
-                      </div>
-                    ))}
-                    {contact?.github && (
-                      <div className="id-card__fact">
-                        <dt>GitHub</dt>
-                        <dd>
-                          <SafeLink href={contact.github.url}>{contact.github.label}</SafeLink>
-                        </dd>
-                      </div>
-                    )}
-                  </dl>
-                )}
               </article>
             </div>
           </div>

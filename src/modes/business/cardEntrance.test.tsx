@@ -75,7 +75,7 @@ describe("entrance styles", () => {
   it("finishes in about 1.5 seconds", () => {
     expect(ms(/id-card-drop (\d+)ms/)).toBeLessThanOrEqual(1100);
     expect(ms(/id-card-reveal-last 1ms (\d+)ms/)).toBeLessThanOrEqual(1600);
-    const lastReveal = ms(/\.id-card__facts \{ animation-delay: (\d+)ms/) + ms(/id-card-reveal (\d+)ms/);
+    const lastReveal = ms(/\.id-card__headline \{ animation-delay: (\d+)ms/) + ms(/id-card-reveal (\d+)ms/);
     expect(lastReveal).toBeLessThanOrEqual(ms(/id-card-reveal-last 1ms (\d+)ms/));
   });
 

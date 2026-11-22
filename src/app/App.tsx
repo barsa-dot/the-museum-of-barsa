@@ -103,7 +103,7 @@ function ModeView({
 
   // Each mode's identity component provides the page's <h1>.
   useEffect(() => {
-    if (focusOnMount) mainRef.current?.querySelector<HTMLElement>("h1")?.focus();
+    if (focusOnMount) mainRef.current?.querySelector<HTMLElement>("h1")?.focus({ preventScroll: true });
   }, [focusOnMount]);
 
   // Links to a section (…#projects) must land on it. The browser tries to jump
