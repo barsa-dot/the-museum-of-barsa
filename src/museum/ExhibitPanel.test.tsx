@@ -21,11 +21,10 @@ describe("ExhibitPanel", () => {
     const { text } = panel({ type: "project", id: "tasknest" });
     expect(text).toContain("TaskNest");
     expect(text).toContain("Key features");
-    expect(text).not.toContain("FactCheckAI");
   });
 
-  it("never shows details of an unfinished project, even if asked for one", () => {
-    const { text } = panel({ type: "project", id: "factcheckai" });
+  it("shows a fallback for a missing project", () => {
+    const { text } = panel({ type: "project", id: "missing" });
     expect(text).toContain("This exhibit is still being prepared.");
   });
 

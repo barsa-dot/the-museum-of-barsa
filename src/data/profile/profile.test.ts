@@ -66,12 +66,14 @@ describe("publishable()", () => {
 
 describe("project registry", () => {
   it("parses the real projects.json", () => {
-    expect(projects.map((p) => p.id)).toEqual(["tasknest", "factcheckai", "humanizer"]);
+    expect(projects.map((p) => p.id)).toEqual(["tasknest"]);
   });
 
   it("splits exhibits from sealed doors by status", () => {
     expect(exhibitedProjects(projects).map((p) => p.id)).toEqual(["tasknest"]);
-    expect(sealedProjects(projects).map((p) => p.id)).toEqual(["factcheckai", "humanizer"]);
+    const draft = parseProjects([{ ...base, status: "in-development" }]);
+    expect(sealedProjects(draft).map((p) => p.id)).toEqual(["demo"]);
+    expect(sealedProjects(projects)).toHaveLength(0);
   });
 
   it("never exhibits a project awaiting review", () => {

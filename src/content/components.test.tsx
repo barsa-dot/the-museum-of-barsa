@@ -81,10 +81,11 @@ describe("verification", () => {
 
 describe("projects", () => {
   it("shows unfinished projects by name only", () => {
-    const html = render(profile, "developer");
-    const sealed = html.slice(html.lastIndexOf("<article", html.indexOf('id="factcheckai"')));
+    const draft = [{ ...projects[0]!, id: "draft", name: "Draft Project", status: "in-development" as const }];
+    const html = render(profile, "developer", draft);
+    const sealed = html.slice(html.lastIndexOf("<article", html.indexOf('id="draft"')));
     expect(sealed).toContain("Opening soon");
-    expect(textOf(sealed.slice(0, sealed.indexOf("</article>")))).toBe("FactCheckAI Opening soon");
+    expect(textOf(sealed.slice(0, sealed.indexOf("</article>")))).toBe("Draft Project Opening soon");
   });
 
   it("never shows a project awaiting review", () => {
@@ -93,7 +94,7 @@ describe("projects", () => {
   });
 
   it("hides the live link of a temporarily closed project", () => {
-    const closed = [{ ...projects[0]!, status: "unavailable" as const }];
+    const closed = [{ ...projects[0]!, status: "unavailable" as const, githubUrl: "https://github.com/example/closed-project" }];
     const html = render(profile, "developer", closed);
     expect(html).toContain("Temporarily closed");
     expect(html).not.toContain("Visit live site");

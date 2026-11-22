@@ -31,30 +31,13 @@
       "Cloudflare Pages"
     ],
     "liveUrl": "https://mytasknest.pages.dev/",
-    "githubUrl": "https://github.com/barsa-dot/Task_er",
-    "screenshots": [],
-    "limitations": []
-  },
-  {
-    "id": "factcheckai",
-    "name": "FactCheckAI",
-    "status": "in-development",
-    "tagline": "",
-    "description": "",
-    "liveUrl": "",
     "githubUrl": "",
     "screenshots": [],
-    "limitations": []
-  },
-  {
-    "id": "humanizer",
-    "name": "Humanizer",
-    "status": "in-development",
-    "tagline": "",
-    "description": "",
-    "liveUrl": "",
-    "githubUrl": "",
-    "screenshots": [],
-    "limitations": []
+    "limitations": [],
+    "problem": "Students need one place to manage coursework, side projects, jobs, and personal goals, including when they are offline.",
+    "implementation": [
+      "Stores tasks on the device with IndexedDB and uses Supabase for account-based sync.",
+      "Handles conflicts when updates reach the same account from different devices."
+    ]
   }
 ]

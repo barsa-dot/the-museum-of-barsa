@@ -66,10 +66,11 @@ describe.each(MODES)("exhibits in %s mode", (mode) => {
   });
 
   it("shows published projects on stands, and unfinished ones as sealed doors with their name only", () => {
-    const room = inRoom("creation");
+    const draft = { ...projects[0]!, id: "draft", name: "Draft Project", status: "in-development" as const };
+    const room = buildExhibits(viewFor(profile, [...projects, draft], mode)).filter((s) => s.room === "creation");
     expect(room.filter((s) => s.kind === "stand").map((s) => s.plaque.title)).toEqual(["TaskNest"]);
     const sealed = room.filter((s) => s.kind === "sealedDoor");
-    expect(sealed.map((s) => s.plaque.title).sort()).toEqual(["FactCheckAI", "Humanizer"]);
+    expect(sealed.map((s) => s.plaque.title).sort()).toEqual(["Draft Project"]);
     for (const s of sealed) {
       expect(s.exhibit).toBeNull();
       expect(s.plaque.lines).toEqual([]);
