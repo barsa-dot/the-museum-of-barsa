@@ -14,6 +14,52 @@
   gap: var(--space-7);
 }
 
+.identity-scene {
+  position: relative;
+  grid-area: 1 / 1;
+  align-self: stretch;
+  justify-self: stretch;
+  margin-block: calc(-1 * var(--space-8)) calc(-1 * var(--space-5));
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 30%, #FFF9F2 0%, #F4D7DF 70%);
+}
+
+.identity-scene__tech {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  background: #301321;
+  color: #F4D7DF;
+  clip-path: inset(100% 0 0);
+  transition: clip-path var(--duration-slow) var(--ease-emphasis);
+}
+
+.identity-scene__tech span {
+  font: 700 clamp(3rem, min(13vw, 12vh), 10rem) / 0.83 "Archivo Narrow", "Arial Narrow", sans-serif;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  transform: translateX(-15%);
+  transition: transform var(--duration-slow) var(--ease-emphasis);
+}
+
+.identity-scene__tech span:nth-child(even) {
+  transform: translateX(15%);
+}
+
+.identity-scene__tech span:nth-child(3) {
+  color: #C8EA43;
+}
+
+[data-mode="developer"] .identity-scene__tech {
+  clip-path: inset(0);
+}
+
+[data-mode="developer"] .identity-scene__tech span {
+  transform: translateX(0);
+}
+
 /* ---------- The hanging badge ---------- */
 
 .id-card-drop {
@@ -227,6 +273,8 @@
 }
 
 .id-card-hanger {
+  grid-area: 1 / 1;
+  position: relative;
   width: min(90%, 16rem);
   transform-origin: center top;
 }
@@ -234,11 +282,11 @@
 .biz-identity {
   overflow: clip;
   padding-top: var(--space-8);
-  background: radial-gradient(ellipse at 50% 28%, var(--color-surface-raised), transparent 65%);
 }
 
 .biz-identity__name {
   margin: 0;
+  padding-inline: var(--space-3);
   text-align: center;
   color: var(--color-heading);
   font: 700 clamp(2.1rem, 6.5vw, 6rem) / 1.05 var(--font-display);

@@ -82,10 +82,12 @@ function ModeView({ mode, onSwitch }: { mode: Mode; onSwitch: (mode: Mode) => vo
         </div>
         <SectionNav />
       </header>
-      <main id="content" className="content-page">
+      <main id="content">
         <IdentityCard modeControl={<ModeSwitch mode={mode} onSwitch={onSwitch} />} />
-        <MuseumInvitation />
-        <ProfileContent />
+        <div className="content-page">
+          <MuseumInvitation />
+          <ProfileContent />
+        </div>
       </main>
       <footer className="shell-footer">
         {/* A terminal status line in Developer Mode, a colophon in Business Mode; decoration only. */}

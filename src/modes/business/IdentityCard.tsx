@@ -93,6 +93,14 @@ export function IdentityCard({ entrance, modeControl }: { entrance?: CardEntranc
         </button>
       )}
       <div className="biz-identity__stage">
+        <div className="identity-scene" aria-hidden="true">
+          <div className="identity-scene__tech">
+            <span>React</span>
+            <span>TypeScript</span>
+            <span>IndexedDB</span>
+            <span>Supabase</span>
+          </div>
+        </div>
         <div className="id-card-hanger" ref={hanger}>
           <div className="id-card-drop" onAnimationEnd={onAnimationEnd}>
             <span className="id-card-drop__strap" aria-hidden="true" />
