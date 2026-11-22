@@ -99,7 +99,7 @@ function ModeView({
   onReturnToChooser: () => void;
 }) {
   const mainRef = useRef<HTMLElement>(null);
-  const keepSection = useRef<string | null>(null);
+  const keepSection = useRef<{ id: string; top: number } | null>(null);
 
   // Each mode's identity component provides the page's <h1>.
   useEffect(() => {
@@ -116,9 +116,11 @@ function ModeView({
 
   // After a switch, return to the section the visitor was reading.
   useLayoutEffect(() => {
-    const id = keepSection.current;
+    const section = keepSection.current;
     keepSection.current = null;
-    if (id) document.getElementById(id)?.scrollIntoView({ block: "start" });
+    if (!section) return;
+    const top = document.getElementById(section.id)?.getBoundingClientRect().top;
+    if (top !== undefined) window.scrollBy(0, top - section.top);
   }, [mode]);
 
   return (
@@ -136,7 +138,9 @@ function ModeView({
             <ModeSwitch
               mode={mode}
               onSwitch={(next) => {
-                keepSection.current = currentSectionId();
+                const id = currentSectionId();
+                const top = id ? document.getElementById(id)?.getBoundingClientRect().top : undefined;
+                keepSection.current = id && top !== undefined ? { id, top } : null;
                 onSwitch(next);
               }}
             />
@@ -155,7 +159,7 @@ function ModeView({
           {mode === "developer" ? (
             <>
               <span>~/{profile.person.name.toLowerCase().replace(/\s+/g, "-")}</span>
-              <span>developer mode</span>
+              <span>Tech view</span>
             </>
           ) : (
             <>

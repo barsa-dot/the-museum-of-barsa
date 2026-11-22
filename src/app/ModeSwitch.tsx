@@ -1,13 +1,13 @@
 // Visible but unobtrusive control for switching modes after entering.
 
-import { MODES, type Mode } from "../data/profile/presentation";
+import { type Mode } from "../data/profile/presentation";
 
-const LABELS: Record<Mode, string> = { developer: "Developer", business: "Business" };
+const LABELS: Record<Mode, string> = { developer: "Tech", business: "Business" };
 
 export function ModeSwitch({ mode, onSwitch }: { mode: Mode; onSwitch: (mode: Mode) => void }) {
   return (
-    <div className="mode-switch" role="group" aria-label="Visual mode">
-      {MODES.map((m) => (
+    <div className="mode-switch" data-active={mode} role="group" aria-label="Visual mode">
+      {(["business", "developer"] as const).map((m) => (
         <button
           key={m}
           type="button"

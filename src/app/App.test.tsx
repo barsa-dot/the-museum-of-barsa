@@ -60,7 +60,7 @@ describe.each(MODES)("returning visitor in %s mode", (mode) => {
   it("shows the mode switch with the current mode pressed", () => {
     expect(html).toContain('aria-label="Visual mode"');
     const pressed = [...html.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)].map((m) => m[1]);
-    expect(pressed).toEqual([mode === "developer" ? "Developer" : "Business"]);
+    expect(pressed).toEqual([mode === "developer" ? "Tech" : "Business"]);
   });
 
   it("offers a way back to the mode choice and a skip link", () => {

@@ -9,7 +9,6 @@ import type { Mode } from "../data/profile/presentation";
 
 interface Option {
   mode: Mode;
-  kicker: string;
   title: string;
   description: string;
   emphasis: string[];
@@ -18,16 +17,14 @@ interface Option {
 export const MODE_OPTIONS: readonly Option[] = [
   {
     mode: "developer",
-    kicker: "$ open --mode developer",
-    title: "Developer",
+    title: "Tech",
     description: "Leads with projects, code and the technical stack.",
     emphasis: ["Projects", "Skills", "Engineering"],
   },
   {
     mode: "business",
-    kicker: "Edition No. 02",
     title: "Business",
-    description: "Leads with education, business thinking and communication.",
+    description: "Leads with company work, product decisions and communication.",
     emphasis: ["Education", "Experience", "Strategy"],
   },
 ];
@@ -73,9 +70,6 @@ export function ModeChooser({
             aria-describedby={`chooser-${option.mode}-desc chooser-lede`}
             onClick={() => onChoose(option.mode)}
           >
-            <span className="chooser__kicker" aria-hidden="true">
-              {option.kicker}
-            </span>
             <span className="chooser__title" id={`chooser-${option.mode}-title`}>
               {option.title}
             </span>
