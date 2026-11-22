@@ -5,7 +5,7 @@
 // the mode — only the view's ordering and presentation metadata (summary,
 // tags, featured) differ. Visual styling comes from the mode's tokens.
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import type { ModeView } from "../data/profile/selectors";
 import { hasPart, type Project, type ProjectPart } from "../data/profile/project";
 import type { Achievement, Education, Experience, ExperienceKind, Skill, SkillCategory } from "../data/profile/types";
@@ -241,7 +241,7 @@ export function ProjectExhibit({ project }: { project: Project }) {
   const text = presentationFor(project, mode).summary ?? project.description;
   const parts = PROJECT_PART_ORDER[mode].filter((part) => hasPart(project, part));
   return (
-    <article {...cardProps(project, mode, `projects/${project.id}/README.md`)} data-status={project.status} data-title={project.name}>
+    <article {...cardProps(project, mode, `projects/${project.id}/README.md`)} data-status={project.status} data-title={project.name} tabIndex={-1}>
       <p className="content-label">{closed ? "Temporarily closed" : "Now showing"}</p>
       <h3 className="content-card__title">{project.name}</h3>
       {hasText(project.tagline) && <p className="content-card__tagline">{project.tagline}</p>}
@@ -266,10 +266,47 @@ export function ProjectExhibit({ project }: { project: Project }) {
 /** Unpublished project: name only, no description or claims. */
 export function SealedProject({ project }: { project: Project }) {
   return (
-    <article className="content-card content-card--sealed" id={project.id} data-status={project.status} data-file={`projects/${project.id}/ (locked)`}>
+    <article className="content-card content-card--sealed" id={project.id} tabIndex={-1} data-status={project.status} data-file={`projects/${project.id}/ (locked)`}>
       <h3 className="content-card__title">{project.name}</h3>
       <p className="content-label">Opening soon</p>
     </article>
+  );
+}
+
+function ProjectSpread({ items }: { items: readonly Project[] }) {
+  const { mode } = useModeView();
+  const list = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    const element = list.current;
+    if (!element || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      element.dataset.dealt = "true";
+      observer.disconnect();
+    }, { threshold: 0.15 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  if (items.length === 0) return null;
+
+  return (
+    <ul className="project-spread" ref={list} aria-label="Project index">
+      {items.map((project, index) => {
+        const summary = project.status === "in-development" ? null : presentationFor(project, mode).summary ?? project.tagline;
+        const status = project.status === "published" ? "View project" : project.status === "unavailable" ? "Temporarily closed" : "Opening soon";
+        return (
+          <li key={project.id} style={{ "--deal-order": Math.min(index, 5) } as CSSProperties}>
+            <a className="project-spread__card" href={`#${project.id}`}>
+              <strong>{project.name}</strong>
+              {hasText(summary) && <span>{summary}</span>}
+              <span className="project-spread__status">{status} <span aria-hidden="true">↓</span></span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -330,6 +367,7 @@ const SECTION_BODIES: Record<SectionId, () => ReactNode> = {
     const { exhibitedProjects, sealedProjects } = useModeView();
     return (
       <>
+        <ProjectSpread items={[...exhibitedProjects, ...sealedProjects]} />
         {exhibitedProjects.map((p) => (
           <ProjectExhibit key={p.id} project={p} />
         ))}
