@@ -93,14 +93,6 @@ export function IdentityCard({ entrance, modeControl }: { entrance?: CardEntranc
         </button>
       )}
       <div className="biz-identity__stage">
-        <div className="identity-scene" aria-hidden="true">
-          <div className="identity-scene__tech">
-            <span>React</span>
-            <span>TypeScript</span>
-            <span>IndexedDB</span>
-            <span>Supabase</span>
-          </div>
-        </div>
         <div className="id-card-hanger" ref={hanger}>
           <div className="id-card-drop" onAnimationEnd={onAnimationEnd}>
             <span className="id-card-drop__strap" aria-hidden="true" />
@@ -155,7 +147,23 @@ export function IdentityCard({ entrance, modeControl }: { entrance?: CardEntranc
         <h1 id="biz-identity-name" className="biz-identity__name" tabIndex={-1} ref={nameRef}>
           {person?.name}
         </h1>
-        {modeControl}
+        {modeControl && (
+          <div className="identity-scene">
+            <div className="identity-scene__business" aria-hidden="true">
+              <span>Digital business</span>
+              <span>Computer science</span>
+            </div>
+            <div className="identity-scene__tech" aria-hidden="true">
+              <div className="identity-scene__type">
+                <span>React <em>TypeScript</em> React</span>
+                <span>IndexedDB <em>Vite</em> IndexedDB</span>
+                <span><em>Supabase</em> JavaScript <em>Supabase</em></span>
+                <span>CSS <em>React</em> CSS</span>
+              </div>
+            </div>
+            {modeControl}
+          </div>
+        )}
       </div>
     </section>
   );

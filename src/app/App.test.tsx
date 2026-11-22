@@ -18,7 +18,7 @@ describe("portfolio entrance", () => {
     const html = render();
     expect(html).toContain('id="content"');
     expect(html).toContain('class="id-card"');
-    expect(html).toMatch(/<h1[^>]*>Barsarani Sahoo<\/h1><button[^>]*role="switch"[^>]*aria-checked="false"/);
+    expect(html).toMatch(/<h1[^>]*>Barsarani Sahoo<\/h1><div class="identity-scene">.*<button[^>]*role="switch"[^>]*aria-checked="false"/);
     expect(html.match(/role="switch"/g)).toHaveLength(1);
     expect(html).not.toContain('class="chooser"');
   });
