@@ -5,8 +5,8 @@
 // colours from here directly.
 //
 // Both modes define the SAME token names, so every component works in either
-// mode; only the values differ. Colours were sampled from the owner's two
-// reference images (see docs/design-tokens.md).
+// mode; only the values differ. The palette is shared across the
+// two perspectives.
 
 import type { Mode } from "../data/profile/presentation";
 
@@ -93,24 +93,24 @@ const SERIF_FALLBACK = 'Georgia, "Times New Roman", serif';
 const SANS_FALLBACK = 'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 
 // ---------- Developer Mode ----------
-// Reference: dark terminal / pixel portfolio. Near-black green-tinted ground,
-// pale phosphor display type, mint accent for actions.
+// Reference: burgundy technical gallery. Deep burgundy ground,
+// blush display type, chartreuse accent for actions.
 
 export const developer: ModeTokens = {
   color: {
-    bg: "#070A08",
-    surface: "#0B120E",
-    surfaceRaised: "#111B15",
-    border: "#1C2B24",
-    borderStrong: "#477C5C",
-    text: "#CDEBD8",
-    textMuted: "#8AAE98",
-    heading: "#C4F3D5",
-    accent: "#3DD39E",
-    onAccent: "#04140C",
-    accentMuted: "#3F7A5C",
-    focus: "#8FE6B4",
-    frame: "#030504",
+    bg: "#301321",
+    surface: "#42192B",
+    surfaceRaised: "#52172D",
+    border: "#713A50",
+    borderStrong: "#BC8098",
+    text: "#F9EAF0",
+    textMuted: "#E1B5C5",
+    heading: "#F4D7DF",
+    accent: "#C8EA43",
+    onAccent: "#24111C",
+    accentMuted: "#9B667C",
+    focus: "#C8EA43",
+    frame: "#1E1018",
   },
   font: {
     display: `"Silkscreen", ${MONO_FALLBACK}`,
@@ -122,8 +122,8 @@ export const developer: ModeTokens = {
     radiusSm: "2px",
     radiusMd: "4px",
     borderWidth: "1px",
-    shadowCard: "0 0 0 1px #1C2B24",
-    shadowRaised: "0 0 24px rgba(61, 211, 158, 0.12)",
+    shadowCard: "0 0 0 1px #713A50",
+    shadowRaised: "0 0 24px rgba(200, 234, 67, 0.12)",
   },
   type: {
     trackingLabel: "0.04em",
@@ -138,24 +138,24 @@ export const developer: ModeTokens = {
 };
 
 // ---------- Business Mode ----------
-// Reference: cream editorial / film-frame portfolio. Warm paper, deep ink,
+// Reference: blush editorial gallery. Warm paper, deep ink,
 // high-contrast serif display, burgundy accent used sparingly.
 
 export const business: ModeTokens = {
   color: {
-    bg: "#F4EAD8",
-    surface: "#FBF2E6",
-    surfaceRaised: "#FFF9F1",
-    border: "#E2D7C5",
-    borderStrong: "#1E1C19",
-    text: "#1E1C19",
-    textMuted: "#5C5347",
-    heading: "#16140F",
-    accent: "#873F40",
-    onAccent: "#FBF2E6",
-    accentMuted: "#C9A9A0",
-    focus: "#873F40",
-    frame: "#1F1A14",
+    bg: "#F4D7DF",
+    surface: "#FFF2F5",
+    surfaceRaised: "#FFF9F2",
+    border: "#DCB6C4",
+    borderStrong: "#52172D",
+    text: "#52172D",
+    textMuted: "#694353",
+    heading: "#301321",
+    accent: "#75213E",
+    onAccent: "#FFF2F5",
+    accentMuted: "#B98598",
+    focus: "#75213E",
+    frame: "#351625",
   },
   font: {
     display: `"Playfair Display", ${SERIF_FALLBACK}`,
@@ -167,8 +167,8 @@ export const business: ModeTokens = {
     radiusSm: "0px",
     radiusMd: "2px",
     borderWidth: "1px",
-    shadowCard: "0 1px 2px rgba(30, 28, 25, 0.06), 0 4px 16px rgba(30, 28, 25, 0.06)",
-    shadowRaised: "0 2px 4px rgba(30, 28, 25, 0.08), 0 18px 40px rgba(30, 28, 25, 0.16)",
+    shadowCard: "0 1px 2px rgba(82, 23, 45, 0.06), 0 4px 16px rgba(82, 23, 45, 0.06)",
+    shadowRaised: "0 2px 4px rgba(82, 23, 45, 0.08), 0 18px 40px rgba(82, 23, 45, 0.16)",
   },
   type: {
     trackingLabel: "0.14em",

@@ -36,23 +36,23 @@
 }
 
 /* ---------- Developer Mode ----------
-   Reference: dark terminal / pixel portfolio. */
+   Reference: burgundy technical gallery. */
 [data-mode="developer"] {
   color-scheme: dark;
 
-  --color-bg: #070A08;
-  --color-surface: #0B120E;
-  --color-surface-raised: #111B15;
-  --color-border: #1C2B24;
-  --color-border-strong: #477C5C;
-  --color-text: #CDEBD8;
-  --color-text-muted: #8AAE98;
-  --color-heading: #C4F3D5;
-  --color-accent: #3DD39E;
-  --color-on-accent: #04140C;
-  --color-accent-muted: #3F7A5C;
-  --color-focus: #8FE6B4;
-  --color-frame: #030504;
+  --color-bg: #301321;
+  --color-surface: #42192B;
+  --color-surface-raised: #52172D;
+  --color-border: #713A50;
+  --color-border-strong: #BC8098;
+  --color-text: #F9EAF0;
+  --color-text-muted: #E1B5C5;
+  --color-heading: #F4D7DF;
+  --color-accent: #C8EA43;
+  --color-on-accent: #24111C;
+  --color-accent-muted: #9B667C;
+  --color-focus: #C8EA43;
+  --color-frame: #1E1018;
 
   --font-display: "Silkscreen", ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --font-heading: "JetBrains Mono", ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -62,8 +62,8 @@
   --radius-sm: 2px;
   --radius-md: 4px;
   --border-width: 1px;
-  --shadow-card: 0 0 0 1px #1C2B24;
-  --shadow-raised: 0 0 24px rgba(61, 211, 158, 0.12);
+  --shadow-card: 0 0 0 1px #713A50;
+  --shadow-raised: 0 0 24px rgba(200, 234, 67, 0.12);
 
   --tracking-label: 0.04em;
   --tracking-display: 0.02em;
@@ -75,23 +75,23 @@
 }
 
 /* ---------- Business Mode ----------
-   Reference: cream editorial / film-frame portfolio. */
+   Reference: blush editorial gallery. */
 [data-mode="business"] {
   color-scheme: light;
 
-  --color-bg: #F4EAD8;
-  --color-surface: #FBF2E6;
-  --color-surface-raised: #FFF9F1;
-  --color-border: #E2D7C5;
-  --color-border-strong: #1E1C19;
-  --color-text: #1E1C19;
-  --color-text-muted: #5C5347;
-  --color-heading: #16140F;
-  --color-accent: #873F40;
-  --color-on-accent: #FBF2E6;
-  --color-accent-muted: #C9A9A0;
-  --color-focus: #873F40;
-  --color-frame: #1F1A14;
+  --color-bg: #F4D7DF;
+  --color-surface: #FFF2F5;
+  --color-surface-raised: #FFF9F2;
+  --color-border: #DCB6C4;
+  --color-border-strong: #52172D;
+  --color-text: #52172D;
+  --color-text-muted: #694353;
+  --color-heading: #301321;
+  --color-accent: #75213E;
+  --color-on-accent: #FFF2F5;
+  --color-accent-muted: #B98598;
+  --color-focus: #75213E;
+  --color-frame: #351625;
 
   --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
@@ -101,8 +101,8 @@
   --radius-sm: 0px;
   --radius-md: 2px;
   --border-width: 1px;
-  --shadow-card: 0 1px 2px rgba(30, 28, 25, 0.06), 0 4px 16px rgba(30, 28, 25, 0.06);
-  --shadow-raised: 0 2px 4px rgba(30, 28, 25, 0.08), 0 18px 40px rgba(30, 28, 25, 0.16);
+  --shadow-card: 0 1px 2px rgba(82, 23, 45, 0.06), 0 4px 16px rgba(82, 23, 45, 0.06);
+  --shadow-raised: 0 2px 4px rgba(82, 23, 45, 0.08), 0 18px 40px rgba(82, 23, 45, 0.16);
 
   --tracking-label: 0.14em;
   --tracking-display: -0.01em;

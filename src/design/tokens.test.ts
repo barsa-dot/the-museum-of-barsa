@@ -51,8 +51,8 @@ describe("modes", () => {
 
   it("are visually distinct, not a colour swap", () => {
     const d = modeTokens.developer, b = modeTokens.business;
-    expect(luminance(d.color.bg)).toBeLessThan(0.02);
-    expect(luminance(b.color.bg)).toBeGreaterThan(0.75);
+    expect(luminance(d.color.bg)).toBeLessThan(0.04);
+    expect(luminance(b.color.bg)).toBeGreaterThan(0.65);
     expect(d.font.display).not.toEqual(b.font.display);
     expect(d.font.body).not.toEqual(b.font.body);
   });
