@@ -658,3 +658,8 @@ kbd {
     margin-bottom: var(--space-3);
   }
 }
+
+.museum__controls[aria-pressed="true"] {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}

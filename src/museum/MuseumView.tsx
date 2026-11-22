@@ -68,6 +68,7 @@ export default function MuseumView({ mode, onExit }: { mode: Mode; onExit: () =>
   const handle = useMemo<PlayerHandle>(() => ({}), []);
   const shortcuts = useMemo(() => recruiterShortcuts(viewFor(profile, projects, mode)), [mode]);
   const [mapOpen, setMapOpen] = useState(false);
+  const [showVisitor, setShowVisitor] = useState(true);
   const [mapPlayer, setMapPlayer] = useState<PlayerState | null>(null);
 
   useEffect(() => attachDesktopInput(input, () => canvasRef.current), [input]);
@@ -226,6 +227,14 @@ export default function MuseumView({ mode, onExit }: { mode: Mode; onExit: () =>
             <button
               type="button"
               className="museum__controls"
+              aria-pressed={showVisitor}
+              onClick={() => setShowVisitor((visible) => !visible)}
+            >
+              Show visitor
+            </button>
+            <button
+              type="button"
+              className="museum__controls"
               aria-expanded={helpOpen}
               aria-controls="museum-help"
               onClick={() => {
@@ -269,7 +278,7 @@ export default function MuseumView({ mode, onExit }: { mode: Mode; onExit: () =>
               <Atrium mode={mode} palette={palette} />
               <Rooms palette={palette} />
               <Exhibits specs={world.specs} mode={mode} palette={palette} />
-              <Player input={input} start={world.start} constrain={constrain} onMove={onMove} handle={handle} />
+              <Player input={input} start={world.start} constrain={constrain} onMove={onMove} handle={handle} showVisitor={showVisitor} />
             </Canvas>
           </div>
           </SceneBoundary>
