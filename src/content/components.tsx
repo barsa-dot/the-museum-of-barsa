@@ -5,7 +5,7 @@
 // the mode — only the view's ordering and presentation metadata (summary,
 // tags, featured) differ. Visual styling comes from the mode's tokens.
 
-import { createContext, useContext, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
 import type { ModeView } from "../data/profile/selectors";
 import { hasPart, type Project, type ProjectPart } from "../data/profile/project";
 import type { Achievement, Education, Experience, ExperienceKind, Skill, SkillCategory } from "../data/profile/types";
@@ -248,7 +248,7 @@ export function ProjectExhibit({ project }: { project: Project }) {
       <Meta items={[project.role, project.timeline]} />
       {hasText(text) && <p className="content-card__text">{text}</p>}
       {parts.map((part) => (
-        <section key={part} className="project-part" data-part={part} aria-label={PROJECT_PART_TITLES[part]}>
+        <section key={part} id={`${project.id}-${part}`} tabIndex={-1} className="project-part" data-part={part} aria-label={PROJECT_PART_TITLES[part]}>
           <h4 className="content-card__subheading">{PROJECT_PART_TITLES[part]}</h4>
           <ProjectPartBody project={project} part={part} />
         </section>
@@ -276,38 +276,83 @@ export function SealedProject({ project }: { project: Project }) {
 function ProjectSpread({ items }: { items: readonly Project[] }) {
   const { mode } = useModeView();
   const list = useRef<HTMLUListElement>(null);
+  const singleProject = items.length === 1 && items[0]?.status === "published" ? items[0] : null;
+  const cards = items.map((project) => ({
+    href: `#${project.id}`,
+    title: project.name,
+    summary: project.status === "in-development" ? null : presentationFor(project, mode).summary ?? project.tagline,
+    action: project.status === "published" ? "View project" : project.status === "unavailable" ? "Temporarily closed" : "Opening soon",
+    kind: "project",
+  }));
+
+  if (singleProject) {
+    for (const part of PROJECT_PART_ORDER[mode]) {
+      const summary = part === "problem" ? singleProject.problem
+        : part === "features" ? singleProject.features?.[0]
+          : part === "implementation" ? singleProject.implementation?.[0] : null;
+      if (hasText(summary)) {
+        cards.push({
+          href: `#${singleProject.id}-${part}`,
+          title: PROJECT_PART_TITLES[part],
+          summary,
+          action: "Read section",
+          kind: part,
+        });
+      }
+    }
+  }
 
   useEffect(() => {
     const element = list.current;
-    if (!element || typeof IntersectionObserver === "undefined") return;
+    if (!element || cards.length < 2 || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry?.isIntersecting) return;
-      element.dataset.dealt = "true";
+      dealProjectCards(element);
       observer.disconnect();
     }, { threshold: 0.15 });
     observer.observe(element);
     return () => observer.disconnect();
-  }, []);
+  }, [cards.length]);
 
-  if (items.length === 0) return null;
+  if (cards.length === 0) return null;
 
   return (
-    <ul className="project-spread" ref={list} aria-label="Project index">
-      {items.map((project, index) => {
-        const summary = project.status === "in-development" ? null : presentationFor(project, mode).summary ?? project.tagline;
-        const status = project.status === "published" ? "View project" : project.status === "unavailable" ? "Temporarily closed" : "Opening soon";
-        return (
-          <li key={project.id} style={{ "--deal-order": Math.min(index, 5) } as CSSProperties}>
-            <a className="project-spread__card" href={`#${project.id}`}>
-              <strong>{project.name}</strong>
+    <div className="project-display">
+      <ul className="project-spread" ref={list} aria-label={singleProject ? `${singleProject.name} exhibit index` : "Project index"}>
+        {cards.map(({ href, title, summary, action, kind }) => (
+          <li key={href}>
+            <a className="project-spread__card" data-kind={kind} href={href}>
+              <strong>{title}</strong>
               {hasText(summary) && <span>{summary}</span>}
-              <span className="project-spread__status">{status} <span aria-hidden="true">↓</span></span>
+              <span className="project-spread__status">{action} <span aria-hidden="true">↘</span></span>
             </a>
           </li>
-        );
-      })}
-    </ul>
+        ))}
+      </ul>
+      {cards.length > 1 && (
+        <button type="button" className="project-display__replay" onClick={() => { if (list.current) dealProjectCards(list.current); }}>
+          Replay card deal
+        </button>
+      )}
+    </div>
   );
+}
+
+function dealProjectCards(list: HTMLUListElement) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const bounds = list.getBoundingClientRect();
+  Array.from(list.children).forEach((card, index) => {
+    card.getAnimations().forEach((animation) => animation.cancel());
+    if (card.contains(document.activeElement)) return;
+    const position = card.getBoundingClientRect();
+    const left = bounds.left + bounds.width / 2 - position.left - position.width / 2;
+    const top = bounds.top + Math.min(bounds.height / 2, 150) - position.top - position.height / 2;
+    const start = `translate(${left}px, ${top}px) rotate(${(index % 4 - 1.5) * 5}deg) scale(0.78)`;
+    card.animate(
+      [{ transform: start }, { transform: "none" }],
+      { delay: 160 + Math.min(index, 6) * 85, duration: 780, easing: "cubic-bezier(0.18, 0.85, 0.25, 1)", fill: "backwards" },
+    );
+  });
 }
 
 export function ContactLinks() {
