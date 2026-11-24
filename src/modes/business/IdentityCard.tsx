@@ -12,10 +12,14 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
   const { person, portrait } = useModeView();
   const photo = portrait.photo;
   const hanger = useRef<HTMLDivElement>(null);
+  const tiltPlane = useRef<HTMLDivElement>(null);
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const dragged = useRef(false);
   const swinging = useRef<Animation | null>(null);
+  const [flipped, setFlipped] = useState(false);
 
   function startDrag(event: PointerEvent<HTMLButtonElement>) {
+    dragged.current = false;
     if (event.button !== 0 || drag.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     swinging.current?.cancel();
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -24,10 +28,22 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
 
   function moveDrag(event: PointerEvent<HTMLButtonElement>) {
     const start = drag.current;
+    if (!start && event.pointerType === "mouse" && tiltPlane.current) {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      tiltPlane.current.style.setProperty("--tilt-x", `${(0.5 - (event.clientY - bounds.top) / bounds.height) * 22}deg`);
+      tiltPlane.current.style.setProperty("--tilt-y", `${((event.clientX - bounds.left) / bounds.width - 0.5) * 30}deg`);
+      return;
+    }
     if (!start || start.id !== event.pointerId || !hanger.current) return;
+    if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > 6) dragged.current = true;
     const tilt = Math.max(-24, Math.min(24, (event.clientX - start.x) / 5));
     const pull = Math.max(-12, Math.min(30, event.clientY - start.y));
     hanger.current.style.transform = `translateY(${pull}px) rotate(${tilt}deg)`;
+  }
+
+  function resetTilt() {
+    tiltPlane.current?.style.removeProperty("--tilt-x");
+    tiltPlane.current?.style.removeProperty("--tilt-y");
   }
 
   function releaseDrag(event: PointerEvent<HTMLButtonElement>) {
@@ -97,55 +113,76 @@ export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
           <div className="id-card-drop" onAnimationEnd={onAnimationEnd}>
             <span className="id-card-drop__strap" aria-hidden="true" />
             <span className="id-card-drop__clip" aria-hidden="true" />
-            <div className="id-card-sleeve">
-              <span className="id-card-sleeve__slot" aria-hidden="true" />
-              <article className="id-card">
-                <header className="id-card__top">
-                  <span>Portfolio</span>
-                </header>
+            <div className="id-card-tilt" ref={tiltPlane}>
+              <div className="id-card-rotation" data-flipped={flipped}>
+                <div className="id-card-sleeve id-card-face id-card-face--front" aria-hidden={flipped}>
+                  <span className="id-card-sleeve__slot" aria-hidden="true" />
+                  <article className="id-card">
+                    <header className="id-card__top">
+                      <span>Portfolio</span>
+                    </header>
 
-                <div className="id-card__body">
-                  <button
-                    className="id-card__photo"
-                    type="button"
-                    aria-label="Swing the portfolio badge"
-                    onPointerDown={startDrag}
-                    onPointerMove={moveDrag}
-                    onPointerUp={releaseDrag}
-                    onPointerCancel={releaseDrag}
-                    onLostPointerCapture={releaseDrag}
-                    onClick={(event) => { if (event.detail === 0) sway(); }}
-                  >
-                    {photo ? (
-                      <img
-                        className="id-card__image"
-                        draggable={false}
-                        src={`/${photo.src}`}
-                        alt={photo.alt}
-                        width={photo.width}
-                        height={photo.height}
-                      />
-                    ) : (
-                      <span
-                        className="id-card__placeholder"
-                        role="img"
-                        aria-label="Photograph placeholder. The photo has not been added yet."
-                      >
-                        <span className="id-card__placeholder-label">Photograph pending</span>
-                        <span className="id-card__placeholder-note">A real photograph will appear here.</span>
-                      </span>
-                    )}
-                  </button>
+                    <div className="id-card__body">
+                      <div className="id-card__photo">
+                        {photo ? (
+                          <img
+                            className="id-card__image"
+                            draggable={false}
+                            src={`/${photo.src}`}
+                            alt={photo.alt}
+                            width={photo.width}
+                            height={photo.height}
+                          />
+                        ) : (
+                          <span
+                            className="id-card__placeholder"
+                            role="img"
+                            aria-label="Photograph placeholder. The photo has not been added yet."
+                          >
+                            <span className="id-card__placeholder-label">Photograph pending</span>
+                            <span className="id-card__placeholder-note">A real photograph will appear here.</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {hasText(person?.headline) && <p className="id-card__headline">{person.headline}</p>}
+                  </article>
                 </div>
-
-                {hasText(person?.headline) && <p className="id-card__headline">{person.headline}</p>}
-              </article>
+                <div className="id-card-face id-card-face--back" aria-hidden={!flipped}>
+                  <span>Portfolio</span>
+                  <strong>{person?.name}</strong>
+                </div>
+              </div>
+              <button
+                className="id-card-hit-area"
+                type="button"
+                aria-label="Flip badge"
+                aria-pressed={flipped}
+                onPointerDown={startDrag}
+                onPointerMove={moveDrag}
+                onPointerUp={releaseDrag}
+                onPointerCancel={releaseDrag}
+                onLostPointerCapture={releaseDrag}
+                onPointerLeave={resetTilt}
+                onClick={(event) => {
+                  if (event.detail === 0 || !dragged.current) setFlipped((value) => !value);
+                  dragged.current = false;
+                }}
+              >
+                <span>Flip badge <span aria-hidden="true">↻</span></span>
+              </button>
             </div>
           </div>
         </div>
         <h1 id="biz-identity-name" className="biz-identity__name" tabIndex={-1} ref={nameRef}>
           {person?.name}
         </h1>
+        <button className="biz-identity__replay" type="button" onClick={() => {
+          resetTilt();
+          setFlipped(false);
+          setPhase("dropping");
+        }}>Replay 3D entrance</button>
       </div>
     </section>
   );

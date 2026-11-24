@@ -5,7 +5,7 @@
 //   doesn't replay it.
 // - Storage may be blocked; then it simply plays each time the card mounts.
 
-export const CARD_PLAYED_KEY = "museum-card-dropped";
+export const CARD_PLAYED_KEY = "portfolio-badge-3d-played";
 
 export type CardEntrance = "drop" | "none";
 

@@ -11,18 +11,99 @@
 .biz-identity__stage {
   display: grid;
   justify-items: center;
-  gap: var(--space-5);
+  gap: var(--space-8);
 }
 
 /* ---------- The hanging badge ---------- */
 
 .id-card-drop {
+  perspective: 800px;
   position: relative;
   width: min(100%, 21rem);
   margin-top: var(--space-5);
   /* Hangs from the clip at the top centre. */
   transform-origin: 50% 0;
   transform: rotate(var(--card-tilt));
+}
+
+.id-card-tilt,
+.id-card-rotation {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.id-card-tilt {
+  rotate: y var(--tilt-y, 0deg);
+  transform: rotateX(var(--tilt-x, 0deg));
+  transition: rotate 160ms ease-out, transform 160ms ease-out;
+}
+
+.id-card-rotation {
+  rotate: y 0deg;
+  pointer-events: none;
+  transition: rotate var(--duration-slow) cubic-bezier(0.25, 0.7, 0.2, 1);
+}
+
+.id-card-rotation[data-flipped="true"] {
+  rotate: y 180deg;
+}
+
+.id-card-face {
+  backface-visibility: hidden;
+  translate: 0 0 3px;
+}
+
+.id-card-face--back {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 0.5rem;
+  padding: var(--space-5);
+  border: 5px solid #C8EA43;
+  border-radius: 1.1rem;
+  background: #52172D;
+  color: #FFF2F5;
+  text-align: center;
+  rotate: y 180deg;
+  translate: 0 0 -3px;
+  box-shadow: var(--shadow-raised);
+}
+
+.id-card-face--back strong {
+  font: 700 var(--text-xl) / 1.1 var(--font-display);
+}
+
+.id-card-rotation::after {
+  content: "";
+  position: absolute;
+  inset: 3% auto 3% -3px;
+  width: 6px;
+  background: #B98598;
+  rotate: y 90deg;
+}
+
+.id-card-hit-area {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 0;
+  border-radius: 1.1rem;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.id-card-hit-area:active { cursor: grabbing; }
+
+.id-card-hit-area > span {
+  position: absolute;
+  left: 50%;
+  bottom: -2rem;
+  translate: -50% 0;
+  color: var(--color-accent);
+  font: 700 var(--text-xs) / 1 var(--font-label);
+  white-space: nowrap;
 }
 
 /* Cream fabric lanyard rising from the clip, with stitched edges. */
@@ -227,6 +308,7 @@
 }
 
 .id-card-hanger {
+  perspective: 950px;
   position: relative;
   width: min(90%, 16rem);
   transform-origin: center top;
@@ -246,18 +328,24 @@
   letter-spacing: var(--tracking-display);
 }
 
-button.id-card__photo {
-  padding: 0;
+.biz-identity__replay {
+  margin-block-start: calc(-1 * var(--space-6));
+  padding: 0.6rem;
   border: 0;
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  font: 700 var(--text-xs) / 1.2 var(--font-label);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
 }
 
-button.id-card__photo:active { cursor: grabbing; }
+.biz-identity[data-phase="dropping"] .biz-identity__replay { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
-  button.id-card__photo { cursor: default; touch-action: auto; }
+  .id-card-tilt { rotate: none; transform: none; transition: none; }
+  .id-card-hit-area { cursor: pointer; touch-action: auto; }
+  .biz-identity__replay { display: none; }
 }
 .biz-identity__skip {
   position: absolute;
@@ -289,18 +377,22 @@ button.id-card__photo:active { cursor: grabbing; }
 @keyframes id-card-drop {
   0% {
     transform: translateY(-120vh) rotate(calc(var(--card-tilt) - 3deg));
+    rotate: y -85deg;
     animation-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
   }
   62% {
     transform: translateY(0) rotate(calc(var(--card-tilt) + 1.2deg));
+    rotate: y 29deg;
     animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
   }
   82% {
     transform: translateY(0) rotate(calc(var(--card-tilt) - 0.4deg));
+    rotate: y -12deg;
     animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
   }
   100% {
     transform: rotate(var(--card-tilt));
+    rotate: y 0deg;
   }
 }
 
