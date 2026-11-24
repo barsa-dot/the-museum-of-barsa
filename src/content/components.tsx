@@ -347,10 +347,21 @@ function dealProjectCards(list: HTMLUListElement) {
     const position = card.getBoundingClientRect();
     const left = bounds.left + bounds.width / 2 - position.left - position.width / 2;
     const top = bounds.top + Math.min(bounds.height / 2, 150) - position.top - position.height / 2;
-    const start = `translate(${left}px, ${top}px) rotate(${(index % 4 - 1.5) * 5}deg) scale(0.78)`;
+    const fan = (index % 4 - 1.5) * 8;
     card.animate(
-      [{ transform: start }, { transform: "none" }],
-      { delay: 160 + Math.min(index, 6) * 85, duration: 780, easing: "cubic-bezier(0.18, 0.85, 0.25, 1)", fill: "backwards" },
+      [
+        {
+          transform: `perspective(850px) translate3d(${left}px, ${top}px, ${index * 2}px) rotateX(32deg) rotateZ(${fan}deg) scale(0.78)`,
+          easing: "cubic-bezier(0.22, 0.75, 0.35, 1)",
+        },
+        {
+          offset: 0.52,
+          transform: `perspective(850px) translate3d(${left * 0.26}px, ${top * 0.26 - 16}px, 52px) rotateX(-13deg) rotateZ(${fan * -0.3}deg)`,
+          easing: "cubic-bezier(0.2, 0.72, 0.32, 1)",
+        },
+        { transform: "perspective(850px) translate3d(0, 0, 0) rotateX(0) rotateZ(0)" },
+      ],
+      { delay: 160 + Math.min(index, 6) * 85, duration: 780, fill: "backwards" },
     );
   });
 }
