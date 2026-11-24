@@ -39,34 +39,36 @@
 }
 
 .id-card-rotation {
-  rotate: y 0deg;
+  rotate: y calc(var(--face-turn, 0deg) + var(--drag-turn, 0deg));
+  transform-origin: 50% 5%;
   pointer-events: none;
-  transition: rotate var(--duration-slow) cubic-bezier(0.25, 0.7, 0.2, 1);
+  transition: rotate var(--duration-slow) cubic-bezier(0.2, 0.78, 0.31, 1.14);
 }
 
-.id-card-rotation[data-flipped="true"] {
-  rotate: y 180deg;
+.id-card-rotation[data-dragging="true"] {
+  transition: none;
 }
 
 .id-card-face {
   backface-visibility: hidden;
-  translate: 0 0 3px;
+  translate: 0 0 4px;
 }
 
 .id-card-face--back {
   position: absolute;
   inset: 0;
   display: grid;
-  align-content: center;
-  gap: 0.5rem;
-  padding: var(--space-5);
-  border: 5px solid #C8EA43;
+  align-content: end;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid #B98598;
   border-radius: 1.1rem;
-  background: #52172D;
+  background:
+    linear-gradient(135deg, transparent 44%, #C8EA43 44% 47%, transparent 47%) top right / 5rem 5rem no-repeat,
+    linear-gradient(155deg, #75213E, #351625 72%);
   color: #FFF2F5;
-  text-align: center;
   rotate: y 180deg;
-  translate: 0 0 -3px;
+  translate: 0 0 -4px;
   box-shadow: var(--shadow-raised);
 }
 
@@ -74,14 +76,34 @@
   font: 700 var(--text-xl) / 1.1 var(--font-display);
 }
 
+.id-card__reverse-label {
+  color: #C8EA43;
+  font: 700 var(--text-xs) / 1 var(--font-label);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.id-card__reverse-details {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: var(--space-2) 0 0;
+  border-top: 1px solid #B98598;
+  list-style: none;
+  font: 400 var(--text-xs) / 1.35 var(--font-label);
+}
+
+.id-card-rotation::before,
 .id-card-rotation::after {
   content: "";
   position: absolute;
-  inset: 3% auto 3% -3px;
-  width: 6px;
-  background: #B98598;
+  inset: 3% auto 3% -4px;
+  width: 8px;
+  background: linear-gradient(90deg, #694353, #F4D7DF 58%, #B98598);
   rotate: y 90deg;
 }
+
+.id-card-rotation::before { inset-inline: auto -4px; }
 
 .id-card-hit-area {
   position: absolute;
@@ -326,6 +348,15 @@
   color: var(--color-heading);
   font: 700 clamp(2.1rem, 6.5vw, 6rem) / 1.05 var(--font-display);
   letter-spacing: var(--tracking-display);
+}
+
+.biz-identity[data-phase="dropping"] .biz-identity__name {
+  animation: identity-name-reveal 650ms 580ms var(--ease-emphasis) both;
+}
+
+@keyframes identity-name-reveal {
+  from { clip-path: inset(0 0 100%); transform: translateY(0.6em); }
+  to { clip-path: inset(0); transform: none; }
 }
 
 .biz-identity__replay {
