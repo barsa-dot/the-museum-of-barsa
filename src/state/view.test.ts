@@ -1,23 +1,10 @@
-import { describe, expect, it } from "vitest";
-import { urlForView, viewFromUrl } from "./view";
+import { expect, it } from "vitest";
+import { viewFromUrl } from "./view";
 
-const SITE = "https://museum.test/";
-
-describe("view in the URL", () => {
-  it("defaults to the portfolio", () => {
-    expect(viewFromUrl(SITE)).toBe("portfolio");
-    expect(viewFromUrl(`${SITE}?view=nonsense`)).toBe("portfolio");
-  });
-
-  it("reads the museum view", () => {
-    expect(viewFromUrl(`${SITE}?view=museum`)).toBe("museum");
-  });
-
-  it("keeps the mode parameter when entering the museum and drops the #section", () => {
-    expect(urlForView(`${SITE}?mode=business#projects`, "museum")).toBe(`${SITE}?mode=business&view=museum`);
-  });
-
-  it("returns to the portfolio keeping other parameters", () => {
-    expect(urlForView(`${SITE}?mode=developer&view=museum`, "portfolio")).toBe(`${SITE}?mode=developer`);
-  });
+it("opens an arcade link and defaults to the portfolio for old or unknown views", () => {
+  const site = "https://portfolio.test/";
+  expect(viewFromUrl(site)).toBe("portfolio");
+  expect(viewFromUrl(site + "?view=arcade")).toBe("arcade");
+  expect(viewFromUrl(site + "?view=museum")).toBe("portfolio");
+  expect(viewFromUrl(site + "?mode=developer")).toBe("portfolio");
 });

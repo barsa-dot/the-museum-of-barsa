@@ -10,8 +10,6 @@ import { MODES, profile, projects, viewFor, type Mode, type Profile } from "../d
 import { ContentProvider, ProfileContent } from "./components";
 import { resumeHref } from "./rules";
 import { QuickLinks } from "../app/QuickLinks";
-import { buildExhibits } from "../museum/scene/exhibits";
-import { recruiterShortcuts } from "../museum/navigation";
 
 // Test-only sample contact details (not the owner's).
 const complete: Profile = {
@@ -30,8 +28,6 @@ function surfaces(source: Profile, mode: Mode) {
   return {
     header: wrap(<QuickLinks />),
     page: wrap(<ProfileContent />),
-    shortcuts: recruiterShortcuts(view),
-    sign: buildExhibits(view).find((s) => s.id === "courtyard-contact"),
   };
 }
 
@@ -47,13 +43,8 @@ describe.each(MODES)("today, in %s mode", (mode) => {
   it("does not link to a resume that hasn't been supplied", () => {
     expect(s.header).not.toContain("Resume");
     expect(s.page).not.toContain(".pdf");
-    expect(s.shortcuts.find((x) => x.id === "resume")).toMatchObject({ kind: "unavailable" });
   });
 
-  it("reaches contact from the museum: quick access and the Courtyard sign", () => {
-    expect(s.shortcuts.find((x) => x.id === "contact")).toMatchObject({ content: { type: "section", section: "contact" } });
-    expect(s.sign?.plaque.lines).toEqual(["github.com/barsa-dot"]);
-  });
 });
 
 describe.each(MODES)("once email, LinkedIn and a resume are supplied (%s mode)", (mode) => {
@@ -70,10 +61,6 @@ describe.each(MODES)("once email, LinkedIn and a resume are supplied (%s mode)",
     expect(s.page).toContain('href="/resume.pdf"');
   });
 
-  it("links the resume from the museum's quick access and shows the addresses in the Courtyard", () => {
-    expect(s.shortcuts.find((x) => x.id === "resume")).toEqual({ id: "resume", label: "Resume (PDF)", kind: "link", href: "/resume.pdf" });
-    expect(s.sign?.plaque.lines).toEqual(["sample@example.com", "github.com/barsa-dot", "linkedin.com/in/sample"]);
-  });
 });
 
 describe("resume file", () => {

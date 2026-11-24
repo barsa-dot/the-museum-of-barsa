@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode="business">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,25 +10,8 @@
     />
     <meta
       name="description"
-      content="Portfolio of Barsarani Sahoo, with Business and Tech views of the same projects, education and experience."
+      content="Portfolio of Barsarani Sahoo, with projects, education, experience, and a playable arcade."
     />
-    <script>
-      // Apply the visitor's mode before first paint so the page never flashes
-      // the wrong colours. Mirrors resolveInitialMode() in src/state/mode.ts
-      // (same "mode" URL parameter and "museum-mode" storage key; tested).
-      (function () {
-        var modes = ["developer", "business"];
-        var mode = new URLSearchParams(location.search).get("mode");
-        if (modes.indexOf(mode) < 0) {
-          try {
-            mode = localStorage.getItem("museum-mode");
-          } catch (e) {
-            mode = null;
-          }
-        }
-        document.documentElement.setAttribute("data-mode", modes.indexOf(mode) >= 0 ? mode : "business");
-      })();
-    </script>
   </head>
   <body>
     <div id="root"></div>

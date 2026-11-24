@@ -6,10 +6,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MODES, profile, projects, viewFor, type Mode, type Profile } from "../data/profile";
 import { ContentProvider, ProfileContent } from "./components";
-import { buildExhibits } from "../museum/scene/exhibits";
-import { ExhibitPanel } from "../museum/ExhibitPanel";
-import { MuseumGuide } from "../museum/MuseumGuide";
-import { recruiterShortcuts } from "../museum/navigation";
 
 const BTECH = "Computer Science and Engineering";
 const BBA = "Digital Business and Entrepreneurship";
@@ -29,14 +25,8 @@ const detailed: Profile = {
 function surfaces(source: Profile, mode: Mode) {
   const view = viewFor(source, projects, mode);
   const wrap = (node: React.ReactNode) => text(renderToStaticMarkup(<ContentProvider view={view}>{node}</ContentProvider>));
-  const panel = (content: Parameters<typeof ExhibitPanel>[0]["exhibit"]["content"]) =>
-    text(renderToStaticMarkup(<ExhibitPanel exhibit={{ id: "x", label: "x", verb: "View", x: 0, z: 0, radius: 1, content }} mode={mode} onClose={() => {}} />));
   return {
     section: wrap(<ProfileContent />),
-    libraryBoards: buildExhibits(view).filter((s) => s.room === "library").map((s) => s.plaque.title),
-    portraitPanel: panel({ type: "identity" }),
-    quickAccess: recruiterShortcuts(view).find((s) => s.id === "education"),
-    guide: renderToStaticMarkup(<MuseumGuide mode={mode} title="t" reason="r" onExit={() => {}} currentUrl="https://x.test/" />),
     view,
   };
 }
@@ -50,19 +40,6 @@ describe.each(MODES)("education in %s mode", (mode) => {
     expect(`${featured?.field}`).toBe(LEAD[mode]);
   });
 
-  it("hangs both degrees in the museum Library, in the mode's order", () => {
-    expect(s.libraryBoards).toEqual(mode === "developer" ? [BTECH, BBA] : [BBA, BTECH]);
-  });
-
-  it("names both degrees in the Portrait Room identity panel", () => {
-    expect(s.portraitPanel).toContain(BTECH);
-    expect(s.portraitPanel).toContain(BBA);
-  });
-
-  it("reaches education without walking (quick access) and without 3D (guide)", () => {
-    expect(s.quickAccess).toMatchObject({ kind: "panel", content: { type: "section", section: "education" } });
-    expect(s.guide).toContain('href="https://x.test/#education"');
-  });
 });
 
 describe.each(MODES)("once years and descriptions are supplied (%s mode)", (mode) => {

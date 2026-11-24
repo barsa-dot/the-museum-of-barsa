@@ -1,4 +1,4 @@
-/* Shared museum pass */
+/* Portfolio badge */
 .biz-identity {
   /* Resting angle of the hung badge. The drop sways around it. */
   --card-tilt: 7deg;
@@ -12,98 +12,6 @@
   display: grid;
   justify-items: center;
   gap: var(--space-5);
-}
-
-.identity-scene {
-  position: relative;
-  justify-self: stretch;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
-  min-height: clamp(16rem, 35svh, 22rem);
-  overflow: clip;
-  border-block: 1px solid var(--color-border);
-  background: #F4D7DF;
-}
-
-.identity-scene__business {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-rows: 1fr 5rem 1fr;
-  justify-items: center;
-  padding: var(--space-4);
-  color: #52172D;
-  text-align: center;
-  text-wrap: balance;
-  font: 700 clamp(2rem, 7.5vw, 6.3rem) / 0.86 "Archivo Narrow", "Arial Narrow", sans-serif;
-  text-transform: uppercase;
-}
-
-.identity-scene__business span:first-child {
-  align-self: end;
-}
-
-.identity-scene__business span:last-child {
-  grid-row: 3;
-  align-self: start;
-}
-
-.identity-scene__tech {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background: #301321;
-  color: #F4D7DF;
-  clip-path: inset(0 50% 0 50%);
-  transition: clip-path var(--duration-base) var(--ease-standard);
-}
-
-.identity-scene__type {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  rotate: -8deg;
-  scale: 1.16;
-  font: 700 clamp(3.5rem, 9vw, 8rem) / 0.86 "Archivo Narrow", "Arial Narrow", sans-serif;
-  text-transform: uppercase;
-}
-
-.identity-scene__type span {
-  white-space: nowrap;
-  transform: translateX(-13%);
-  transition: transform var(--duration-slow) var(--ease-emphasis);
-}
-
-.identity-scene__type span:nth-child(even) {
-  transform: translateX(13%);
-}
-
-.identity-scene__type em {
-  color: #C8EA43;
-  font-style: normal;
-}
-
-[data-mode="developer"] .identity-scene__tech {
-  clip-path: inset(0);
-}
-
-[data-mode="developer"] .identity-scene__type span {
-  transform: translateX(0);
-}
-
-.identity-scene .mode-switch {
-  position: relative;
-  z-index: 1;
-  width: auto;
-  max-width: calc(100% - 1rem);
-  margin: 0;
-  background: var(--color-bg);
-  box-shadow: 0 6px 24px #24111C44;
 }
 
 /* ---------- The hanging badge ---------- */

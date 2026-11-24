@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type AnimationEvent, type PointerEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type AnimationEvent, type PointerEvent } from "react";
 import { useModeView } from "../../content/components";
 import { hasText } from "../../content/rules";
 import { browserEntranceEnvironment, chooseCardEntrance, markCardEntrancePlayed, type CardEntrance } from "./cardEntrance";
@@ -8,8 +8,8 @@ type Phase = "dropping" | "settled";
 /** Name of the last reveal animation; when it ends the entrance is over. */
 const LAST_ANIMATION = "id-card-reveal-last";
 
-export function IdentityCard({ entrance, modeControl }: { entrance?: CardEntrance; modeControl?: ReactNode }) {
-  const { mode, person, portrait } = useModeView();
+export function IdentityCard({ entrance }: { entrance?: CardEntrance }) {
+  const { person, portrait } = useModeView();
   const photo = portrait.photo;
   const hanger = useRef<HTMLDivElement>(null);
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
@@ -101,15 +101,14 @@ export function IdentityCard({ entrance, modeControl }: { entrance?: CardEntranc
               <span className="id-card-sleeve__slot" aria-hidden="true" />
               <article className="id-card">
                 <header className="id-card__top">
-                  <span>Museum Pass</span>
-                  <span>{mode === "business" ? "Business" : "Tech"}</span>
+                  <span>Portfolio</span>
                 </header>
 
                 <div className="id-card__body">
                   <button
                     className="id-card__photo"
                     type="button"
-                    aria-label="Swing the museum pass"
+                    aria-label="Swing the portfolio badge"
                     onPointerDown={startDrag}
                     onPointerMove={moveDrag}
                     onPointerUp={releaseDrag}
@@ -147,23 +146,6 @@ export function IdentityCard({ entrance, modeControl }: { entrance?: CardEntranc
         <h1 id="biz-identity-name" className="biz-identity__name" tabIndex={-1} ref={nameRef}>
           {person?.name}
         </h1>
-        {modeControl && (
-          <div className="identity-scene">
-            <div className="identity-scene__business" aria-hidden="true">
-              <span>Digital business</span>
-              <span>Computer science</span>
-            </div>
-            <div className="identity-scene__tech" aria-hidden="true">
-              <div className="identity-scene__type">
-                <span>React <em>TypeScript</em> React</span>
-                <span>IndexedDB <em>Vite</em> IndexedDB</span>
-                <span><em>Supabase</em> JavaScript <em>Supabase</em></span>
-                <span>CSS <em>React</em> CSS</span>
-              </div>
-            </div>
-            {modeControl}
-          </div>
-        )}
       </div>
     </section>
   );

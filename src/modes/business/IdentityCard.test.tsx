@@ -2,8 +2,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { profile, projects, viewFor, type Profile } from "../../data/profile";
 import { ContentProvider } from "../../content/components";
-import { App } from "../../app/App";
-import { STORAGE_KEY, createModeStore } from "../../state/mode";
 import { IdentityCard } from "./IdentityCard";
 
 const render = (source: Profile) =>
@@ -53,21 +51,5 @@ describe("IdentityCard", () => {
 
   it("never prints empty values", () => {
     expect(render(profile).replace(/<[^>]+>/g, " ")).not.toMatch(/\bnull\b|\bundefined\b/);
-  });
-});
-
-describe("mode identity", () => {
-  const page = (mode: string) =>
-    renderToStaticMarkup(
-      <App store={createModeStore({ storage: { getItem: (k) => (k === STORAGE_KEY ? mode : null), setItem() {}, removeItem() {} } })} />,
-    );
-
-  it("puts the identity card in both modes", () => {
-    expect(page("business")).toContain('class="id-card"');
-    expect(page("developer")).toContain('class="id-card"');
-  });
-
-  it("no longer needs a hidden fallback heading", () => {
-    expect(page("business")).not.toMatch(/<h1 class="visually-hidden"/);
   });
 });

@@ -136,22 +136,17 @@ describe("evidence dates", () => {
   });
 });
 
-describe("mode styles", () => {
-  const dev = readFileSync("src/styles/developer.css", "utf8");
+describe("portfolio project styles", () => {
   const biz = readFileSync("src/styles/business-pages.css", "utf8");
 
-  it("gives each mode its own treatment of the new parts", () => {
-    expect(dev).toContain('[data-mode="developer"] .project-evidence__item::before');
-    expect(dev).toContain('.project-part[data-part="implementation"]');
+  it("styles evidence and the problem statement", () => {
     expect(biz).toContain('[data-mode="business"] .project-evidence__item::before');
     expect(biz).toContain('.project-part[data-part="problem"]');
   });
 
   it("keeps decorative markers silent for screen readers", () => {
-    for (const css of [dev, biz]) {
-      for (const m of css.matchAll(/\.project-[^{]*::before\s*\{[^}]*content:\s*([^;]+);/g)) {
-        expect(m[1], m[0]).toMatch(/\/\s*""\s*$/);
-      }
+    for (const m of biz.matchAll(/\.project-[^{]*::before\s*\{[^}]*content:\s*([^;]+);/g)) {
+      expect(m[1], m[0]).toMatch(/\/\s*""\s*$/);
     }
   });
 });

@@ -1,0 +1,133 @@
+.arcade {
+  min-height: calc(100svh - 4rem);
+  padding: clamp(1rem, 4vw, 3rem) 1rem 2.5rem;
+  background: #301321;
+  color: #F4D7DF;
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.arcade__header h1 {
+  margin: 0;
+  color: #C8EA43;
+  font: 400 clamp(2.25rem, 9vw, 5.5rem) / 1.05 "Silkscreen", monospace;
+}
+
+.arcade__header p,
+.arcade__instructions {
+  margin: 0.6rem auto 1.2rem;
+  font-size: 0.85rem;
+}
+
+.arcade__controls,
+.arcade__score,
+.arcade__pad {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.9rem auto;
+}
+
+.arcade button {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #BC8098;
+  border-radius: 0.35rem;
+  background: #52172D;
+  color: #FFF2F5;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.arcade button[aria-pressed="true"] {
+  background: #C8EA43;
+  color: #24111C;
+  border-color: #C8EA43;
+}
+
+.arcade button:disabled { opacity: 0.55; cursor: default; }
+.arcade :focus-visible { outline-color: #C8EA43; }
+
+.arcade__score span {
+  padding: 0.25rem 0.6rem;
+  border-bottom: 1px solid #BC8098;
+  font-size: 0.75rem;
+}
+
+.arcade__score span[data-player="1"] { color: #C8EA43; }
+
+.arcade__board {
+  position: relative;
+  width: min(100%, 36rem);
+  margin-inline: auto;
+  aspect-ratio: var(--columns) / var(--rows);
+  overflow: hidden;
+  background: #24111C;
+  border: 2px solid #BC8098;
+  border-radius: 0.65rem;
+  box-shadow: 0 12px 36px #1E1018;
+}
+
+.arcade__board span {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  translate: -50% -50%;
+}
+
+.arcade__wall {
+  width: calc(93% / var(--columns));
+  height: calc(93% / var(--rows));
+  border: 1px solid #9B667C;
+  border-radius: 0.22rem;
+  background: #52172D;
+}
+
+.arcade__spark {
+  width: calc(16% / var(--columns));
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #FFF2F5;
+}
+
+.arcade__rival,
+.arcade__player {
+  width: calc(72% / var(--columns));
+  aspect-ratio: 1;
+  transition: left 125ms linear, top 125ms linear;
+}
+
+.arcade__rival {
+  border-radius: 0.18rem;
+  background: #E181A3;
+  rotate: 45deg;
+}
+
+.arcade__rival::after {
+  content: "";
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #301321;
+}
+
+.arcade__player {
+  border: 2px solid #301321;
+  border-radius: 50%;
+  background: #C8EA43;
+  color: #24111C;
+  font-size: clamp(0.52rem, 2.2vw, 0.85rem);
+  font-weight: bold;
+}
+
+.arcade__player[data-player="2"] { background: #F4D7DF; }
+.arcade__message { margin: 1rem 0 0; font-weight: 700; }
+.arcade__pad button { font-size: 1.1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .arcade__rival,
+  .arcade__player { transition: none; }
+}

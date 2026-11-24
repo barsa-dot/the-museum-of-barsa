@@ -7,7 +7,7 @@
    generated text uses `/ ""` so screen readers skip it.
    ========================================================= */
 
-/* Paper grain over the pages (not over the 3D museum). */
+/* Paper grain over the portfolio. */
 :root[data-mode="business"] body::after {
   content: "";
   position: fixed;
@@ -18,7 +18,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-:root[data-mode="business"] body:has(.museum)::after {
+:root[data-mode="business"] body:has(.arcade)::after {
   display: none;
 }
 
@@ -212,39 +212,18 @@
   border-radius: 0;
 }
 
-[data-mode="business"] .content-page a:not(.museum-cta__link) {
+[data-mode="business"] .content-page a {
   text-decoration-thickness: 1px;
 }
 
-[data-mode="business"] .content-page a:not(.museum-cta__link):hover {
+[data-mode="business"] .content-page a:hover {
   text-decoration-thickness: 2px;
 }
 
 /* ---------- Museum invitation as an exhibition notice ---------- */
 
-[data-mode="business"] .museum-cta {
-  background: transparent;
-  border: 0;
-  border-top: 2px solid var(--color-border-strong);
-  border-bottom: var(--border-width) solid var(--color-border-strong);
-  border-radius: 0;
-  padding-inline: 0;
-}
 
-[data-mode="business"] .museum-cta__text::before {
-  content: "The exhibition" / "";
-  display: block;
-  margin-bottom: var(--space-1);
-  font-family: var(--font-label);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
 
-[data-mode="business"] .museum-cta__title {
-  font-size: var(--text-xl);
-}
 
 /* ---------- Colophon ---------- */
 

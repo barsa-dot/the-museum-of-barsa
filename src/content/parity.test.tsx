@@ -1,28 +1,9 @@
-﻿// Content parity across both modes and every surface (task 4.8).
-//
-// Every approved record must be reachable in Developer Mode AND Business
-// Mode, on each way of reading the portfolio: the portfolio pages, the
-// walkable museum (exhibits and the panels they open), the map's quick
-// access and the no-3D guide. Modes may reorder and restyle; they may not
-// drop anything.
-//
-// The profile is replaced with a fully verified TEST-ONLY copy (sample
-// records added to every collection, more than the museum has wall space
-// for), so parity is checked on every kind of record, not only the few
-// that are verified today. None of these samples are facts about the owner.
-
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { MODES, profile, projects, viewFor, type Mode } from "../data/profile";
 import type { Achievement, Experience, ExperienceKind, Profile } from "../data/profile/types";
 import type { Project } from "../data/profile/project";
 import { App } from "../app/App";
-import { STORAGE_KEY, createModeStore } from "../state/mode";
-import { buildExhibits } from "../museum/scene/exhibits";
-import { ExhibitPanel } from "../museum/ExhibitPanel";
-import { MuseumGuide } from "../museum/MuseumGuide";
-import { recruiterShortcuts } from "../museum/navigation";
-import type { ExhibitContent } from "../museum/world";
 import { sectionHasContent } from "./components";
 import { resumeHref } from "./rules";
 
@@ -133,24 +114,18 @@ describe("the test profile", () => {
 });
 
 describe("portfolio pages", () => {
-  const page = (mode: Mode) => {
-    const data: Record<string, string> = { [STORAGE_KEY]: mode };
-    const storage = { getItem: (k: string) => data[k] ?? null, setItem: () => {}, removeItem: () => {} };
-    return renderToStaticMarkup(<App store={createModeStore({ storage })} />);
-  };
-  const pages = { developer: page("developer"), business: page("business") };
+  const page = renderToStaticMarkup(<App />);
 
-  it.each(MODES)("show every approved record in %s mode", (mode) => {
-    const text = textOf(pages[mode]);
+  it.each(MODES)("shows every approved record from the %s presentation", (mode) => {
+    const text = textOf(page);
     for (const fact of factsOf(mode)) expect(text, fact).toContain(fact);
   });
 
-  it("link the resume in both modes", () => {
-    const href = resumeHref(profile.contact.resume)!;
-    for (const mode of MODES) expect(pages[mode]).toContain(`href="${href}"`);
+  it("links the supplied resume", () => {
+    expect(page).toContain(`href="${resumeHref(profile.contact.resume)}"`);
   });
 
-  it("render the same record elements in both modes", () => {
+  it("renders the complete collection of approved records", () => {
     const recordIds = (html: string) => {
       const v = viewFor(profile, projects, "developer");
       const known = new Set([
@@ -158,123 +133,10 @@ describe("portfolio pages", () => {
       ].map((r) => r.id));
       return [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]!).filter((id) => known.has(id)).sort();
     };
-    expect(recordIds(pages.developer)).toEqual(recordIds(pages.business));
-    expect(recordIds(pages.developer).length).toBeGreaterThan(20);
+    expect(recordIds(page).length).toBeGreaterThan(20);
   });
 
   it("never show a project that is waiting for review", () => {
-    for (const mode of MODES) expect(pages[mode]).not.toContain("Sample Review Project");
-  });
-});
-
-describe("walkable museum", () => {
-  /** Records a visitor can open from the museum: directly, or through a section board or shortcut. */
-  function reachable(mode: Mode): string[] {
-    const v = viewFor(profile, projects, mode);
-    const contents: ExhibitContent[] = [
-      ...buildExhibits(v).flatMap((s) => (s.exhibit ? [s.exhibit.content] : [])),
-      ...recruiterShortcuts(v).flatMap((s) => (s.kind === "panel" ? [s.content] : [])),
-    ];
-    const ids = new Set<string>();
-    const add = (kind: string, records: readonly { id: string }[]) => records.forEach((r) => ids.add(`${kind}:${r.id}`));
-    for (const c of contents) {
-      if (c.type === "education" || c.type === "experience" || c.type === "achievement" || c.type === "project") ids.add(`${c.type}:${c.id}`);
-      if (c.type === "identity") ids.add("identity");
-      if (c.type !== "section") continue;
-      if (c.section === "education") add("education", v.education);
-      if (c.section === "experience") add("experience", v.experience);
-      if (c.section === "achievements") add("achievement", v.achievements);
-      if (c.section === "skills") add("skill", v.skills);
-      if (c.section === "projects") add("project", [...v.exhibitedProjects, ...v.sealedProjects]);
-      if (c.section === "about" || c.section === "contact") ids.add(c.section);
-    }
-    return [...ids].sort();
-  }
-
-  it("lets both modes reach exactly the same records", () => {
-    expect(reachable("developer")).toEqual(reachable("business"));
-  });
-
-  it.each(MODES)("reaches every approved record in %s mode", (mode) => {
-    const v = viewFor(profile, projects, mode);
-    const expected = [
-      ...v.education.map((r) => `education:${r.id}`),
-      ...v.experience.map((r) => `experience:${r.id}`),
-      ...v.achievements.map((r) => `achievement:${r.id}`),
-      ...v.skills.map((r) => `skill:${r.id}`),
-      ...[...v.exhibitedProjects, ...v.sealedProjects].map((r) => `project:${r.id}`),
-      "about",
-      "contact",
-      "identity",
-    ];
-    expect(reachable(mode)).toEqual(expected.sort());
-  });
-
-  it("builds the same rooms with the same number and kinds of exhibits in both modes", () => {
-    // When a wall is full, which records get their own board follows the
-    // mode's order (the rest are one step away on the "N more" board), so
-    // compare the layout, not the record on each board.
-    const byRoom = (mode: Mode) => {
-      const rooms: Record<string, string[]> = {};
-      for (const s of buildExhibits(viewFor(profile, projects, mode))) (rooms[s.room] ??= []).push(s.kind);
-      return Object.fromEntries(Object.entries(rooms).map(([k, kinds]) => [k, kinds.sort()]));
-    };
-    expect(byRoom("developer")).toEqual(byRoom("business"));
-    expect(Object.keys(byRoom("developer")).sort()).toEqual(["archive", "courtyard", "creation", "library", "portrait", "workshop"]);
-  });
-
-  it("shows a \"more\" board, never a silent cut, when a wall is full", () => {
-    for (const mode of MODES) {
-      const ids = buildExhibits(viewFor(profile, projects, mode)).map((s) => s.id);
-      expect(ids).toContain("archive-more");
-      expect(ids).toContain("library-achievements-more");
-    }
-  });
-
-  it("offers the same map shortcuts in both modes", () => {
-    const ids = (mode: Mode) => recruiterShortcuts(viewFor(profile, projects, mode)).map((s) => `${s.id}:${s.kind}`).sort();
-    expect(ids("developer")).toEqual(ids("business"));
-  });
-
-  it("opens panels with the same text in both modes", () => {
-    const panel = (content: ExhibitContent, mode: Mode) =>
-      renderToStaticMarkup(
-        <ExhibitPanel exhibit={{ id: "x", label: "X", verb: "View", x: 0, z: 0, radius: 1, content }} mode={mode} onClose={() => {}} />,
-      );
-    const v = viewFor(profile, projects, "developer");
-    const contents = [
-      ...buildExhibits(v).flatMap((s) => (s.exhibit ? [s.exhibit.content] : [])),
-      ...recruiterShortcuts(v).flatMap((s) => (s.kind === "panel" ? [s.content] : [])),
-    ];
-    expect(contents.length).toBeGreaterThan(15);
-    // Same words; order may differ (e.g. the degree leading in each mode).
-    for (const c of contents) expect(words(panel(c, "developer")), JSON.stringify(c)).toEqual(words(panel(c, "business")));
-  });
-
-  it("shows every approved record across its panels in each mode", () => {
-    for (const mode of MODES) {
-      const v = viewFor(profile, projects, mode);
-      const all = [{ type: "identity" } as const, ...recruiterShortcuts(v).flatMap((s) => (s.kind === "panel" ? [s.content] : []))]
-        .map((content) => renderToStaticMarkup(<ExhibitPanel exhibit={{ id: "x", label: "X", verb: "View", x: 0, z: 0, radius: 1, content }} mode={mode} onClose={() => {}} />))
-        .join(" ");
-      const text = textOf(all);
-      for (const fact of factsOf(mode)) expect(text, `${mode}: ${fact}`).toContain(fact);
-    }
-  });
-});
-
-describe("museum without 3D", () => {
-  const hrefs = (mode: Mode) =>
-    [...renderToStaticMarkup(<MuseumGuide mode={mode} title="t" reason="r" onExit={() => {}} currentUrl="https://museum.test/" />).matchAll(/href="([^"]+)"/g)]
-      .map((m) => m[1]!)
-      .sort();
-
-  it("links the same sections in both modes, covering every section with content", () => {
-    expect(hrefs("developer")).toEqual(hrefs("business"));
-    const v = viewFor(profile, projects, "developer");
-    for (const section of v.sections) {
-      if (!sectionHasContent(v, section)) continue;
-      expect(hrefs("developer"), section).toContain(`https://museum.test/#${section}`);
-    }
+    expect(page).not.toContain("Sample Review Project");
   });
 });
