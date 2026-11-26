@@ -1,18 +1,12 @@
-import { StrictMode } from "react";
+﻿import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./app/fonts";
-import "./styles/tokens.css";
-import "./styles/content.css";
-import "./styles/app.css";
-import "./styles/business.css";
-import "./styles/business-pages.css";
-import { App } from "./app/App";
+import "@fontsource/barlow-condensed/latin-800.css";
+import "@fontsource/dm-sans/latin-400.css";
+import "@fontsource/dm-sans/latin-500.css";
+import "@fontsource/dm-sans/latin-700.css";
+import "./portfolio/portfolio.css";
+import { Portfolio } from "./portfolio/Portfolio";
 
-const root = document.getElementById("root");
-if (root) {
-  createRoot(root).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  );
-}
+createRoot(document.getElementById("root")!).render(
+  <StrictMode><Portfolio /></StrictMode>,
+);
