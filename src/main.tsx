@@ -5,6 +5,7 @@ import "@fontsource/dm-sans/latin-400.css";
 import "@fontsource/dm-sans/latin-500.css";
 import "@fontsource/dm-sans/latin-700.css";
 import "./portfolio/portfolio.css";
+import "./portfolio/opening.css";
 import { Portfolio } from "./portfolio/Portfolio";
 
 createRoot(document.getElementById("root")!).render(
