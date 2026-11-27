@@ -1,18 +1,23 @@
-# Barsarani Sahoo — Portfolio
+﻿# Barsarani Sahoo | Portfolio
 
-One portfolio brings together Barsarani's business and technical work. The default view includes a draggable identity badge, education, projects, experience as it is verified, and contact links. The **Arcade** tab opens **Spark Run**, an original maze game with solo and local two-player play.
+Personal portfolio featuring selected software, writing, commerce, and game projects. The site uses React, TypeScript, Vite, and GSAP.
 
 ## Run locally
 
+Install dependencies with `npm ci`, then run `npm run dev`. Open the URL Vite prints.
+
+To check the production build:
+
 ```sh
-npm install
-npm run dev
+npm run build
+npm run preview
 ```
 
-In the arcade, start with **Solo** or **Two players**. Use the arrow keys for player one and WASD for player two. In solo play either key set works. Use the direction pad for touch, and Pause or Escape to pause. Players collect sparks, avoid sentries, and share three lives in two-player mode.
+Vite serves the build at `/the-museum-of-barsa/` by default. To build for hosting at the root of a domain, run `npm run build -- --base /`.
 
-`npm test` runs the test suite. `npm run build` writes the production site to `dist/`.
+## Project files
 
-## Content
-
-The shared profile is in `src/data/profile/profile.ts`. Projects are in `projects.json`. Publish only confirmed facts, links, and assets. See [the project registry guide](docs/project-registry.md) for status and metadata.
+- `src/portfolio/` contains the homepage, project details, covers, and opening animation.
+- `projects.json` contains the TaskNest registry entry used by the portfolio.
+- `app/public/images/` contains the portrait and gameplay image.
+- `docs/references/` contains the three source-video screenshots.
