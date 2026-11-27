@@ -1,0 +1,11 @@
+{
+  "name": "the-museum-of-barsa",
+  "compatibility_date": "2026-11-27",
+  "keep_vars": true,
+  "build": {
+    "command": "npm run build -- --base / --outDir ../dist/cloudflare"
+  },
+  "assets": {
+    "directory": "./dist/cloudflare"
+  }
+}
