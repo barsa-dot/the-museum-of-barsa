@@ -9,21 +9,6 @@ main { background: var(--paper); }
   padding-top: 13rem;
   padding-bottom: clamp(2.5rem, 8vh, 6rem);
 }
-.badge-mount { top: -74px; left: calc(50% - 39px); translate: none; width: 78px; height: 207px; perspective: 540px; }
-.lanyard { transform-style: preserve-3d; }
-.badge-strap {
-  position: absolute;
-  top: -24px;
-  left: calc(50% - 3px);
-  width: 6px;
-  height: 120px;
-  background: repeating-linear-gradient(90deg, #244dff 0 2px, #1b36b7 2px 3px);
-  transform-origin: center top;
-}
-.badge-tilt { position: absolute; inset: 0; transform-origin: center 82px; }
-.badge { inset: 92px 0 auto; padding: 5px; }
-.badge img { height: 62px; }
-.badge-city { font-size: .49rem; }
 .hero h1 {
   font-size: clamp(4.7rem, min(14vw, 25vh), 13rem);
   letter-spacing: -.031em;
@@ -154,7 +139,6 @@ main { background: var(--paper); }
   height: 100svh;
   margin-top: -74px;
 }
-.motion-desktop .badge-mount { top: 0; transform-origin: center 0; }
 .motion-desktop .hero { min-height: 100%; }
 .motion-desktop .cover, .motion-desktop .fragment-slot { overflow: visible; }
 .fragment--pong { z-index: 2; }
@@ -184,7 +168,6 @@ main { background: var(--paper); }
   .hero { min-height: calc(77svh - 62px); }
 }
 @media (max-width: 560px) {
-  .badge-mount { top: -62px; }
   .hero h1 { font-size: clamp(4.25rem, 20vw, 7rem); }
   .fragment { font-size: clamp(8px, 2.4cqw, 13px); }
 }

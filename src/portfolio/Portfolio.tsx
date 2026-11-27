@@ -1,7 +1,8 @@
 ﻿import { useLayoutEffect, useRef } from "react";
 import { Cover } from "./Cover";
+import { PortraitBadge } from "./PortraitBadge";
 import { setupOpening } from "./opening";
-import { github, portrait, projects } from "./projects";
+import { github, projects } from "./projects";
 import type { PortfolioProject } from "./projects";
 
 function ProjectCard({ project }: { project: PortfolioProject }) {
@@ -50,18 +51,7 @@ export function Portfolio() {
         <div ref={sequence} className="sequence">
           <div ref={stage} className="opening-stage">
             <section className="hero frame" aria-labelledby="hero-title">
-              <div ref={badge} className="badge-mount">
-                <div className="lanyard">
-                  <div className="badge-tilt">
-                    <span className="badge-strap" aria-hidden="true" />
-                    <div className="badge">
-                      <div className="badge-head"><b>BS</b><span>●</span></div>
-                      {portrait && <img src={import.meta.env.BASE_URL + portrait.src} alt="" width={portrait.width} height={portrait.height} />}
-                      <span className="badge-city">Bengaluru</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <PortraitBadge mount={badge} />
               <div className="hero-content">
                 <h1 id="hero-title"><span>Barsarani</span> <span>Sahoo</span></h1>
                 <div className="hero-intro">

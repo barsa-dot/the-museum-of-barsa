@@ -18,27 +18,9 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
   let desktopTrigger: ScrollTrigger | undefined;
 
   media.add("(prefers-reduced-motion: no-preference)", () => {
-    const lanyard = badge.querySelector(".lanyard")!;
-    const strap = badge.querySelector(".badge-strap")!;
-    const title = stage.querySelector("h1")!;
-    const intro = gsap.timeline();
-    intro.fromTo(lanyard, { y: -146, rotationZ: -9, rotationY: -24 }, {
-      y: 12, rotationZ: 7, rotationY: 19, duration: .44, ease: "power2.in",
-    }, 0).to(lanyard, {
-      y: -4, rotationZ: -3, rotationY: -8, duration: .24, ease: "power2.out",
-    }).to(lanyard, {
-      y: 0, rotationZ: 0, rotationY: 0, duration: .31, ease: "power2.inOut",
+    gsap.fromTo(stage.querySelector("h1"), { y: 14, opacity: .84 }, {
+      y: 0, opacity: 1, duration: .54, delay: .13, ease: "power3.out",
     });
-    intro.fromTo(strap, { scaleY: .9 }, { scaleY: 1, duration: .19, ease: "power2.out" }, .32);
-    intro.fromTo(title, { y: 14, opacity: .84 }, { y: 0, opacity: 1, duration: .54, ease: "power3.out" }, .13);
-
-    const handoff = () => {
-      if (window.scrollY <= 0) return;
-      intro.timeScale(3.5);
-      window.removeEventListener("scroll", handoff);
-    };
-    if (window.scrollY > 0) intro.progress(1);
-    else window.addEventListener("scroll", handoff, { passive: true });
 
     const about = root.nextElementSibling;
     if (about?.matches(".about")) {
@@ -50,7 +32,7 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
         y: 28, opacity: 0,
       }, { y: 0, opacity: 1, duration: .42, stagger: .095, ease: "power2.out" }, .51);
     }
-    return () => window.removeEventListener("scroll", handoff);
+
   }, root);
 
   media.add("(min-width: 850px) and (prefers-reduced-motion: no-preference)", () => {
@@ -61,7 +43,7 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
       bounds: stage.getBoundingClientRect(),
       hero: badge.parentElement!.getBoundingClientRect(),
       badgeX: badge.offsetLeft + badge.offsetWidth / 2,
-      badgeY: badge.offsetTop + badge.offsetHeight * .67,
+      badgeY: badge.offsetTop + badge.offsetHeight + 24,
       slots: fragments.map(fragment => fragment.parentElement!.getBoundingClientRect()),
     });
     let geometry = measure();
@@ -144,6 +126,7 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
 
     const sync = (trigger: ScrollTrigger) => {
       gallery.inert = trigger.progress < .985;
+      badge.inert = trigger.progress > .24;
       stage.classList.toggle("opening-in-progress", trigger.progress > .16);
     };
     desktopTrigger = ScrollTrigger.create({
@@ -163,6 +146,7 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
       root.classList.remove("motion-desktop");
       stage.classList.remove("opening-in-progress");
       gallery.inert = false;
+      badge.inert = false;
       desktopTrigger = undefined;
     };
   }, root);
@@ -175,7 +159,7 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
       const origin = badge.parentElement!.getBoundingClientRect();
       return {
         x: origin.left + badge.offsetLeft + badge.offsetWidth / 2 - (slot.left + slot.width / 2),
-        y: origin.top + badge.offsetTop + badge.offsetHeight * .67 - (slot.top + slot.height / 2),
+        y: origin.top + badge.offsetTop + badge.offsetHeight + 24 - (slot.top + slot.height / 2),
       };
     });
     let stack = measure();
@@ -203,25 +187,6 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
       invalidateOnRefresh: true,
       onRefreshInit: () => { stack = measure(); },
     });
-  }, root);
-
-  media.add("(min-width: 850px) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
-    const tilt = badge.querySelector(".badge-tilt")!;
-    const roll = gsap.quickTo(tilt, "rotationZ", { duration: .52, ease: "power3.out" });
-    const pitch = gsap.quickTo(tilt, "rotationY", { duration: .52, ease: "power3.out" });
-    const move = (event: PointerEvent) => {
-      if (stage.classList.contains("opening-in-progress")) return;
-      const amount = (event.clientX / innerWidth - .5) * 2;
-      roll(amount * 6);
-      pitch(amount * 12);
-    };
-    const reset = () => { roll(0); pitch(0); };
-    root.addEventListener("pointermove", move);
-    root.addEventListener("pointerleave", reset);
-    return () => {
-      root.removeEventListener("pointermove", move);
-      root.removeEventListener("pointerleave", reset);
-    };
   }, root);
 
   const goToWork = (event: MouseEvent) => {
