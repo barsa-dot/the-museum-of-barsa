@@ -8,15 +8,28 @@ import type { PortfolioProject } from "./projects";
 function ProjectCard({ project }: { project: PortfolioProject }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const button = useRef<HTMLButtonElement>(null);
+  const caption = <div><h3>{project.name}</h3><p>{project.summary}</p></div>;
   return (
     <article className="project">
-      <button ref={button} className="project-button" type="button" aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>
-        <Cover id={project.id} title={project.name} />
-        <div className="project-caption">
-          <div><h3>{project.name}</h3><p>{project.summary}</p></div>
-          <span className="project-category">{project.category}</span>
-        </div>
-      </button>
+      {project.id === "tasknest" ? (
+        <>
+          <Cover id={project.id} title={project.name} />
+          <div className="project-caption">
+            {caption}
+            <button ref={button} className="project-launch" type="button" aria-label="Open TaskNest project" aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>
+              Open project
+            </button>
+          </div>
+        </>
+      ) : (
+        <button ref={button} className="project-button" type="button" aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>
+          <Cover id={project.id} title={project.name} />
+          <div className="project-caption">
+            {caption}
+            <span className="project-category">{project.category}</span>
+          </div>
+        </button>
+      )}
       <dialog ref={dialog} className="project-detail" aria-labelledby={project.id + "-title"} onClose={() => button.current?.focus({ preventScroll: true })}>
         <div className="detail-top">
           <span className="label">{project.category}</span>

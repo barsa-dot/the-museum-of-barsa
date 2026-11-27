@@ -9,6 +9,7 @@ main { background: var(--paper); }
   padding-top: 13rem;
   padding-bottom: clamp(2.5rem, 8vh, 6rem);
 }
+.hero-content { position: relative; z-index: 3; }
 .hero h1 {
   font-size: clamp(4.7rem, min(14vw, 25vh), 13rem);
   letter-spacing: -.031em;

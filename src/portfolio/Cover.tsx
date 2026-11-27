@@ -1,4 +1,7 @@
-﻿const fragmentSets = {
+﻿import { useState } from "react";
+import "./tasknest.css";
+
+const fragmentSets = {
   tasknest: ["tasks", "garden", "xp", "focus"],
   authordna: ["manuscript", "rhythm", "voice", "journey"],
   "desi-zayka": ["menu", "dish", "basket", "whatsapp"],
@@ -7,14 +10,21 @@
 
 type Fragment = (typeof fragmentSets)[keyof typeof fragmentSets][number];
 
-function FragmentArt({ fragment }: { fragment: Fragment }) {
+function FragmentArt({ fragment, complete, onComplete }: { fragment: Fragment; complete: boolean; onComplete: (checked: boolean) => void }) {
   switch (fragment) {
     case "tasks":
-      return <><b>Today</b><span>✓ Review notes</span><span>✓ Submit lab</span><span>□ Plan next week</span></>;
+      return <>
+        <b>Today</b>
+        <span className="tasknest-existing"><span aria-hidden="true">✓</span> Review notes</span>
+        <label className="tasknest-check">
+          <input type="checkbox" checked={complete} onChange={event => onComplete(event.currentTarget.checked)} />
+          <span>Plan next week</span>
+        </label>
+      </>;
     case "garden":
-      return <><b>Progress garden</b><span className="sprouts"><i/><i/><i/></span></>;
+      return <><b>Progress garden</b><span className="sprouts" aria-hidden="true"><i/><i/><i/></span><span className="garden-stage">{complete ? "Stage 2 · Growing" : "Stage 1 · Seedling"}</span></>;
     case "xp":
-      return <><b>Progress XP</b><strong>+ 25 XP</strong><span className="meter"/></>;
+      return <><b>Progress XP</b><strong role="status">{complete ? 35 : 25} XP</strong><span className="meter" aria-hidden="true"/></>;
     case "focus":
       return <><b>Focus timer</b><strong>25:00</strong><span>Study session</span></>;
     case "manuscript":
@@ -43,14 +53,16 @@ function FragmentArt({ fragment }: { fragment: Fragment }) {
 }
 
 export function Cover({ id, title }: { id: string; title: string }) {
+  const [complete, setComplete] = useState(false);
+  const interactive = id === "tasknest";
   return (
-    <div className={"cover cover--" + id} aria-hidden="true">
+    <div className={"cover cover--" + id} data-complete={interactive ? complete : undefined} aria-hidden={interactive ? undefined : true}>
       <span className="cover-title">{title}</span>
       <span className="fragment-grid">
         {fragmentSets[id as keyof typeof fragmentSets].map(fragment => (
           <span className="fragment-slot" key={fragment}>
             <span className={"fragment fragment--" + fragment} data-fragment={fragment}>
-              <FragmentArt fragment={fragment} />
+              <FragmentArt fragment={fragment} complete={complete} onComplete={setComplete} />
             </span>
           </span>
         ))}
