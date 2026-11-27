@@ -1,5 +1,4 @@
-﻿import { profile } from "../data/profile/profile";
-import registry from "../../projects.json";
+﻿import registry from "../../projects.json";
 
 type Link = { label: string; url: string };
 
@@ -61,5 +60,5 @@ export const projects: PortfolioProject[] = [
   },
 ];
 
-export const github = profile.contact.github!;
-export const portrait = profile.portrait.photo;
+export const github = { label: "github.com/barsa-dot", url: "https://github.com/barsa-dot" };
+export const portrait = { src: "images/portrait.webp", width: 640, height: 800 };
