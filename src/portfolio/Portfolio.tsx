@@ -53,6 +53,7 @@ export function Portfolio() {
               <div ref={badge} className="badge-mount">
                 <div className="lanyard">
                   <div className="badge-tilt">
+                    <span className="badge-strap" aria-hidden="true" />
                     <div className="badge">
                       <div className="badge-head"><b>BS</b><span>●</span></div>
                       {portrait && <img src={import.meta.env.BASE_URL + portrait.src} alt="" width={portrait.width} height={portrait.height} />}
@@ -76,11 +77,18 @@ export function Portfolio() {
           </div>
         </div>
 
-        <section className="about frame" id="about" aria-labelledby="about-title">
-          <h2 id="about-title">About</h2>
-          <div>
-            <p>I’m Barsarani Sahoo, based in Bengaluru. I study CSIT at REVA University and Digital Business &amp; Entrepreneurship at IIM Bangalore. Those two perspectives shape how I build software and ask what makes it useful for the people who use it.</p>
-            <p>I work in Industry Outreach at the IIMB DBE Partnership Cell and write at ACHIVIA. Both give me ways to practise listening, asking better questions and communicating ideas clearly.</p>
+        <section className="about" id="about" aria-labelledby="about-title">
+          <div className="about-wave" aria-hidden="true" />
+          <div className="about-inner frame">
+            <h2 id="about-title">About</h2>
+            <div className="about-lines">
+              <p>Computer Science at REVA</p>
+              <p>Digital Business at IIM Bangalore</p>
+            </div>
+            <div className="about-copy">
+              <p>I’m Barsarani Sahoo, based in Bengaluru. I study CSIT at REVA University and Digital Business &amp; Entrepreneurship at IIM Bangalore. Those two perspectives shape how I build software and ask what makes it useful for the people who use it.</p>
+              <p>I work in Industry Outreach at the IIMB DBE Partnership Cell and write at ACHIVIA. Both give me ways to practise listening, asking better questions and communicating ideas clearly.</p>
+            </div>
           </div>
         </section>
         <footer className="contact" id="contact">

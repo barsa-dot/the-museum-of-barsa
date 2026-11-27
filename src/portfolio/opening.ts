@@ -8,7 +8,7 @@ const scatter = [
   [.20, .29, -13, 1.08], [.34, .16, 8, .87], [.40, .37, -5, .83], [.17, .49, 10, .75],
   [.66, .19, -8, 1.09], [.80, .31, 12, .91], [.59, .39, 5, .76], [.87, .15, -8, .77],
   [.18, .70, 9, 1.08], [.34, .64, -9, .94], [.30, .86, 7, .89], [.43, .74, -6, .72],
-  [.73, .60, -9, 1.10], [.60, .77, 7, .86], [.80, .83, -5, .88], [.88, .57, 12, .78],
+  [.73, .60, -9, 1.10], [.58, .72, -7, 1.18], [.80, .83, -5, .88], [.88, .57, 12, .78],
 ] as const;
 
 export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLElement, work: HTMLElement) {
@@ -17,13 +17,57 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
   const fragments = gsap.utils.toArray<HTMLElement>(".fragment", work);
   let desktopTrigger: ScrollTrigger | undefined;
 
-  media.add("(min-width: 850px) and (min-height: 530px) and (prefers-reduced-motion: no-preference)", () => {
+  media.add("(prefers-reduced-motion: no-preference)", () => {
+    const lanyard = badge.querySelector(".lanyard")!;
+    const strap = badge.querySelector(".badge-strap")!;
+    const title = stage.querySelector("h1")!;
+    const intro = gsap.timeline();
+    intro.fromTo(lanyard, { y: -146, rotationZ: -9, rotationY: -24 }, {
+      y: 12, rotationZ: 7, rotationY: 19, duration: .44, ease: "power2.in",
+    }, 0).to(lanyard, {
+      y: -4, rotationZ: -3, rotationY: -8, duration: .24, ease: "power2.out",
+    }).to(lanyard, {
+      y: 0, rotationZ: 0, rotationY: 0, duration: .31, ease: "power2.inOut",
+    });
+    intro.fromTo(strap, { scaleY: .9 }, { scaleY: 1, duration: .19, ease: "power2.out" }, .32);
+    intro.fromTo(title, { y: 14, opacity: .84 }, { y: 0, opacity: 1, duration: .54, ease: "power3.out" }, .13);
+
+    const handoff = () => {
+      if (window.scrollY <= 0) return;
+      intro.timeScale(3.5);
+      window.removeEventListener("scroll", handoff);
+    };
+    if (window.scrollY > 0) intro.progress(1);
+    else window.addEventListener("scroll", handoff, { passive: true });
+
+    const about = root.nextElementSibling;
+    if (about?.matches(".about")) {
+      const wave = gsap.timeline({
+        scrollTrigger: { trigger: about, start: "top 98%", end: "top 48%", scrub: true, refreshPriority: -1 },
+      });
+      wave.fromTo(about.querySelector(".about-wave"), { yPercent: 44 }, { yPercent: 0, duration: .74, ease: "sine.out" });
+      wave.fromTo(about.querySelectorAll(".about-inner h2, .about-lines p, .about-copy"), {
+        y: 28, opacity: 0,
+      }, { y: 0, opacity: 1, duration: .42, stagger: .095, ease: "power2.out" }, .51);
+    }
+    return () => window.removeEventListener("scroll", handoff);
+  }, root);
+
+  media.add("(min-width: 850px) and (prefers-reduced-motion: no-preference)", () => {
     root.classList.add("motion-desktop");
     const timeline = gsap.timeline({ defaults: { ease: "none" } });
     const stagger = [0, .09, .04, .13, .02, .10, .05, .15, .03, .12, .08, .16, .01, .11, .07, .14];
-    const position = (index: number, pose: "stack" | "scatter" | "gather" | "arc") => {
-      const bounds = stage.getBoundingClientRect();
-      const slot = fragments[index]!.parentElement!.getBoundingClientRect();
+    const measure = () => ({
+      bounds: stage.getBoundingClientRect(),
+      hero: badge.parentElement!.getBoundingClientRect(),
+      badgeX: badge.offsetLeft + badge.offsetWidth / 2,
+      badgeY: badge.offsetTop + badge.offsetHeight * .67,
+      slots: fragments.map(fragment => fragment.parentElement!.getBoundingClientRect()),
+    });
+    let geometry = measure();
+    const position = (index: number, pose: "stack" | "launch" | "scatter" | "gather" | "arc") => {
+      const { bounds, hero, badgeX, badgeY, slots } = geometry;
+      const slot = slots[index]!;
       const [x, y, rotation, depth] = scatter[index]!;
       const stageX = bounds.width * x;
       const stageY = bounds.height * y;
@@ -36,12 +80,17 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
       const size = Math.min(bounds.width * .18, 214) * scale / slot.width;
       let zoom = size * depth;
 
-      if (pose === "stack") {
-        const hero = badge.parentElement!.getBoundingClientRect();
-        left = hero.left - bounds.left + badge.offsetLeft + (piece - 1.5) * 7;
-        top = hero.top - bounds.top + badge.offsetTop + badge.offsetHeight * .69 + (group - 1.5) * 5;
+      if (pose === "stack" || pose === "launch") {
+        left = hero.left - bounds.left + badgeX + (piece - 1.5) * 7 + (index === 13 ? 18 : 0);
+        top = hero.top - bounds.top + badgeY + (group - 1.5) * 5;
         angle *= .55;
-        zoom = 38 / slot.width;
+        zoom = (index === 13 ? 76 : 44) / slot.width;
+        if (pose === "launch") {
+          left += (stageX - left) * .39;
+          top += (stageY - top) * .34 + (group < 2 ? -1 : 1) * bounds.height * .085;
+          angle = rotation * 1.45;
+          zoom = size * depth * .72;
+        }
       }
       if (pose === "gather" || pose === "arc") {
         const spacing = Math.min(bounds.width * .119, 157);
@@ -75,17 +124,20 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
     });
 
     fragments.forEach((fragment, index) => {
-      const delay = stagger[index]!;
+      const delay = index === 13 ? 0 : stagger[index]! + .12;
       timeline.fromTo(fragment, { ...values(index, "stack"), opacity: 0 }, {
-        ...values(index, "scatter"), opacity: 1, ease: "power2.out", duration: .98,
-      }, .16 + delay);
+        ...values(index, "launch"), opacity: 1, ease: "sine.in", duration: .31,
+      }, .02 + delay);
+      timeline.to(fragment, { ...values(index, "scatter"), ease: "power2.out", duration: .67 }, .33 + delay);
       timeline.to(fragment, { ...values(index, "arc"), ease: "sine.in", duration: .33 }, 1.53 + delay);
       timeline.to(fragment, { ...values(index, "gather"), ease: "sine.out", duration: .44 }, 1.86 + delay);
       timeline.to(fragment, { x: 0, y: 0, scale: 1, rotation: 0, duration: .65, ease: "power2.inOut" }, 2.54 + delay * .8);
     });
 
     timeline.fromTo(".hero-content", { yPercent: 0, opacity: 1 }, { yPercent: -35, opacity: 0, duration: .52, ease: "power1.in" }, 0);
-    timeline.fromTo(".badge-mount", { yPercent: 0, opacity: 1 }, { yPercent: -42, opacity: 0, duration: .49 }, .34);
+    timeline.fromTo(badge, { y: 0, rotationZ: 0, opacity: 1 }, {
+      rotationZ: 44, duration: .52, ease: "power1.inOut",
+    }, 0).to(badge, { rotationZ: 59, y: -12, opacity: 0, duration: .37, ease: "sine.in" }, .5);
     timeline.fromTo(".cover", { "--cover-opacity": 0 }, { "--cover-opacity": 1, duration: .5 }, 2.71);
     timeline.fromTo(".cover-title", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .3, stagger: .04 }, 2.94);
     timeline.fromTo(".section-heading, .project-caption", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .37 }, 3.03);
@@ -98,11 +150,12 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
       animation: timeline,
       trigger: stage,
       start: "top top",
-      end: () => "+=" + Math.round(Math.max(1120, Math.min(innerHeight * 1.8, 1570))),
+      end: () => "+=" + Math.round(Math.max(820, Math.min(innerHeight * 1.47, 1300))),
       pin: true,
       scrub: true,
       invalidateOnRefresh: true,
       onUpdate: sync,
+      onRefreshInit: () => { geometry = measure(); },
       onRefresh: sync,
     });
     sync(desktopTrigger);
@@ -116,19 +169,40 @@ export function setupOpening(root: HTMLElement, stage: HTMLElement, badge: HTMLE
 
   media.add("(max-width: 849px) and (prefers-reduced-motion: no-preference)", () => {
     const cover = work.querySelector<HTMLElement>(".cover")!;
-    const timeline = gsap.timeline({
-      scrollTrigger: { trigger: cover, start: "top 94%", end: "top 51%", scrub: true },
+    const pieces = fragments.slice(0, 4);
+    const measure = () => pieces.map(piece => {
+      const slot = piece.parentElement!.getBoundingClientRect();
+      const origin = badge.parentElement!.getBoundingClientRect();
+      return {
+        x: origin.left + badge.offsetLeft + badge.offsetWidth / 2 - (slot.left + slot.width / 2),
+        y: origin.top + badge.offsetTop + badge.offsetHeight * .67 - (slot.top + slot.height / 2),
+      };
     });
-    timeline.fromTo(cover, { "--cover-opacity": .42 }, { "--cover-opacity": 1, duration: .58 }, .25);
-    fragments.slice(0, 4).forEach((fragment, index) => {
+    let stack = measure();
+    const timeline = gsap.timeline();
+    pieces.forEach((fragment, index) => {
+      const delay = index * .045;
       timeline.fromTo(fragment, {
-        xPercent: [-15, 15, -18, 18][index]!,
-        yPercent: [-65, -55, -26, -43][index]!,
-        scale: .79,
-        rotation: [-13, 12, -9, 8][index]!,
-      }, { xPercent: 0, yPercent: 0, scale: 1, rotation: 0, duration: .65, ease: "power1.inOut" }, index * .1);
+        x: () => stack[index]!.x, y: () => stack[index]!.y, scale: .27, opacity: 0, rotation: 0,
+      }, {
+        x: 0, y: 0, xPercent: [-13, 13, -15, 15][index]!, yPercent: [-93, -63, -52, -74][index]!,
+        scale: .86, opacity: 1, rotation: [-13, 12, -9, 8][index]!, duration: .36, ease: "power2.out",
+      }, .025 + delay);
+      timeline.to(fragment, {
+        xPercent: 0, yPercent: 0, scale: 1, rotation: 0, duration: .42, ease: "power2.inOut",
+      }, .51 + delay);
     });
-    timeline.fromTo(cover.querySelector(".cover-title"), { opacity: .35 }, { opacity: 1, duration: .4 }, .46);
+    timeline.fromTo(cover, { "--cover-opacity": .32 }, { "--cover-opacity": 1, duration: .45 }, .57);
+    timeline.fromTo(cover.querySelector(".cover-title"), { opacity: .35 }, { opacity: 1, duration: .41 }, .62);
+    ScrollTrigger.create({
+      animation: timeline,
+      trigger: stage,
+      start: 0,
+      end: () => "+=" + Math.max(240, innerHeight * .34),
+      scrub: true,
+      invalidateOnRefresh: true,
+      onRefreshInit: () => { stack = measure(); },
+    });
   }, root);
 
   media.add("(min-width: 850px) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
